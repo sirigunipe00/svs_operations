@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979735044007",
+    "project_id": "svs-operations",
+    "storage_bucket": "svs-operations.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979735044007:android:0b439c90f28e068e0d6082",
+        "android_client_info": {
+          "package_name": "in.easycloud.svs_operations"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKXEN7RNggVVPgmS9gLaJ8-eJG5Yi-dBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
