@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:svs_operations/core/app_router/app_route.dart';
+import 'package:svs_operations/core/di/injector.dart';
+import 'package:svs_operations/core/utils/date_format_util.dart';
+import 'package:svs_operations/features/auth/model/logged_in_user.dart';
 import 'package:svs_operations/styles/icons.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -91,10 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
+                      15,
                       25,
-                      28,
-                      25,
-                      30,
+                      15,
+                      20,
                     ),
                     sliver: SliverGrid(
                       delegate: SliverChildBuilderDelegate(
@@ -117,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
                         childAspectRatio: 0.82,
                       ),
                     ),
@@ -133,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
+    final user = $sl.get<LoggedInUser>();
     return Container(
       height: 85,
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
@@ -151,19 +155,19 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'Good Morning,',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                  dayOfTimeGreeting(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF131A2A),
                   ),
                 ),
                 Text(
-                  'Hari 👋',
-                  style: TextStyle(
-                    fontSize: 22,
+                  '${user.username} 👋',
+                  style: const TextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF131A2A),
                   ),
@@ -176,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Icon(
                 Icons.notifications,
-                size: 31,
+                size: 23,
                 color: Color(0xFF91A2BB),
               ),
               Positioned(
@@ -209,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
           const Text(
             'Operations',
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
               color: Color(0xFF198DD0),
             ),
           ),
@@ -219,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
             '(${_getCurrentDate()})',
             style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w700,
               color: Color(0xFF61718C),
             ),
           ),
@@ -323,7 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class _OperationCard extends StatelessWidget {
   final OperationItem item;
   final VoidCallback onTap;
@@ -359,24 +362,22 @@ class _OperationCard extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 15,
+              horizontal: 4,
+              vertical: 8,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 70,
+                  height: 60,
                   decoration: BoxDecoration(
                     color: item.iconBackground,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Image.asset(item.image),
                 ),
-
-                const SizedBox(height: 14),
-
+                const SizedBox(height: 5),
                 Expanded(
                   child: Center(
                     child: Text(
@@ -385,9 +386,9 @@ class _OperationCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 14,
                         height: 1.25,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w600,
                         color: Color(0xFF101829),
                       ),
                     ),
@@ -488,4 +489,15 @@ class OperationItem {
       required this.iconColor,
       required this.iconBackground,
       required this.appRoute});
+}
+
+String dayOfTimeGreeting() {
+  final currHour = DFU.now().hour;
+  return switch (currHour) {
+    < 12 => 'Good Morning,',
+    > 12 && <= 16 => 'Good Afternoon,',
+    > 16 && < 20 => 'Good Evening,',
+    >= 20 => 'Good Night,',
+    _ => '',
+  };
 }

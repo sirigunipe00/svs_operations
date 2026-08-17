@@ -33,6 +33,8 @@ abstract class _AppRoutePaths {
   static const emptyVehicle = '/home/emptyVehicle';
   static const newEmptyVehicle =  '/home/emptyVehicle/newEmptyVehicle';
   static const account = '/account';
+  static const dashboard = '/dashBoard';
+
 }
 
 enum AppRoute {
@@ -57,7 +59,9 @@ enum AppRoute {
   newInWardGatePass(_AppRoutePaths.newInWardGatePass),
   emptyVehicle(_AppRoutePaths.emptyVehicle),
   newEmptyVehicle(_AppRoutePaths.newEmptyVehicle),
-  account(_AppRoutePaths.account);
+  account(_AppRoutePaths.account),
+  dashboard(_AppRoutePaths.dashboard);
+
 
   const AppRoute(this.path);
   final String path;

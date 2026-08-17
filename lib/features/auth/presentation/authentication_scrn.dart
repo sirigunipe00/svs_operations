@@ -60,42 +60,50 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8FA),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 17),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 17),
-            //   child: const SizedBox(height: 34),
-            // ),
-        
-            _buildSvsLogo(),
-            const SizedBox(height: 7),
-            const Text(
-              'SVS Operations',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 17),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 100,
               ),
-            ),
-            const SizedBox(height: 3),
-            const Text(
-              'Sign in to continue',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.black,
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 17),
+              //   child: const SizedBox(height: 34),
+              // ),
+
+              _buildSvsLogo(),
+              const SizedBox(height: 7),
+              const Text(
+                'SVS Operations',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 50),
-            _buildLoginCard(),
-            const SizedBox(height: 25),
-        
-            Spacer(),
-            // _buildFooter(),
-          ],
+              const SizedBox(height: 3),
+              const Text(
+                'Sign in to continue',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(height: 50),
+              _buildLoginCard(),
+              // const SizedBox(height: 25),
+
+              // const Spacer(),
+              const SizedBox(height: 40),
+              _buildFooter(),
+
+              const SizedBox(height: 25),
+            ],
+          ),
         ),
       ),
     );
@@ -129,8 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text(
             'Email or Employee ID',
             style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
           ),
@@ -145,8 +153,8 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text(
             'Password',
             style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
           ),
@@ -204,9 +212,9 @@ class _LoginScreenState extends State<LoginScreen> {
               const Text(
                 'Remember me',
                 style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.black,
-                ),
+                    fontSize: 10,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               ),
               const Spacer(),
               TextButton(
@@ -259,12 +267,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   child: state.isLoading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(),
+                        )
                       : const Text(
                           'Login',
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                 );
@@ -361,17 +373,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildFooter() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 25),
       child: Column(
         children: [
           Image.asset('assets/images/easycloud_logo.jpeg',
-              height: 100, width: 100),
+              height: 70, width: 100),
           const Text(
             'Copyrights reserved to EasyCloud ©2026',
             style: TextStyle(
-              fontSize: 10,
-              color: Color(0xFF78869A),
-            ),
+                fontSize: 10,
+                color: Color(0xFF78869A),
+                fontWeight: FontWeight.w400),
           ),
         ],
       ),

@@ -63,8 +63,6 @@ class _TubeCuttingWorkStationScreenState
       return;
     }
 
-    // TODO: Call your Cubit/API here.
-
     debugPrint('Machine: ${widget.machineName}');
     debugPrint('Item: $selectedItem');
     debugPrint('Item Count: $itemCount');
@@ -86,9 +84,9 @@ class _TubeCuttingWorkStationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Tube Cutting Work Station',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
       backgroundColor: const Color(0xFFF7F9FB),
@@ -133,7 +131,7 @@ class _TubeCuttingWorkStationScreenState
               ),
             ),
 
-            _buildBottomNavigation(),
+            // _buildBottomNavigation(),
           ],
         ),
       ),
@@ -181,14 +179,14 @@ class _TubeCuttingWorkStationScreenState
   // ----------------------------------------------------------
 
   Widget _buildWorkStationTitle() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children:  [
         Text(
           'WORK STATION',
           style: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             color: Color(0xFF85888D),
           ),
         ),
@@ -197,7 +195,7 @@ class _TubeCuttingWorkStationScreenState
           'Tube Cutting Work Station',
           style: TextStyle(
             fontSize: 22,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
             color: Colors.black,
             height: 1.15,
           ),
@@ -217,16 +215,18 @@ class _TubeCuttingWorkStationScreenState
         const Text(
           'SELECTION DETAILS',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.w400,
             color: Color(0xFF85888D),
           ),
         ),
         const SizedBox(height: 6),
         Container(
+          height: 106,
+          width: 398,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(17),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: const Color(0xFFD5D5D5),
               width: 1.2,
@@ -244,17 +244,17 @@ class _TubeCuttingWorkStationScreenState
                       const Text(
                         'Machine',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
                         ),
-                      ),
+                      ),  
                       const Spacer(),
                       Text(
                         widget.machineName,
                         style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF087EFF),
                         ),
                       ),
@@ -287,7 +287,7 @@ class _TubeCuttingWorkStationScreenState
                         const Text(
                           'Item List',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 17,
                             fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
@@ -296,7 +296,7 @@ class _TubeCuttingWorkStationScreenState
                         Text(
                           selectedItem ?? 'Select Item',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 17,
                             fontWeight: FontWeight.w400,
                             color: selectedItem == null
                                 ? const Color(0xFF929297)
@@ -399,7 +399,7 @@ class _TubeCuttingWorkStationScreenState
         const Text(
           'MACHINE COUNTER PHOTO',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: FontWeight.w400,
             color: Color(0xFF85888D),
           ),
@@ -437,10 +437,11 @@ class _TubeCuttingWorkStationScreenState
       onTap: onTap,
       borderRadius: BorderRadius.circular(17),
       child: Container(
-        height: 130,
+        height: 140,
+        width: 193,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(17),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: const Color(0xFFD5D5D5),
             width: 1.2,
@@ -479,7 +480,7 @@ class _TubeCuttingWorkStationScreenState
             Text(
               title,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF087EFF),
               ),
@@ -490,7 +491,8 @@ class _TubeCuttingWorkStationScreenState
             const Text(
               'Tap to capture',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
                 color: Color(0xFF929297),
               ),
             ),
@@ -560,14 +562,14 @@ class _TubeCuttingWorkStationScreenState
           ),
           hintText: 'Item Count',
           hintStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
             color: Color(0xFF168FD2),
           ),
           suffixText: 'Pcs.',
           suffixStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
             color: Color(0xFF168FD2),
           ),
         ),
@@ -586,7 +588,7 @@ class _TubeCuttingWorkStationScreenState
         const Text(
           'VERIFICATION',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.w400,
             color: Color(0xFF85888D),
           ),
@@ -596,11 +598,12 @@ class _TubeCuttingWorkStationScreenState
           onTap: _scanBinQr,
           borderRadius: BorderRadius.circular(17),
           child: Container(
-            height: 113,
+            height: 76,
+            width: 398,
             padding: const EdgeInsets.symmetric(horizontal: 23),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: const Color(0xFFD5D5D5),
                 width: 1.2,
@@ -609,8 +612,8 @@ class _TubeCuttingWorkStationScreenState
             child: Row(
               children: [
                 Container(
-                  width: 66,
-                  height: 66,
+                  width: 50,
+                  height: 50,
                   decoration: BoxDecoration(
                     color: const Color(0xFFEAF4FF),
                     borderRadius: BorderRadius.circular(14),
@@ -639,7 +642,8 @@ class _TubeCuttingWorkStationScreenState
                       const Text(
                         'Complete scan to verify and submit',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
                           color: Color(0xFF929297),
                         ),
                       ),
@@ -702,13 +706,13 @@ class _TubeCuttingWorkStationScreenState
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(14),
           ),
         ),
         child: const Text(
           'Submit Operation',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 17,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -720,45 +724,45 @@ class _TubeCuttingWorkStationScreenState
   // BOTTOM NAVIGATION
   // ----------------------------------------------------------
 
-  Widget _buildBottomNavigation() {
-    return Container(
-      height: 100,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Color(0xFFE1E5EB),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildBottomItem(
-              icon: Icons.home_rounded,
-              label: 'Home',
-              index: 0,
-            ),
-          ),
-          Expanded(
-            child: _buildBottomItem(
-              icon: Icons.dashboard_rounded,
-              label: 'Dashboard',
-              index: 1,
-            ),
-          ),
-          Expanded(
-            child: _buildBottomItem(
-              icon: Icons.account_circle_rounded,
-              label: 'Profile',
-              index: 2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildBottomNavigation() {
+  //   return Container(
+  //     height: 100,
+  //     decoration: const BoxDecoration(
+  //       color: Colors.white,
+  //       border: Border(
+  //         top: BorderSide(
+  //           color: Color(0xFFE1E5EB),
+  //           width: 1,
+  //         ),
+  //       ),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           child: _buildBottomItem(
+  //             icon: Icons.home_rounded,
+  //             label: 'Home',
+  //             index: 0,
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: _buildBottomItem(
+  //             icon: Icons.dashboard_rounded,
+  //             label: 'Dashboard',
+  //             index: 1,
+  //           ),
+  //         ),
+  //         Expanded(
+  //           child: _buildBottomItem(
+  //             icon: Icons.account_circle_rounded,
+  //             label: 'Profile',
+  //             index: 2,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildBottomItem({
     required IconData icon,

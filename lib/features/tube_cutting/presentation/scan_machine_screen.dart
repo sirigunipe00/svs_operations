@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/dashed_border_box.dart';
-import 'package:svs_operations/features/tube_cutting/presentation/qr_scanner_screen.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/work_station_Screen.dart';
 
 class TubeCuttingScreen extends StatelessWidget {
@@ -12,11 +11,13 @@ class TubeCuttingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title, style: TextStyle(fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold),),
+        title: Text(title, style: const TextStyle(fontSize: 20, color: Colors.blue, fontWeight: FontWeight.w700),),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: Text('($date)'),
+            child: Text('($date)',
+            style: const TextStyle(fontWeight: FontWeight.w700,fontSize: 14),
+            ),
           ),
         ],
       ),
@@ -61,7 +62,7 @@ class TubeCuttingScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Color(0xFF168ED1),
@@ -88,7 +89,7 @@ class TubeCuttingScreen extends StatelessWidget {
           strokeWidth: 3,
           dashWidth: 10,
           dashSpace: 8,
-          radius: 20,
+          radius: 30,
         ),
         child: DashedBorderBox(
           borderRadius: 20,
@@ -98,7 +99,7 @@ class TubeCuttingScreen extends StatelessWidget {
           strokeWidth: 2,
           child: Container(
             width: double.infinity,
-            height: 250,
+            height: 200,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -112,8 +113,8 @@ class TubeCuttingScreen extends StatelessWidget {
                   'SCAN MACHINE / WORK STATION',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
@@ -122,8 +123,8 @@ class TubeCuttingScreen extends StatelessWidget {
                   'Scan the QR to start the process',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF92A3BD),
                   ),
                 ),
@@ -161,8 +162,8 @@ class TubeCuttingScreen extends StatelessWidget {
         // }
       },
       child: Container(
-        width: 78,
-        height: 78,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFF188FD2),
@@ -178,7 +179,7 @@ class TubeCuttingScreen extends StatelessWidget {
         child: const Center(
           child: Icon(
             Icons.qr_code_scanner_rounded,
-            size: 45,
+            size: 35,
             color: Colors.white,
           ),
         ),

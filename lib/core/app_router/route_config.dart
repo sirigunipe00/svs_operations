@@ -5,7 +5,9 @@ import 'package:svs_operations/app/presentation/app_splash_scrn.dart';
 import 'package:svs_operations/app/presentation/app_update_blocprovider.dart';
 import 'package:svs_operations/app/widgets/app_scaffold_widget.dart';
 import 'package:svs_operations/core/app_router/app_route.dart';
+import 'package:svs_operations/features/app_profile_page.dart';
 import 'package:svs_operations/features/auth/presentation/authentication_scrn.dart';
+import 'package:svs_operations/features/dashboard_screen.dart';
 import 'package:svs_operations/features/home_screen.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/scan_machine_screen.dart';
 
@@ -58,8 +60,16 @@ class AppRouteConfig {
             StatefulShellBranch(
               routes: [
                 GoRoute(
+                  path: AppRoute.dashboard.path,
+                  builder: (_, __) => const DashboardScreen(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
                   path: AppRoute.account.path,
-                  builder: (_, __) => const HomeScreen(),
+                  builder: (_, __) => const AppProfilePage(),
                 ),
               ],
             ),
