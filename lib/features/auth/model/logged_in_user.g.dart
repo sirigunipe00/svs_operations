@@ -23,6 +23,12 @@ _$LoggedInUserImpl _$$LoggedInUserImplFromJson(Map<String, dynamic> json) =>
       location: json['location'] as String?,
       bio: json['bio'] as String?,
       mobileNo: json['mobile_no'] as String?,
+      roles: json['role_status'] == null
+          ? null
+          : UserRoles.fromJson(json['role_status'] as Map<String, dynamic>),
+      sectionRoles: (json['section_roles_status'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$$LoggedInUserImplToJson(_$LoggedInUserImpl instance) =>
@@ -42,4 +48,6 @@ Map<String, dynamic> _$$LoggedInUserImplToJson(_$LoggedInUserImpl instance) =>
       'location': instance.location,
       'bio': instance.bio,
       'mobile_no': instance.mobileNo,
+      'role_status': instance.roles,
+      'section_roles_status': instance.sectionRoles,
     };

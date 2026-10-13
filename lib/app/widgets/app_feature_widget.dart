@@ -19,26 +19,27 @@ class AppFeatureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(1),
       child: InkWell(
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: featureColor ?? AppColors.black, width: 1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color:  AppColors.grey, width: 0.5),
             color: featureColor,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min, 
             children: [
-              AppSpacer.p12(),
+              // AppSpacer.p12(),
               Flexible( 
                 child: Center(child: icon),
               ),
+              // AppSpacer.p8(),
               Container(
                 width: double.infinity, 
-                margin: const EdgeInsets.all(4),
-                padding: const EdgeInsets.all(10),
+                // margin: const EdgeInsets.all(1),
+                // padding: const EdgeInsets.all(1),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -47,6 +48,7 @@ class AppFeatureWidget extends StatelessWidget {
                   child:title, 
                 ),
               ),
+              AppSpacer.p8()
             ],
           ),
         ),

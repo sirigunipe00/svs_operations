@@ -1,34 +1,36 @@
 import 'dart:async';
-import 'package:svs_operations/core/core.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SimpleSearchBar extends StatefulWidget {
   const SimpleSearchBar({
+    this.initial,
     required this.hintText,
     required this.onSearch,
     required this.onCancel,
-    this.initial,
-    super.key,
+    super.key,  this.inputType = TextInputType.number,
   });
 
-  final String hintText;
   final String? initial;
+  final String hintText;
   final Function(String) onSearch;
   final Function() onCancel;
+  final TextInputType inputType;
 
   @override
   State<SimpleSearchBar> createState() => _SimpleSearchBarState();
 }
 
 class _SimpleSearchBarState extends State<SimpleSearchBar> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.initial.valueOrEmpty;
+    _controller = TextEditingController(text: widget.initial);
   }
 
   void _onSearch(String query) {
@@ -41,6 +43,9 @@ class _SimpleSearchBarState extends State<SimpleSearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: [
+         FilteringTextInputFormatter.digitsOnly,
+      ],
       controller: _controller,
       focusNode: _focusNode,
       onChanged: _onSearch,

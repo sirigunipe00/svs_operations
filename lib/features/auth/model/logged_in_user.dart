@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:svs_operations/features/auth/model/user_roles.dart';
 
 part 'logged_in_user.freezed.dart';
 part 'logged_in_user.g.dart';
@@ -22,6 +23,9 @@ class LoggedInUser with _$LoggedInUser {
     String? location,
     String? bio,
     @JsonKey(name: 'mobile_no') String? mobileNo,
+
+    @JsonKey(name: 'role_status') UserRoles? roles,
+    @JsonKey(name: 'section_roles_status') List<String>? sectionRoles,
   }) = _LoggedInUser;
 
   factory LoggedInUser.fromJson(Map<String, dynamic> json) =>

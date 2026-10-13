@@ -61,11 +61,11 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
               icon: Icon(Icons.home_outlined), 
               selectedIcon: Icon(Icons.home, color: AppColors.haintBlue),
             ),
-            NavigationDestination(
-              label: 'DashBoard', 
-              icon: Icon(Icons.dashboard_outlined), 
-              selectedIcon: Icon(Icons.dashboard, color: AppColors.haintBlue),
-            ),
+            // NavigationDestination(
+            //   label: 'DashBoard', 
+            //   icon: Icon(Icons.dashboard_outlined), 
+            //   selectedIcon: Icon(Icons.dashboard, color: AppColors.haintBlue),
+            // ),
             NavigationDestination(
               label: 'Profile', 
               icon: Icon(Icons.person_outline), 

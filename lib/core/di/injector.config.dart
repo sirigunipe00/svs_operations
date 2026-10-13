@@ -24,6 +24,23 @@ import '../../features/auth/data/auth_repo_impl.dart' as _i328;
 import '../../features/auth/presentation/bloc/auth/auth_cubit.dart' as _i190;
 import '../../features/auth/presentation/bloc/sign_in/sign_in_cubit.dart'
     as _i140;
+import '../../features/gate_entry/data/gate_entry_repo.dart' as _i820;
+import '../../features/gate_entry/data/gate_entry_repo_impl.dart' as _i174;
+import '../../features/gate_entry/presentation/bloc/bloc_provider.dart'
+    as _i210;
+import '../../features/gate_entry/presentation/bloc/new_gate_entry/new_gate_entry_cubit.dart'
+    as _i586;
+import '../../features/gate_exit/data/gate_exit_repo.dart' as _i495;
+import '../../features/gate_exit/data/gate_exit_repo_impl.dart' as _i100;
+import '../../features/gate_exit/presentation/bloc/bloc_provider.dart' as _i565;
+import '../../features/gate_exit/presentation/bloc/create_gate_exit/create_gate_exit_cubit.dart'
+    as _i161;
+import '../../features/tube_cutting/data/tube_cutting_repo.dart' as _i882;
+import '../../features/tube_cutting/data/tube_cutting_repoimpl.dart' as _i665;
+import '../../features/tube_cutting/presentation/bloc/bloc_provider.dart'
+    as _i192;
+import '../../features/tube_cutting/presentation/bloc/create_item_cubit.dart'
+    as _i547;
 import '../core.dart' as _i351;
 import '../local_storage/key_vale_storage.dart' as _i1012;
 import '../network/api_client.dart' as _i557;
@@ -61,16 +78,34 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i519.Client>(),
           gh<_i402.InternetConnectionChecker>(),
         ));
+    gh.lazySingleton<_i495.GateExitRepo>(
+        () => _i100.GateExitRepoImpl(gh<_i351.ApiClient>()));
     gh.factory<_i1012.KeyValueStorage>(() => _i1012.KeyValueStorage(
           gh<_i558.FlutterSecureStorage>(),
           gh<_i460.SharedPreferences>(),
         ));
+    gh.lazySingleton<_i882.TubeCuttingRepo>(
+        () => _i665.TubeCuttingRepoimpl(gh<_i351.ApiClient>()));
+    gh.factory<_i547.CreateItemCubit>(
+        () => _i547.CreateItemCubit(gh<_i882.TubeCuttingRepo>()));
+    gh.lazySingleton<_i192.TubeCuttingBlocProvider>(
+        () => _i192.TubeCuttingBlocProvider(gh<_i882.TubeCuttingRepo>()));
+    gh.factory<_i161.CreateGateExitCubit>(
+        () => _i161.CreateGateExitCubit(gh<_i495.GateExitRepo>()));
+    gh.lazySingleton<_i565.GateExitBlocProvider>(
+        () => _i565.GateExitBlocProvider(gh<_i495.GateExitRepo>()));
     gh.lazySingleton<_i346.AppVersion>(
         () => _i346.AppVersion(gh<_i655.PackageInfo>()));
     gh.lazySingleton<_i585.AuthRepo>(() => _i328.AuthRepoImpl(
           gh<_i351.ApiClient>(),
           gh<_i351.KeyValueStorage>(),
         ));
+    gh.lazySingleton<_i820.GateEntryRepo>(
+        () => _i174.GateEntryRepoImpl(gh<_i351.ApiClient>()));
+    gh.factory<_i586.NewGateEntryCubit>(
+        () => _i586.NewGateEntryCubit(gh<_i820.GateEntryRepo>()));
+    gh.lazySingleton<_i210.GateEntryBlocProvider>(
+        () => _i210.GateEntryBlocProvider(gh<_i820.GateEntryRepo>()));
     gh.lazySingleton<_i691.AppRepository>(() => _i691.AppRepository(
           gh<_i351.ApiClient>(),
           gh<_i346.AppVersion>(),

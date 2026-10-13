@@ -1,12 +1,14 @@
 abstract class BooleanUtls {
   static bool fromInt(dynamic value) {
-    if(value !is int?) {
+    print('val: $value');
+    print('type: ${value.runtimeType}');
+
+    if (value == 0 || value == '0') {
       return false;
-    } else if(value == 0) {
-      return false;
-    } else if(value == 1) {
+    } else if (value == 1 || value == '1') {
       return true;
     }
-    throw ArgumentError.value(value);
+
+    return false;
   }
 }

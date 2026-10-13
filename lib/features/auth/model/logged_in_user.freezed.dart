@@ -45,6 +45,10 @@ mixin _$LoggedInUser {
   String? get bio => throw _privateConstructorUsedError;
   @JsonKey(name: 'mobile_no')
   String? get mobileNo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'role_status')
+  UserRoles? get roles => throw _privateConstructorUsedError;
+  @JsonKey(name: 'section_roles_status')
+  List<String>? get sectionRoles => throw _privateConstructorUsedError;
 
   /// Serializes this LoggedInUser to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -78,7 +82,11 @@ abstract class $LoggedInUserCopyWith<$Res> {
       String? phone,
       String? location,
       String? bio,
-      @JsonKey(name: 'mobile_no') String? mobileNo});
+      @JsonKey(name: 'mobile_no') String? mobileNo,
+      @JsonKey(name: 'role_status') UserRoles? roles,
+      @JsonKey(name: 'section_roles_status') List<String>? sectionRoles});
+
+  $UserRolesCopyWith<$Res>? get roles;
 }
 
 /// @nodoc
@@ -111,6 +119,8 @@ class _$LoggedInUserCopyWithImpl<$Res, $Val extends LoggedInUser>
     Object? location = freezed,
     Object? bio = freezed,
     Object? mobileNo = freezed,
+    Object? roles = freezed,
+    Object? sectionRoles = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -173,7 +183,29 @@ class _$LoggedInUserCopyWithImpl<$Res, $Val extends LoggedInUser>
           ? _value.mobileNo
           : mobileNo // ignore: cast_nullable_to_non_nullable
               as String?,
+      roles: freezed == roles
+          ? _value.roles
+          : roles // ignore: cast_nullable_to_non_nullable
+              as UserRoles?,
+      sectionRoles: freezed == sectionRoles
+          ? _value.sectionRoles
+          : sectionRoles // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
+  }
+
+  /// Create a copy of LoggedInUser
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserRolesCopyWith<$Res>? get roles {
+    if (_value.roles == null) {
+      return null;
+    }
+
+    return $UserRolesCopyWith<$Res>(_value.roles!, (value) {
+      return _then(_value.copyWith(roles: value) as $Val);
+    });
   }
 }
 
@@ -201,7 +233,12 @@ abstract class _$$LoggedInUserImplCopyWith<$Res>
       String? phone,
       String? location,
       String? bio,
-      @JsonKey(name: 'mobile_no') String? mobileNo});
+      @JsonKey(name: 'mobile_no') String? mobileNo,
+      @JsonKey(name: 'role_status') UserRoles? roles,
+      @JsonKey(name: 'section_roles_status') List<String>? sectionRoles});
+
+  @override
+  $UserRolesCopyWith<$Res>? get roles;
 }
 
 /// @nodoc
@@ -232,6 +269,8 @@ class __$$LoggedInUserImplCopyWithImpl<$Res>
     Object? location = freezed,
     Object? bio = freezed,
     Object? mobileNo = freezed,
+    Object? roles = freezed,
+    Object? sectionRoles = freezed,
   }) {
     return _then(_$LoggedInUserImpl(
       name: null == name
@@ -294,6 +333,14 @@ class __$$LoggedInUserImplCopyWithImpl<$Res>
           ? _value.mobileNo
           : mobileNo // ignore: cast_nullable_to_non_nullable
               as String?,
+      roles: freezed == roles
+          ? _value.roles
+          : roles // ignore: cast_nullable_to_non_nullable
+              as UserRoles?,
+      sectionRoles: freezed == sectionRoles
+          ? _value._sectionRoles
+          : sectionRoles // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -317,8 +364,11 @@ class _$LoggedInUserImpl extends _LoggedInUser {
       this.phone,
       this.location,
       this.bio,
-      @JsonKey(name: 'mobile_no') this.mobileNo})
-      : super._();
+      @JsonKey(name: 'mobile_no') this.mobileNo,
+      @JsonKey(name: 'role_status') this.roles,
+      @JsonKey(name: 'section_roles_status') final List<String>? sectionRoles})
+      : _sectionRoles = sectionRoles,
+        super._();
 
   factory _$LoggedInUserImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoggedInUserImplFromJson(json);
@@ -363,10 +413,23 @@ class _$LoggedInUserImpl extends _LoggedInUser {
   @override
   @JsonKey(name: 'mobile_no')
   final String? mobileNo;
+  @override
+  @JsonKey(name: 'role_status')
+  final UserRoles? roles;
+  final List<String>? _sectionRoles;
+  @override
+  @JsonKey(name: 'section_roles_status')
+  List<String>? get sectionRoles {
+    final value = _sectionRoles;
+    if (value == null) return null;
+    if (_sectionRoles is EqualUnmodifiableListView) return _sectionRoles;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'LoggedInUser(name: $name, username: $username, firstName: $firstName, lastName: $lastName, apiKey: $apiKey, apiSecret: $apiSecret, email: $email, password: $password, roleProfileName: $roleProfileName, gender: $gender, bithDate: $bithDate, phone: $phone, location: $location, bio: $bio, mobileNo: $mobileNo)';
+    return 'LoggedInUser(name: $name, username: $username, firstName: $firstName, lastName: $lastName, apiKey: $apiKey, apiSecret: $apiSecret, email: $email, password: $password, roleProfileName: $roleProfileName, gender: $gender, bithDate: $bithDate, phone: $phone, location: $location, bio: $bio, mobileNo: $mobileNo, roles: $roles, sectionRoles: $sectionRoles)';
   }
 
   @override
@@ -397,7 +460,10 @@ class _$LoggedInUserImpl extends _LoggedInUser {
                 other.location == location) &&
             (identical(other.bio, bio) || other.bio == bio) &&
             (identical(other.mobileNo, mobileNo) ||
-                other.mobileNo == mobileNo));
+                other.mobileNo == mobileNo) &&
+            (identical(other.roles, roles) || other.roles == roles) &&
+            const DeepCollectionEquality()
+                .equals(other._sectionRoles, _sectionRoles));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -418,7 +484,9 @@ class _$LoggedInUserImpl extends _LoggedInUser {
       phone,
       location,
       bio,
-      mobileNo);
+      mobileNo,
+      roles,
+      const DeepCollectionEquality().hash(_sectionRoles));
 
   /// Create a copy of LoggedInUser
   /// with the given fields replaced by the non-null parameter values.
@@ -456,7 +524,10 @@ abstract class _LoggedInUser extends LoggedInUser {
       final String? phone,
       final String? location,
       final String? bio,
-      @JsonKey(name: 'mobile_no') final String? mobileNo}) = _$LoggedInUserImpl;
+      @JsonKey(name: 'mobile_no') final String? mobileNo,
+      @JsonKey(name: 'role_status') final UserRoles? roles,
+      @JsonKey(name: 'section_roles_status')
+      final List<String>? sectionRoles}) = _$LoggedInUserImpl;
   const _LoggedInUser._() : super._();
 
   factory _LoggedInUser.fromJson(Map<String, dynamic> json) =
@@ -502,6 +573,12 @@ abstract class _LoggedInUser extends LoggedInUser {
   @override
   @JsonKey(name: 'mobile_no')
   String? get mobileNo;
+  @override
+  @JsonKey(name: 'role_status')
+  UserRoles? get roles;
+  @override
+  @JsonKey(name: 'section_roles_status')
+  List<String>? get sectionRoles;
 
   /// Create a copy of LoggedInUser
   /// with the given fields replaced by the non-null parameter values.

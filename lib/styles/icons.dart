@@ -21,6 +21,26 @@ class AppIcons {
   static const brazingIcon = AppIcon('$iconsPath/brazing.png');
   static const vaccumePacking = AppIcon('$iconsPath/vaccum_packing.png');
   static const visualInspection = AppIcon('$iconsPath/visual_inspection.png');
+
+
+
+  static const bubbles = AppIcon('$iconsPath/bubbles.svg');
+  static const bgFrame1 = AppIcon('$iconsPath/bg_frame_1.png');
+  static const bgFrame2 = AppIcon('$iconsPath/bg_frame_2.png');
+  static const bgFrame3 = AppIcon('$iconsPath/bg_frame3.png');
+  static const bgFrame4 = AppIcon('$iconsPath/bg_frame4.png');
+  static const bgFrame5 = AppIcon('$iconsPath/bg_frame5.png');
+  static const bgFrame6 = AppIcon('$iconsPath/bg_frame6.png');
+  static const helloCuate = AppIcon('$iconsPath/hello_cuate.svg');
+
+  
+  static const vechileEntry = AppIcon('$iconsPath/vehicle_entry.jpeg');
+  static const vehcileExit = AppIcon('$iconsPath/exit_image.png');
+  static const gateExitCurves = AppIcon('$iconsPath/gate_exit_1.png');
+  static const gateEntryCurves = AppIcon('$iconsPath/gate_entry_1.png');
+  static const operations = AppIcon('$iconsPath/operations.png');
+  static const svsLogo = AppIcon('$iconsPath/svs_logo.png');
+  
 }
 
 class AppIcon {

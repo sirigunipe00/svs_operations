@@ -1,12 +1,41 @@
+import 'dart:io';
+
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/material.dart';
-import 'package:svs_operations/features/tube_cutting/presentation/qr_scanner_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:svs_operations/core/core.dart';
+import 'package:svs_operations/features/tube_cutting/model/child_status_model.dart';
+import 'package:svs_operations/features/tube_cutting/model/operation_scan_model.dart';
+import 'package:svs_operations/features/tube_cutting/model/work_order_model.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/bloc/bloc_provider.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/bloc/create_item_cubit.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/ui/screens/qr_scanner_screen.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/rejection_tray_widget.dart';
+import 'package:svs_operations/styles/app_colors.dart';
+import 'package:svs_operations/widgets/dialogs/app_dialogs.dart';
+import 'package:svs_operations/widgets/loading_indicator.dart';
 
 class TubeCuttingWorkStationScreen extends StatefulWidget {
-  final String machineName;
+  final String title;
+  final OperationScanModel operationStatus;
+  final WorkOrderItem workOrder;
+  final String scanMachine;
+  final String scanTray;
+  final ChildStatusModel childItem;
+  final bool inProgress;
 
   const TubeCuttingWorkStationScreen({
     super.key,
-    this.machineName = 'Machine 01',
+    required this.title,
+    required this.operationStatus,
+    required this.workOrder,
+    required this.scanMachine,
+    required this.scanTray,
+    required this.childItem,
+    required this.inProgress,
   });
 
   @override
@@ -20,10 +49,24 @@ class _TubeCuttingWorkStationScreenState
   String? startImage;
   String? endImage;
   String? binQrCode;
+  String? rejectionTrayImagePath;
 
   final TextEditingController itemCountController = TextEditingController();
 
   int selectedBottomIndex = 0;
+  int? selectedItemCount;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<CreateItemCubit>().onValueChanged(
+        workOrder: widget.workOrder.workOrder,
+        jobCard: widget.workOrder.name,
+        employee: context.user.email,
+        operation: widget.title,
+        childId: widget.childItem.name);
+  }
 
   @override
   void dispose() {
@@ -31,366 +74,85 @@ class _TubeCuttingWorkStationScreenState
     super.dispose();
   }
 
-  // ----------------------------------------------------------
-  // SUBMIT
-  // ----------------------------------------------------------
-
-  void _submitOperation() {
-    final itemCount = itemCountController.text.trim();
-
-    if (selectedItem == null) {
-      _showMessage('Please select an item');
-      return;
-    }
-
-    if (itemCount.isEmpty) {
-      _showMessage('Please enter item count');
-      return;
-    }
-
-    if (startImage == null) {
-      _showMessage('Please capture start image');
-      return;
-    }
-
-    if (endImage == null) {
-      _showMessage('Please capture end image');
-      return;
-    }
-
-    if (binQrCode == null) {
-      _showMessage('Please scan Bin QR Code');
-      return;
-    }
-
-    debugPrint('Machine: ${widget.machineName}');
-    debugPrint('Item: $selectedItem');
-    debugPrint('Item Count: $itemCount');
-    debugPrint('Start Image: $startImage');
-    debugPrint('End Image: $endImage');
-    debugPrint('Bin QR: $binQrCode');
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Tube Cutting Work Station',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        ),
-      ),
-      backgroundColor: const Color(0xFFF7F9FB),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // Main content
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    // _buildAppBar(),
-
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        17,
-                        12,
-                        17,
-                        10,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildWorkStationTitle(),
-                          const SizedBox(height: 20),
-                          _buildSelectionSection(),
-                          const SizedBox(height: 20),
-                          _buildMachineCounterSection(),
-                          const SizedBox(height: 20),
-                          _buildItemCount(),
-                          const SizedBox(height: 20),
-                          _buildVerificationSection(),
-                          const SizedBox(height: 20),
-                          _buildSubmitButton(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // _buildBottomNavigation(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ----------------------------------------------------------
-  // APP BAR
-  // ----------------------------------------------------------
-
-  Widget _buildAppBar() {
-    return Container(
-      height: 86,
-      width: double.infinity,
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 27),
-      child: Row(
+    return 
+    
+    
+    
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 28,
-              color: Color(0xFF63748E),
+          if (widget.operationStatus.isCounterScan == 1) ...[
+            _buildMachineCounterSection(),
+            const SizedBox(height: 8),
+            _buildItemCount(),
+          ],
+          if (widget.title == 'Tube Cutting' && !widget.inProgress) ...[
+            const SizedBox(height: 10),
+            _buildItemCountDropdown(),
+          ],
+          if (widget.inProgress && widget.operationStatus.isRejection == 1) ...[
+            const SizedBox(height: 10),
+            RejectionTrayWidget(
+              onScanTap: scanRejectionTray,
+              onCameraTap: captureRejectionTrayImage,
+              trayId: binQrCode ?? 'XXX-XX-XX-XXX',
+              rejectionTrayImagePath: rejectionTrayImagePath ?? '',
             ),
-          ),
-          const SizedBox(width: 18),
-          const Text(
-            'Tube Cutting Work Station',
-            style: TextStyle(
-              fontSize: 21,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF63748E),
-            ),
-          ),
+          ],
+          const SizedBox(height: 20),
+          _buildSubmitButton(),
         ],
       ),
     );
   }
 
-  // ----------------------------------------------------------
-  // WORK STATION TITLE
-  // ----------------------------------------------------------
-
-  Widget _buildWorkStationTitle() {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children:  [
-        Text(
-          'WORK STATION',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF85888D),
-          ),
-        ),
-        SizedBox(height: 1),
-        Text(
-          'Tube Cutting Work Station',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-            height: 1.15,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ----------------------------------------------------------
-  // SELECTION DETAILS
-  // ----------------------------------------------------------
-
-  Widget _buildSelectionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'SELECTION DETAILS',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: Color(0xFF85888D),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          height: 106,
-          width: 398,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFD5D5D5),
-              width: 1.2,
-            ),
-          ),
-          child: Column(
-            children: [
-              // Machine
-              SizedBox(
-                height: 50,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 23),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'Machine',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
-                      ),  
-                      const Spacer(),
-                      Text(
-                        widget.machineName,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF087EFF),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const Divider(
-                height: 1,
-                thickness: 1,
-                color: Color(0xFFDADADA),
-              ),
-
-              // Item List
-              InkWell(
-                onTap: _selectItem,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(17),
-                  bottomRight: Radius.circular(17),
-                ),
-                child: SizedBox(
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 23,
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Item List',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          selectedItem ?? 'Select Item',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w400,
-                            color: selectedItem == null
-                                ? const Color(0xFF929297)
-                                : const Color(0xFF087EFF),
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        const Icon(
-                          Icons.chevron_right_rounded,
-                          size: 29,
-                          color: Color(0xFF929297),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ----------------------------------------------------------
-  // ITEM SELECTION
-  // ----------------------------------------------------------
-
-  void _selectItem() {
-    final items = [
-      'Item 001',
-      'Item 002',
-      'Item 003',
-      'Item 004',
-    ];
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(22),
-        ),
+  Future<void> scanRejectionTray() async {
+    final String? scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const QrScannerScreen(),
       ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 15),
-              const Text(
-                'Select Item',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 10),
-              ...items.map(
-                (item) {
-                  return ListTile(
-                    title: Text(
-                      item,
-                      style: const TextStyle(
-                        fontSize: 17,
-                      ),
-                    ),
-                    trailing: selectedItem == item
-                        ? const Icon(
-                            Icons.check,
-                            color: Color(0xFF087EFF),
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        selectedItem = item;
-                      });
-
-                      Navigator.pop(context);
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-        );
-      },
     );
+    setState(() {
+      // binQrCode = 'A008';
+      binQrCode = scannedValue;
+      context.read<CreateItemCubit>().onValueChanged(rejectiontray: binQrCode);
+    });
   }
 
-  // ----------------------------------------------------------
-  // MACHINE COUNTER PHOTO
-  // ----------------------------------------------------------
+  Future<void> captureRejectionTrayImage() async {
+    final picker = ImagePicker();
+
+    final XFile? photo = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+
+    if (photo == null) return;
+
+    final directory = await getApplicationDocumentsDirectory();
+
+    final savedImage = await File(photo.path).copy(
+      '${directory.path}/rejection_tray_${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      rejectionTrayImagePath = savedImage.path;
+      context
+          .read<CreateItemCubit>()
+          .onValueChanged(rejectionImage: File(rejectionTrayImagePath ?? ''));
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Rejection tray image saved')),
+    );
+  }
 
   Widget _buildMachineCounterSection() {
     return Column(
@@ -409,16 +171,28 @@ class _TubeCuttingWorkStationScreenState
           children: [
             Expanded(
               child: _buildPhotoCard(
+                enable: !widget.inProgress,
                 title: 'Start Image',
-                imagePath: startImage,
+                imagePath: widget.childItem.startImage != null &&
+                        widget.childItem.startImage!.isNotEmpty
+                    ? widget.childItem.startImage
+                    : startImage,
+                isNetworkImage: widget.childItem.startImage != null &&
+                    widget.childItem.startImage!.isNotEmpty,
                 onTap: () => _captureImage(isStart: true),
               ),
             ),
             const SizedBox(width: 6),
             Expanded(
               child: _buildPhotoCard(
+                enable: widget.inProgress,
+                imagePath: widget.childItem.endImage != null &&
+                        widget.childItem.endImage!.isNotEmpty
+                    ? widget.childItem.endImage
+                    : endImage,
+                isNetworkImage: widget.childItem.endImage != null &&
+                    widget.childItem.endImage!.isNotEmpty,
                 title: 'End Image',
-                imagePath: endImage,
                 onTap: () => _captureImage(isStart: false),
               ),
             ),
@@ -432,9 +206,13 @@ class _TubeCuttingWorkStationScreenState
     required String title,
     required String? imagePath,
     required VoidCallback onTap,
+    required bool isNetworkImage,
+    required bool enable,
   }) {
+    const baseUrl = 'https://svserpnextuat.easycloud.co.in';
+    print('url..:$baseUrl$imagePath');
     return InkWell(
-      onTap: onTap,
+      onTap: enable ? onTap : null,
       borderRadius: BorderRadius.circular(17),
       child: Container(
         height: 140,
@@ -450,7 +228,7 @@ class _TubeCuttingWorkStationScreenState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (imagePath == null)
+            if (imagePath == null || imagePath.isEmpty)
               Container(
                 width: 40,
                 height: 40,
@@ -467,75 +245,72 @@ class _TubeCuttingWorkStationScreenState
             else
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  imagePath,
-                  width: 26,
-                  height: 26,
-                  fit: BoxFit.cover,
-                ),
+                child: isNetworkImage
+                    ? Image.network(
+                        '$baseUrl$imagePath',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.broken_image),
+                      )
+                    : Image.file(
+                        File(imagePath),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
               ),
-
-            // const SizedBox(height: 17),
-
             Text(
               title,
               style: const TextStyle(
                 fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF087EFF),
+                fontWeight: FontWeight.w500,
+                color: AppColors.blue,
               ),
             ),
-
             const SizedBox(height: 3),
-
-            const Text(
-              'Tap to capture',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF929297),
+            if (enable) ...[
+              Text(
+                'Tap to capture',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF929297),
+                ),
               ),
-            ),
+            ]
           ],
         ),
       ),
     );
   }
 
-  // ----------------------------------------------------------
-  // CAPTURE IMAGE
-  // ----------------------------------------------------------
-
   Future<void> _captureImage({
     required bool isStart,
   }) async {
-    // TODO:
-    //
-    // Use image_picker here:
-    //
-    // final picker = ImagePicker();
-    // final image = await picker.pickImage(
-    //   source: ImageSource.camera,
-    // );
-    //
-    // if (image != null) {
-    //   setState(() {
-    //     if (isStart) {
-    //       startImage = image.path;
-    //     } else {
-    //       endImage = image.path;
-    //     }
-    //   });
-    // }
-
-    _showMessage(
-      isStart ? 'Open camera for Start Image' : 'Open camera for End Image',
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.camera,
     );
-  }
 
-  // ----------------------------------------------------------
-  // ITEM COUNT
-  // ----------------------------------------------------------
+    if (image != null) {
+      setState(() {
+        if (isStart) {
+          startImage = image.path;
+          context
+              .read<CreateItemCubit>()
+              .onValueChanged(startImage: File(startImage ?? ''));
+        } else {
+          endImage = image.path;
+
+          context
+              .read<CreateItemCubit>()
+              .onValueChanged(endImage: File(endImage ?? ''));
+        }
+      });
+    }
+  }
 
   Widget _buildItemCount() {
     return Container(
@@ -549,6 +324,12 @@ class _TubeCuttingWorkStationScreenState
       ),
       child: TextField(
         controller: itemCountController,
+        onChanged: (value) {
+          print('value..:$value');
+          context.cubit<CreateItemCubit>().onValueChanged(
+                startReading: int.tryParse(value),
+              );
+        },
         keyboardType: TextInputType.number,
         style: const TextStyle(
           fontSize: 14,
@@ -563,7 +344,7 @@ class _TubeCuttingWorkStationScreenState
           hintText: 'Item Count',
           hintStyle: TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             color: Color(0xFF168FD2),
           ),
           suffixText: 'Pcs.',
@@ -577,226 +358,181 @@ class _TubeCuttingWorkStationScreenState
     );
   }
 
-  // ----------------------------------------------------------
-  // VERIFICATION
-  // ----------------------------------------------------------
-
-  Widget _buildVerificationSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'VERIFICATION',
+  Widget _buildItemCountDropdown() {
+    return DropdownButtonFormField<int>(
+      value: selectedItemCount,
+      isExpanded: true,
+      alignment: Alignment.centerLeft,
+      decoration: InputDecoration(
+        hintText: 'Select item count',
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Color(0xFF687A96),
+          ),
+        ),
+      ),
+      hint: const Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'Select item count',
           style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: Color(0xFF85888D),
+            fontSize: 14,
+            color: Color(0xFF777777),
           ),
         ),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: _scanBinQr,
-          borderRadius: BorderRadius.circular(17),
-          child: Container(
-            height: 76,
-            width: 398,
-            padding: const EdgeInsets.symmetric(horizontal: 23),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFD5D5D5),
-                width: 1.2,
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEAF4FF),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.qr_code_2_rounded,
-                    size: 38,
-                    color: Color(0xFF087EFF),
-                  ),
-                ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        binQrCode ?? 'Scan Bin QR Code',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      const Text(
-                        'Complete scan to verify and submit',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF929297),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  size: 30,
-                  color: Color(0xFF929297),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+      ),
+      items: [1, 2, 3, 4].map((count) {
+        return DropdownMenuItem<int>(
+          value: count,
+          child: Text('$count'),
+        );
+      }).toList(),
+      onChanged: (value) {
+        if (value == null) return;
+
+        setState(() {
+          selectedItemCount = value;
+        });
+
+        context.read<CreateItemCubit>().onValueChanged(
+              cutQty: value,
+            );
+      },
     );
   }
 
-  Future<void> _scanBinQr() async {
-    // Navigate to your QR scanner here.
-    //
-    final result = await Navigator.push<String>(
+  Widget _buildSubmitButton() {
+    startImage != null && endImage != null && binQrCode != null;
+
+    return SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: BlocConsumer<CreateItemCubit, CreateItemState>(
+          listener: (context, state) async {
+            if (state.error.isNotNull) {
+              await AppDialog.showErrorDialog(
+                context,
+                title: state.error!.title,
+                content: state.error!.error,
+                onTapDismiss: context.exit,
+              );
+              if (!context.mounted) return;
+              context.cubit<CreateItemCubit>().errorHandled();
+              return;
+            } else if (state.successMsg != null) {
+              AppDialog.showSuccessDialog(
+                context,
+                content: state.successMsg!,
+                onTapDismiss: context.exit,
+              ).then(
+                (_) {
+                  if (context.mounted) {
+                    print('successss...........');
+                    context
+                      ..cubit<WorkOrderList>().request(dartz.Tuple3(widget.title, '', 'Open'))
+                      ..cubit<CreateItemCubit>().errorHandled();
+                    setState(() {});
+
+                    Navigator.of(context).pop();
+                  }
+                },
+              );
+            }
+          },
+          builder: (context, state) {
+            return ElevatedButton(
+              onPressed: state.isLoading
+                  ? null
+                  : () {
+                      if (widget.inProgress) {
+                        _handleUpdateOperation();
+                      } else {
+                        context.read<CreateItemCubit>().save(widget.inProgress);
+                      }
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF687A96),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: state.isLoading
+                  ? const LoadingIndicator()
+                  : Text(
+                      widget.inProgress ? 'Complete Operation' : 'Start Operation',
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+            );
+          },
+        ));
+  }
+
+  Future<void> _handleUpdateOperation() async {
+    // Step 1: Open QR scanner.
+    // final scannedValue = 'A009';
+
+    final String? scannedValue = await Navigator.push<String>(
       context,
       MaterialPageRoute(
         builder: (_) => const QrScannerScreen(),
       ),
     );
-    //
-    // if (result != null) {
-    //   setState(() {
-    //     binQrCode = result;
-    //   });
-    // }
 
+    if (!mounted || scannedValue == null) return;
+
+    // Step 2: Store the scanned QR value.
     setState(() {
-      binQrCode = 'BIN-001';
+      binQrCode = scannedValue;
+      context.read<CreateItemCubit>().onValueChanged(outputTray: scannedValue);
     });
-  }
 
-  // ----------------------------------------------------------
-  // SUBMIT BUTTON
-  // ----------------------------------------------------------
-
-  Widget _buildSubmitButton() {
-    final bool enabled = selectedItem != null &&
-        itemCountController.text.isNotEmpty &&
-        startImage != null &&
-        endImage != null &&
-        binQrCode != null;
-
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: _submitOperation,
-        style: ElevatedButton.styleFrom(
-          backgroundColor:
-              enabled ? const Color(0xFF687A96) : const Color(0xFF687A96),
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+    // Step 3: Show success dialog with Submit button.
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons.check_circle,
+            color: Colors.green,
+            size: 48,
           ),
-        ),
-        child: const Text(
-          'Submit Operation',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
+          title: const Text('QR Scan Successful'),
+          content: Text(
+            'QR code scanned successfully.\n\n'
+            'Scanned ID: $scannedValue',
           ),
-        ),
-      ),
-    );
-  }
-
-  // ----------------------------------------------------------
-  // BOTTOM NAVIGATION
-  // ----------------------------------------------------------
-
-  // Widget _buildBottomNavigation() {
-  //   return Container(
-  //     height: 100,
-  //     decoration: const BoxDecoration(
-  //       color: Colors.white,
-  //       border: Border(
-  //         top: BorderSide(
-  //           color: Color(0xFFE1E5EB),
-  //           width: 1,
-  //         ),
-  //       ),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           child: _buildBottomItem(
-  //             icon: Icons.home_rounded,
-  //             label: 'Home',
-  //             index: 0,
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: _buildBottomItem(
-  //             icon: Icons.dashboard_rounded,
-  //             label: 'Dashboard',
-  //             index: 1,
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: _buildBottomItem(
-  //             icon: Icons.account_circle_rounded,
-  //             label: 'Profile',
-  //             index: 2,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  Widget _buildBottomItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    final bool selected = selectedBottomIndex == index;
-
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedBottomIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 30,
-            color: selected ? const Color(0xFF168FD2) : const Color(0xFF91A0B8),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
-              color:
-                  selected ? const Color(0xFF168FD2) : const Color(0xFF687A96),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Cancel'),
             ),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                context.read<CreateItemCubit>().save(widget.inProgress);
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

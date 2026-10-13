@@ -5,19 +5,19 @@ abstract class _AppRoutePaths {
   static const initial = '/';
   static const login = '/login';
   static const home = '/home';
-  static const scanMachine = '/home/scanMachine';
 
+  static const operations = '/home/operations';
 
-
-
-
-
-
-
-
+  static const gateEntry = '/home/gateentry';
   static const newGateEntry = '/home/gateentry/newGateEntry';
+  static const newGateEntryPreview = '/home/gateentry/newGateEntry/preview';
   static const gateExit = '/home/gateexit';
   static const newGateExit = '/home/gateexit/newGateExit';
+  static const newGateExitPreview = '/home/gateexit/newGateExit/preview';
+  static const tcList = '/home/operations/tcList';
+  static const scanMachine = '/home/operations/tcList/scanMachine';
+  static const workStation = '/home/operations/tcList/scanMachine/workStation';
+
   static const incidentRegister = '/home/incidentRegister';
   static const newIncidentReg = '/home/incidentRegister/newIncReg';
   static const inviteVisitor = '/home/inviteVisitor';
@@ -31,20 +31,27 @@ abstract class _AppRoutePaths {
   static const inWardGatePass = '/home/inWardGatePass';
   static const newInWardGatePass = '/home/inWardGatePass/newInWardGatePass';
   static const emptyVehicle = '/home/emptyVehicle';
-  static const newEmptyVehicle =  '/home/emptyVehicle/newEmptyVehicle';
+  static const newEmptyVehicle = '/home/emptyVehicle/newEmptyVehicle';
   static const account = '/account';
   static const dashboard = '/dashBoard';
-
 }
 
 enum AppRoute {
   initial(_AppRoutePaths.initial),
   login(_AppRoutePaths.login),
   home(_AppRoutePaths.home),
-  scanMachine(_AppRoutePaths.scanMachine),
+
+  gateEntry(_AppRoutePaths.gateEntry),
   newGateEntry(_AppRoutePaths.newGateEntry),
+  newGateEntryPreview(_AppRoutePaths.newGateEntryPreview),
   gateExit(_AppRoutePaths.gateExit),
   newGateExit(_AppRoutePaths.newGateExit),
+  newGateExitPreview(_AppRoutePaths.newGateExitPreview),
+
+  operations(_AppRoutePaths.operations),
+  tcList(_AppRoutePaths.tcList),
+  scanMachine(_AppRoutePaths.scanMachine),
+  workStation(_AppRoutePaths.workStation),
   incidentRegister(_AppRoutePaths.incidentRegister),
   newIncidentReg(_AppRoutePaths.newIncidentReg),
   inviteVisitor(_AppRoutePaths.inviteVisitor),
@@ -62,10 +69,8 @@ enum AppRoute {
   account(_AppRoutePaths.account),
   dashboard(_AppRoutePaths.dashboard);
 
-
   const AppRoute(this.path);
   final String path;
-
 }
 
 extension AppRouteNavigation on AppRoute {

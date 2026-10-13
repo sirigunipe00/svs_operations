@@ -1,75 +1,72 @@
-import 'package:svs_operations/app/widgets/statusmenu_widget.dart';
-import 'package:svs_operations/core/core.dart';
-import 'package:svs_operations/core/model/page_view_filters_cubit.dart';
-import 'package:svs_operations/styles/app_colors.dart';
-import 'package:svs_operations/styles/app_text_styles.dart';
-import 'package:svs_operations/widgets/app_spacer.dart';
-import 'package:svs_operations/widgets/inputs/simple_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:svs_operations/app/widgets/statusmenu_widget.dart';
+import 'package:svs_operations/core/core.dart';
+import 'package:svs_operations/core/cubit/base/filters_cubit.dart';
+import 'package:svs_operations/styles/app_colors.dart';
+import 'package:svs_operations/styles/app_text_styles.dart';
+import 'package:svs_operations/widgets/inputs/simple_search_bar.dart';
+import 'package:svs_operations/widgets/widgets.dart';
 
 enum PageMode2 {
   gateentry('Gate Entry'),
   gateexit('Gate Exit'),
-  incidentregister('Incident Register'),
-  inviteVisitor('Invite Visitor'),
-  visitorInOut('Visitor In Out Register'),
-  createVisit('Create Visit'),
-  outWardGatePass('Outward Gate Pass'),
-  inWardGatePass('Inward Gate Pass'),
-  emptyVehicle('Empty Vehicle Tracking');
+  gateregistration('Visitor Registration'),
+  dipatchGaylord('Dispatch Gaylord'),
+  poapprovallist('PO Approval List'),
+  dashbaords('Dashbaords');
 
   final String name;
   const PageMode2(this.name);
 }
 
-class AppPageView2<T extends PageViewFiltersCubit> extends StatelessWidget {
+class AppPageView2<T extends FiltersCubit> extends StatelessWidget {
   const AppPageView2({
     super.key,
-    required this.child,
     required this.mode,
-    required this.onNew,
-    required this.backgroundColor,
+    this.title,
     required this.scaffoldBg,
+    required this.backgroundColor,
+    required this.child,
+    this.status = const [],
+    this.onUpdateQuery,
+    this.onUpdateStatus, 
+    this.hideFAB = false,
+    this.onNew, 
   });
 
+  final String? title;
   final Widget child;
-  final PageMode2 mode;
-  final VoidCallback onNew;
   final Color backgroundColor;
   final String scaffoldBg;
+  final PageMode2 mode;
+  final VoidCallback? onNew;
+  final List<String> status;
+  final ValueChanged<String>? onUpdateStatus;
+  final ValueChanged<String?>? onUpdateQuery;
 
-  String get hintText => switch (mode) {
-    PageMode2.gateentry => 'Search Gate-Entry ID',
-    PageMode2.gateexit => 'Search Gate-Exit ID',
-    PageMode2.incidentregister => 'Search Incident Register ID',
-    PageMode2.inviteVisitor => 'Search Invite Visitor ID',
-    PageMode2.visitorInOut => 'Search Visitor In Out',
-    PageMode2.createVisit => 'Search Visit ID',
-    PageMode2.outWardGatePass => 'Search Gate Pass ID',
-    PageMode2.inWardGatePass => 'Search Gate Pass ID',
-
-    PageMode2.emptyVehicle => 'Search Empty Vehicle ID',
-  };
-
-  Color get bgColor => switch (mode) {
-    PageMode2.gateentry => AppColors.marigoldDDust,
-    PageMode2.gateexit => AppColors.shyMoment,
-    PageMode2.incidentregister => const Color(0xFF808080),
-    PageMode2.inviteVisitor => AppColors.invite,
-    PageMode2.visitorInOut => AppColors.registration,
-    PageMode2.createVisit => AppColors.invite,
-    PageMode2.outWardGatePass => AppColors.shyMoment,
-    PageMode2.inWardGatePass => AppColors.marigoldDDust,
-    PageMode2.emptyVehicle => AppColors.registration,
-  };
+  final bool hideFAB;
 
   @override
   Widget build(BuildContext context) {
+    T? cubit;
+    try {
+      cubit = context.read<T>();
+    } catch (_) {
+      
+    }
+   
+    final hintText = switch (mode) {
+      PageMode2.gateentry => 'Search Gate Entry - ID',
+      PageMode2.gateexit => 'Search Gate Exit - ID',
+      PageMode2.gateregistration => 'Search Reg- ID',
+      PageMode2.dipatchGaylord => 'Serach Delivery Note - ID',
+      PageMode2.poapprovallist => 'Search PO - ID',
+      PageMode2.dashbaords => '',
+    };
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: bgColor,
+      backgroundColor: backgroundColor,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -80,51 +77,60 @@ class AppPageView2<T extends PageViewFiltersCubit> extends StatelessWidget {
           ),
           Positioned(
             left: 18,
-            top: kToolbarHeight - 8,
+            top: kToolbarHeight,
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const _GoBackWidget(),
+                  const GoBackWidget(),
                   AppSpacer.p8(),
-                  Text(mode.name,
-                      style: AppTextStyles.titleLarge(context)
-                          .copyWith(color: AppColors.black, fontSize: 18)),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: kToolbarHeight + 32,
-            left: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: SimpleSearchBar(
-                      initial: context.read<T>().state.query,
-                      hintText: hintText,
-                      onCancel: context.cubit<T>().onSearch,
-                      onSearch: context.cubit<T>().onSearch,
+                  Text(
+                    title ?? mode.name,
+                    style: AppTextStyles.titleLarge(context).copyWith(
+                      color: AppColors.black,
+                      fontSize: 18,
                     ),
                   ),
-                  AppSpacer.p8(),
-                  Expanded(
-                    flex: 1,
-                    child: StatusMenuWidget(
-                      defaultSel: context.read<T>().state.status,
-                      items: mode == PageMode2.createVisit ?  ['Draft','Submitted','Pending', 'Approved', 'Rejected'] :
-                      const ['Draft', 'Submitted'],
-                      onChange: context.cubit<T>().onChangeStatus,
-                    ),
-                  )
                 ],
               ),
             ),
           ),
+          if (mode != PageMode2.dashbaords) ...[
+            Positioned(
+              top: kToolbarHeight + 32,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    if(onUpdateQuery != null)...[
+                      Expanded(
+                        child: SimpleSearchBar(
+                          inputType: TextInputType.number,
+                          initial: cubit?.state.query,
+                          hintText: hintText,
+                          onCancel: () => onUpdateQuery!(null),
+                          onSearch: onUpdateQuery!,
+                        ),
+                      ),
+                    ],
+                    AppSpacer.p8(),
+                    if (status.isNotEmpty && onUpdateStatus != null)...[
+                      Expanded(
+                        flex: 1,
+                        child: StatusMenuWidget(
+                          defaultStatus: cubit?.state.status,
+                          items: status,
+                          onChange: onUpdateStatus!,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
           Positioned.fill(
             top: kToolbarHeight + 100,
             child: Container(
@@ -132,12 +138,12 @@ class AppPageView2<T extends PageViewFiltersCubit> extends StatelessWidget {
               height: context.sizeOfHeight,
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.pageViewColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(32.0),
                   topRight: Radius.circular(32.0),
                 ),
-                border: Border.all(color: AppColors.white),
+                border: Border.all(color: AppColors.pageViewColor),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.black.withOpacity(0.5),
@@ -151,39 +157,24 @@ class AppPageView2<T extends PageViewFiltersCubit> extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        extendedPadding: const EdgeInsets.symmetric(
-          horizontal: 28,
-        ),
-        onPressed: onNew,
-        backgroundColor: backgroundColor,
-        icon: const Icon(
-          Icons.add,
-          color: AppColors.white,
-        ),
-        label: Text(
-          "New",
-          style: AppTextStyles.titleLarge(context)
-              .copyWith(color: AppColors.white, fontSize: 22),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    );
-  }
-}
-
-class _GoBackWidget extends StatelessWidget {
-  const _GoBackWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: context.pop,
-      child: const CircleAvatar(
-        radius: 16,
-        backgroundColor: AppColors.black,
-        child: Icon(Icons.arrow_back, color: AppColors.white, size: 22),
-      ),
+      floatingActionButton: hideFAB.isTrue
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: onNew,
+              backgroundColor: mode == PageMode2.gateregistration
+                  ? AppColors.registration
+                  : backgroundColor,
+              extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              elevation: 1,
+              icon: const Icon(Icons.add, color: AppColors.white),
+              label: Text(
+                'New',
+                style: AppTextStyles.titleLarge(context),
+              ),
+            ),
     );
   }
 }

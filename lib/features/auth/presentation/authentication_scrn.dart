@@ -43,9 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-    debugPrint('Email: $email');
-    debugPrint('Password: $password');
-    debugPrint('Remember Me: $rememberMe');
   }
 
   void loginWithOtp() {
@@ -95,9 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 50),
               _buildLoginCard(),
-              // const SizedBox(height: 25),
-
-              // const Spacer(),
               const SizedBox(height: 40),
               _buildFooter(),
 
@@ -316,7 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
     TextInputType? keyboardType,
   }) {
     return SizedBox(
-      height: 40,
+      // height: 40,
       child: TextField(
         controller: controller,
         obscureText: obscureText,

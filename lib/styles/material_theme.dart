@@ -13,7 +13,7 @@ class AppMaterialTheme {
         fontFamily: 'Manrope',
         textTheme: GoogleFonts.manropeTextTheme(),
         colorScheme: scheme,
-        cardTheme: CardThemeData(
+        cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
             side: const BorderSide(),

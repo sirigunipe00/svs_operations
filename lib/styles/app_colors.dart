@@ -6,6 +6,7 @@ abstract class AppColors {
   static const haintBlue = Color(0xFF2D9AFF);
   static const vibrantBlue = Color(0xFF1E90FF);
   static const white = Color(0xFFFFFFFF);
+  static const blue = Color(0xFF1687CC);
   static const black = Colors.black;
   static const liteBlack = Color(0xFF263238);
   static const grey = Colors.grey;

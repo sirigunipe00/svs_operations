@@ -1,17 +1,17 @@
-import 'package:svs_operations/core/ext/context_ext.dart';
-import 'package:svs_operations/styles/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:svs_operations/core/core.dart';
+import 'package:svs_operations/styles/app_colors.dart';
 
 class StatusMenuWidget extends StatefulWidget {
   const StatusMenuWidget({
     super.key,
+    this.defaultStatus,
     required this.onChange,
     required this.items,
-    this.defaultSel,
   });
 
+  final String? defaultStatus;
   final List<String> items;
-  final String? defaultSel;
   final void Function(String status) onChange;
   @override
   State<StatusMenuWidget> createState() => _StatusMenuWidgetState();
@@ -19,10 +19,11 @@ class StatusMenuWidget extends StatefulWidget {
 
 class _StatusMenuWidgetState extends State<StatusMenuWidget> {
   String? _selectedDuration;
+
   @override
   void initState() {
     super.initState();
-    _selectedDuration = widget.defaultSel ?? widget.items.first;
+    _selectedDuration = widget.defaultStatus ?? widget.items.firstOrNull;
   }
 
   @override
@@ -53,6 +54,7 @@ class _StatusMenuWidgetState extends State<StatusMenuWidget> {
         );
       }).toList(),
       onChanged: (String? value) {
+        if (value == _selectedDuration) return;
         setState(() {
           _selectedDuration = value;
         });

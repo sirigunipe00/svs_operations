@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -6,14 +7,12 @@ import 'package:svs_operations/core/core.dart';
 import 'package:svs_operations/features/auth/data/auth_repo.dart';
 import 'package:svs_operations/features/auth/model/logged_in_user.dart';
 
-
-
 @LazySingleton(as: AuthRepo)
 class AuthRepoImpl extends BaseApiRepository implements AuthRepo {
   const AuthRepoImpl(super.client, this.storage);
 
   final KeyValueStorage storage;
-  
+
   @override
   Future<bool> isLoggedIn() async {
     try {
@@ -31,13 +30,28 @@ class AuthRepoImpl extends BaseApiRepository implements AuthRepo {
       final requestConfig = RequestConfig(
         url: Urls.login,
         parser: (res) {
-          final data = res['message']['data'] as List<dynamic>;
-          return LoggedInUser.fromJson(data.first);
+          log('ressss..:$res');
+          // final data = res['message']['data'] as List<dynamic>;
+          // return LoggedInUser.fromJson(data.first);
+
+          final dynamic data = res['message']['data'];
+
+          if (data is Map<String, dynamic>) {
+            return LoggedInUser.fromJson(data);
+          } else if (data is List && data.isNotEmpty) {
+            return LoggedInUser.fromJson(
+              Map<String, dynamic>.from(data.first as Map),
+            );
+          } else {
+            throw Exception('Invalid user data received from API');
+          }
         },
-        body: jsonEncode({'usr' : username, 'pwd' : pswd}),
+        body: jsonEncode({'usr': username, 'pwd': pswd}),
       );
 
       final response = await post(requestConfig, includeAuthHeader: false);
+
+      print('response..:$response');
 
       return response.processAsync((r) async {
         if (r.data.isNull) {
@@ -91,5 +105,4 @@ class AuthRepoImpl extends BaseApiRepository implements AuthRepo {
       return left(const Failure(error: 'Could not sign out'));
     }
   }
-
 }
