@@ -42,12 +42,12 @@ class PanaraConfirmDialogWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                AppIcons.info.path,
-                width: 84,
-                height: 84,
-                color: AppColors.vibrantBlue,
-              ),
+              // Image.asset(
+              //   AppIcons.info.path,
+              //   width: 84,
+              //   height: 84,
+              //   color: AppColors.vibrantBlue,
+              // ),
               if (title != null)
                 Text(
                   title ?? '',

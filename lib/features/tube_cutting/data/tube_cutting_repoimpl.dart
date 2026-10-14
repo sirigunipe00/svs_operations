@@ -30,8 +30,8 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           'limit_page_length': 'None',
           'filters': [
             ['operation', '=', operation],
-            
-            ['status', '=', status]
+            if (status.isNotEmpty && status.toLowerCase() != 'all')
+              ['status', '=', status],
           ],
           if (query != null && query.isNotEmpty)
             'or_filters': [

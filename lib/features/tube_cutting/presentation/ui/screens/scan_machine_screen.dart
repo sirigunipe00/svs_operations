@@ -17,9 +17,10 @@ import 'package:svs_operations/widgets/loading_indicator.dart';
 
 class TubeCuttingScreen extends StatefulWidget {
   final String title;
+  final String selectedFilter;
   final WorkOrderItem workOrder;
   const TubeCuttingScreen(
-      {super.key, required this.title, required this.workOrder});
+      {super.key, required this.title, required this.workOrder, required this.selectedFilter});
 
   @override
   State<TubeCuttingScreen> createState() => _TubeCuttingScreenState();
@@ -113,6 +114,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           create: (context) =>
                               TubeCuttingBlocProvider.get().workOrderList(),
                           child: TubeCuttingWorkStationScreen(
+                            selectedfilter: widget.selectedFilter,
                             title: widget.title,
                             operationStatus: data,
                             workOrder: widget.workOrder,
@@ -127,6 +129,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           create: (context) =>
                               TubeCuttingBlocProvider.get().workOrderList(),
                           child: TubeCuttingWorkStationScreen(
+                            selectedfilter: widget.selectedFilter,
                             title: widget.title,
                             operationStatus: data,
                             workOrder: widget.workOrder,

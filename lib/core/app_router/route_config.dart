@@ -192,7 +192,7 @@ class AppRouteConfig {
                                     create: (context) =>
                                         TubeCuttingBlocProvider.get()
                                             .workOrderList()
-                                          ..request(Tuple3(operation, '', 'Open')),
+                                          ..request(Tuple3(operation, '', 'All')),
                                     child: WorkOrderListScreen(
                                       operation: operation,
                                     ),
@@ -207,6 +207,7 @@ class AppRouteConfig {
                                         final name = data['name'];
                                         final workorder =
                                             data['order'] as WorkOrderItem;
+                                        final selectedfilter = data['filter'];
                                         return MultiBlocProvider(
                                           providers: [
                                             BlocProvider(
@@ -226,6 +227,7 @@ class AppRouteConfig {
                                                     $sl.get<CreateItemCubit>()),
                                           ],
                                           child: TubeCuttingScreen(
+                                            selectedFilter: selectedfilter,
                                             title: name,
                                             workOrder: workorder,
                                           ),

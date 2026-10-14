@@ -26,6 +26,7 @@ class TubeCuttingWorkStationScreen extends StatefulWidget {
   final String scanTray;
   final ChildStatusModel childItem;
   final bool inProgress;
+  final String selectedfilter;
 
   const TubeCuttingWorkStationScreen({
     super.key,
@@ -35,7 +36,7 @@ class TubeCuttingWorkStationScreen extends StatefulWidget {
     required this.scanMachine,
     required this.scanTray,
     required this.childItem,
-    required this.inProgress,
+    required this.inProgress, required this.selectedfilter,
   });
 
   @override
@@ -49,6 +50,7 @@ class _TubeCuttingWorkStationScreenState
   String? startImage;
   String? endImage;
   String? binQrCode;
+  String? outputtray;
   String? rejectionTrayImagePath;
 
   final TextEditingController itemCountController = TextEditingController();
@@ -111,6 +113,7 @@ class _TubeCuttingWorkStationScreenState
   }
 
   Future<void> scanRejectionTray() async {
+    // final String? scannedValue = 'A008';
     final String? scannedValue = await Navigator.push<String>(
       context,
       MaterialPageRoute(
@@ -438,9 +441,11 @@ class _TubeCuttingWorkStationScreenState
                   if (context.mounted) {
                     print('successss...........');
                     context
-                      ..cubit<WorkOrderList>().request(dartz.Tuple3(widget.title, '', 'Open'))
+                      ..cubit<WorkOrderList>().request(dartz.Tuple3(widget.title, '', 'All'))
                       ..cubit<CreateItemCubit>().errorHandled();
-                    setState(() {});
+                    setState(() {
+                      print('SETSTAAE..........');
+                    });
 
                     Navigator.of(context).pop();
                   }
@@ -460,7 +465,7 @@ class _TubeCuttingWorkStationScreenState
                       }
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF687A96),
+                backgroundColor: AppColors.blue,
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -496,8 +501,8 @@ class _TubeCuttingWorkStationScreenState
 
     // Step 2: Store the scanned QR value.
     setState(() {
-      binQrCode = scannedValue;
-      context.read<CreateItemCubit>().onValueChanged(outputTray: scannedValue);
+      outputtray = scannedValue;
+      context.read<CreateItemCubit>().onValueChanged(outputTray: outputtray);
     });
 
     // Step 3: Show success dialog with Submit button.
