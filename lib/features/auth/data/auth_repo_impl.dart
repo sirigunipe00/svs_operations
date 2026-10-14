@@ -30,7 +30,6 @@ class AuthRepoImpl extends BaseApiRepository implements AuthRepo {
       final requestConfig = RequestConfig(
         url: Urls.login,
         parser: (res) {
-          log('ressss..:$res');
           // final data = res['message']['data'] as List<dynamic>;
           // return LoggedInUser.fromJson(data.first);
 
@@ -50,8 +49,6 @@ class AuthRepoImpl extends BaseApiRepository implements AuthRepo {
       );
 
       final response = await post(requestConfig, includeAuthHeader: false);
-
-      print('response..:$response');
 
       return response.processAsync((r) async {
         if (r.data.isNull) {

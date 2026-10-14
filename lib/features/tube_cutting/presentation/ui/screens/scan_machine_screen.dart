@@ -80,11 +80,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanMachine() async {
-    // const scannedValue = '4 Tube Cutting Machine - 01';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    const scannedValue = '4 Tube Cutting Machine - 01';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
@@ -95,11 +95,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanInputTray() async {
-    // final scannedValue = 'A010';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    final scannedValue = 'A010';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
@@ -110,11 +110,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanOutputTray() async {
-    // const scannedValue = 'A041';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    const scannedValue = 'A041';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
@@ -125,19 +125,17 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanRejectionTray() async {
-    // const scannedValue = 'A019';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    const scannedValue = 'A019';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
         binQrCode = scannedValue;
       });
-      context
-          .read<CreateItemCubit>()
-          .onValueChanged(rejectiontray: binQrCode);
+      context.read<CreateItemCubit>().onValueChanged(rejectiontray: binQrCode);
     }
   }
 
@@ -241,7 +239,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               success: (data) {
                 setState(() {
                   childStatusList = data;
-                  log('childStatusList: $childStatusList');
                 });
                 final inProgressChild = data
                     .where((item) => item.status == 'In Progress')
@@ -276,9 +273,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                 child: AppErrorWidget(
                   error: failure.error,
                   onRefresh: () async {
-                    context
-                        .cubit<OperationStatus>()
-                        .request(widget.title);
+                    context.cubit<OperationStatus>().request(widget.title);
                   },
                 ),
               ),
@@ -288,6 +283,8 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                   .where((item) => item.status == 'In Progress')
                   .firstOrNull;
               final bool inProgress = (childItem != null);
+              log('childItem ...:$childItem');
+              log('IN PROGRESS...:$inProgress');
 
               return Scaffold(
                 backgroundColor: const Color(0xFFEDF2F9),
@@ -435,7 +432,9 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           ),
                         ),
                         child: Text(
-                          widget.workOrder.workOrder.toUpperCase().startsWith('WO')
+                          widget.workOrder.workOrder
+                                  .toUpperCase()
+                                  .startsWith('WO')
                               ? widget.workOrder.workOrder
                               : 'WO-${widget.workOrder.workOrder}',
                           style: const TextStyle(
@@ -704,14 +703,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           ),
           const SizedBox(height: 14),
           // CUT QUANTITY
-          if(widget.title == 'Tube Cutting')...[
+          if (widget.title == 'Tube Cutting') ...[
             _buildFieldLabel('CUT QUANTITY'),
-          const SizedBox(height: 6),
-          
+            const SizedBox(height: 6),
             _buildItemCountDropdown(),
-
           ]
-          
         ],
       ),
     );
@@ -1030,9 +1026,8 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             color: hasValue ? const Color(0xFFF0FDF4) : const Color(0xFFF8FAFC),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: hasValue
-                  ? const Color(0xFF22C55E)
-                  : const Color(0xFFE2E8F0),
+              color:
+                  hasValue ? const Color(0xFF22C55E) : const Color(0xFFE2E8F0),
               width: 1.2,
             ),
           ),
@@ -1134,8 +1129,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     required VoidCallback onTap,
   }) {
     final hasLocal = imagePath != null && imagePath.isNotEmpty;
-    final hasNetwork =
-        networkImagePath != null && networkImagePath.isNotEmpty;
+    final hasNetwork = networkImagePath != null && networkImagePath.isNotEmpty;
     final hasImage = hasLocal || hasNetwork;
 
     return DashedBorderBox(

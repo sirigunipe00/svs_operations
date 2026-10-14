@@ -306,7 +306,6 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
   }
 
   Widget _buildCheckbox(BuildContext context, bool isEnabled) {
-    print('isEnabled..:$isEnabled');
     return BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
       builder: (context, state) {
         return CheckboxListTile(

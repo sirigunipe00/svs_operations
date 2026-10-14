@@ -113,13 +113,13 @@ class _TubeCuttingWorkStationScreenState
   }
 
   Future<void> scanRejectionTray() async {
-    // final String? scannedValue = 'A008';
-    final String? scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const QrScannerScreen(),
-      ),
-    );
+    final String? scannedValue = 'A008';
+    // final String? scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => const QrScannerScreen(),
+    //   ),
+    // );
     setState(() {
       // binQrCode = 'A008';
       binQrCode = scannedValue;
@@ -213,7 +213,6 @@ class _TubeCuttingWorkStationScreenState
     required bool enable,
   }) {
     const baseUrl = 'https://svserpnextuat.easycloud.co.in';
-    print('url..:$baseUrl$imagePath');
     return InkWell(
       onTap: enable ? onTap : null,
       borderRadius: BorderRadius.circular(17),
@@ -328,7 +327,6 @@ class _TubeCuttingWorkStationScreenState
       child: TextField(
         controller: itemCountController,
         onChanged: (value) {
-          print('value..:$value');
           context.cubit<CreateItemCubit>().onValueChanged(
                 startReading: int.tryParse(value),
               );
@@ -439,12 +437,10 @@ class _TubeCuttingWorkStationScreenState
               ).then(
                 (_) {
                   if (context.mounted) {
-                    print('successss...........');
                     context
                       ..cubit<WorkOrderList>().request(dartz.Tuple3(widget.title, '', 'All'))
                       ..cubit<CreateItemCubit>().errorHandled();
                     setState(() {
-                      print('SETSTAAE..........');
                     });
 
                     Navigator.of(context).pop();
@@ -488,14 +484,14 @@ class _TubeCuttingWorkStationScreenState
 
   Future<void> _handleUpdateOperation() async {
     // Step 1: Open QR scanner.
-    // final scannedValue = 'A009';
+    final scannedValue = 'A009';
 
-    final String? scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const QrScannerScreen(),
-      ),
-    );
+    // final String? scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => const QrScannerScreen(),
+    //   ),
+    // );
 
     if (!mounted || scannedValue == null) return;
 

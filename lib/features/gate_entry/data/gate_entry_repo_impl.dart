@@ -119,8 +119,6 @@ class GateEntryRepoImpl extends BaseApiRepository implements GateEntryRepo {
       body: jsonEncode(form.toJson()),
     );
 
-    log('config ...:$config');
-
     final response = await post(config);
     return response.process((docNo) {
       final msgWithDocNo =

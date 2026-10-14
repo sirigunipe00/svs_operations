@@ -21,7 +21,6 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
   AsyncValueOf<List<WorkOrderItem>> workOrderlist(
       String operation, String? query, String status) async {
     return await executeSafely(() async {
-      print('config..:$query');
       final config = RequestConfig(
         url: Urls.jobCard,
         reqParams: {
@@ -44,8 +43,6 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           return data.map((e) => WorkOrderItem.fromJson(e)).toList();
         },
       );
-
-      log('config..:$config');
 
       final response = await get(config);
       return response.process((r) => right(r.data!));
@@ -148,10 +145,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
         },
       );
 
-      print('config...:$config');
-
       final response = await post(config);
-      print('response..:$response');
       return response.process((r) => right(r.data!));
     });
   }
@@ -178,10 +172,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
         },
       );
 
-      print('config...:$config');
-
       final response = await post(config);
-      print('response..:$response');
       return response.process((r) => right(r.data!));
     });
   }

@@ -1,7 +1,5 @@
 abstract class BooleanUtls {
   static bool fromInt(dynamic value) {
-    print('val: $value');
-    print('type: ${value.runtimeType}');
 
     if (value == 0 || value == '0') {
       return false;

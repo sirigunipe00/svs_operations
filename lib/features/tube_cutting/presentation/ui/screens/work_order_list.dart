@@ -380,7 +380,6 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
     required String filterKey,
   }) {
     final isSelected = selectedFilter.toLowerCase() == filterKey.toLowerCase();
-    print('_buildStatisticColumn count...:$count');
 
     return Material(
       color: Colors.transparent,
