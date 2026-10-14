@@ -636,7 +636,9 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                   'order': order,
                   'filter': selectedFilter,
                 },
-              );
+              ).then((_) {
+                if (mounted) _fetchWorkOrders();
+              });
             }
           },
           child: Padding(
@@ -683,7 +685,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                           Text(
                             order.productionItem.isNotEmpty
                                 ? order.productionItem
-                                : order.name,
+                                : '--',
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
