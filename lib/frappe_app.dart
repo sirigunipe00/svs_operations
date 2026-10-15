@@ -47,7 +47,7 @@ class AparnaApp extends StatelessWidget {
         },
         builder: (_, state) {
           return MaterialApp.router(
-            title: "Aparna",
+            title: "SVS Operations",
             theme: AppMaterialTheme.lightTheme,
             darkTheme: AppMaterialTheme.lightTheme,
             routerConfig: AppRouteConfig.router,

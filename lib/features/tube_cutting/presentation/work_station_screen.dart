@@ -113,13 +113,13 @@ class _TubeCuttingWorkStationScreenState
   }
 
   Future<void> scanRejectionTray() async {
-    final String? scannedValue = 'A008';
-    // final String? scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (_) => const QrScannerScreen(),
-    //   ),
-    // );
+    // final String? scannedValue = 'A008';
+    final String? scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const QrScannerScreen(),
+      ),
+    );
     setState(() {
       // binQrCode = 'A008';
       binQrCode = scannedValue;
@@ -484,14 +484,14 @@ class _TubeCuttingWorkStationScreenState
 
   Future<void> _handleUpdateOperation() async {
     // Step 1: Open QR scanner.
-    final scannedValue = 'A009';
+    // final scannedValue = 'A009';
 
-    // final String? scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (_) => const QrScannerScreen(),
-    //   ),
-    // );
+    final String? scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const QrScannerScreen(),
+      ),
+    );
 
     if (!mounted || scannedValue == null) return;
 

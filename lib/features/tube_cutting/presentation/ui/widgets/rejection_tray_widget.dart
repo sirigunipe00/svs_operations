@@ -44,7 +44,7 @@ class _RejectionTrayWidgetState extends State<RejectionTrayWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'ADD ANY REJECTED QTY.',
+            'ADD ANY SCRAP QTY.',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
@@ -71,7 +71,7 @@ class _RejectionTrayWidgetState extends State<RejectionTrayWidget> {
                       Expanded(
                         child: _buildInfoCard(
                           value: widget.trayId,
-                          label: 'Rejection Tray ID',
+                          label: 'Scrap Tray ID',
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -118,7 +118,7 @@ class _RejectionTrayWidgetState extends State<RejectionTrayWidget> {
                       SizedBox(width: 5),
                       Flexible(
                         child: Text(
-                          'Scan Rejection Tray ID',
+                          'Scan Scrap Tray ID',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -196,7 +196,7 @@ class _RejectionTrayWidgetState extends State<RejectionTrayWidget> {
                           ),
                           SizedBox(height: 6),
                           Text(
-                            'Image of Rejection Tray',
+                            'Image of Scrap Tray',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: RejectionTrayWidget._subTextColor,
@@ -307,7 +307,7 @@ class _RejectionTrayWidgetState extends State<RejectionTrayWidget> {
               ),
             ),
             const Text(
-              'Rejected Quantity',
+              'Scrap Quantity',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,

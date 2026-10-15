@@ -11,6 +11,7 @@ import 'package:svs_operations/features/tube_cutting/model/work_order_model.dart
 import 'package:svs_operations/features/tube_cutting/presentation/bloc/bloc_provider.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/bloc/create_item_cubit.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/ui/screens/qr_scanner_screen.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/counter_reading_widget.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/dashed_border_box.dart';
 import 'package:svs_operations/widgets/app_error_widget.dart';
 import 'package:svs_operations/widgets/dialogs/app_dialogs.dart';
@@ -80,11 +81,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanMachine() async {
-    const scannedValue = '4 Tube Cutting Machine - 01';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // const scannedValue = '4 Tube Cutting Machine - 01';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -95,11 +96,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanInputTray() async {
-    final scannedValue = 'A010';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // final scannedValue = 'A010';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -110,11 +111,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanOutputTray() async {
-    const scannedValue = 'A041';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // const scannedValue = 'A007';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -125,11 +126,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanRejectionTray() async {
-    const scannedValue = 'A019';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // const scannedValue = 'A019';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -140,24 +141,47 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _capturePhoto({required bool isStart}) async {
+    final CounterReaderService counterReaderService = CounterReaderService();
+
     final picker = ImagePicker();
     final photo = await picker.pickImage(
-      source: ImageSource.camera,
+      source: ImageSource.gallery,
       imageQuality: 80,
     );
 
     if (photo != null) {
-      setState(() {
+      setState(() async {
         if (isStart) {
           startImage = photo.path;
           context
               .read<CreateItemCubit>()
               .onValueChanged(startImage: File(photo.path));
+
+          final CounterReadingResult result =
+              await counterReaderService.readFile(photo);
+
+          if (result.reading != null && result.reading != '') {
+            log('Counter reading: ${result.reading}');
+            startReadingController.text = result.reading ?? '';
+            context.read<CreateItemCubit>().onValueChanged(
+                startReading: int.tryParse(result.reading ?? ''));
+          }
         } else {
           endImage = photo.path;
           context
               .read<CreateItemCubit>()
               .onValueChanged(endImage: File(photo.path));
+
+          final CounterReadingResult result =
+              await counterReaderService.readFile(photo);
+
+          if (result.reading != null && result.reading != '') {
+            log('Counter reading: ${result.reading}');
+            endReadingController.text = result.reading ?? '';
+            context
+                .read<CreateItemCubit>()
+                .onValueChanged(endReading: int.tryParse(result.reading ?? ''));
+          }
         }
       });
     }
@@ -309,6 +333,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                               ],
                             ] else ...[
                               // COMPLETE OPERATION PROCESS
+                              if (childItem != null &&
+                                  _hasStartDetails(childItem)) ...[
+                                _buildStartDetailsCard(childItem),
+                                const SizedBox(height: 14),
+                              ],
                               _buildOutputCard(data, inProgress, childItem),
                               if (data.isRejection == 1) ...[
                                 const SizedBox(height: 14),
@@ -801,6 +830,529 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     );
   }
 
+  bool _hasStartDetails(ChildStatusModel childItem) {
+    final hasMachine =
+        childItem.machineId != null && childItem.machineId!.trim().isNotEmpty;
+    final hasTray =
+        childItem.trayId != null && childItem.trayId!.trim().isNotEmpty;
+    final hasStartReading =
+        childItem.startReading != null && childItem.startReading! > 0;
+    final hasCutQuantity = childItem.cutQuantity != null &&
+        childItem.cutQuantity!.trim().isNotEmpty &&
+        childItem.cutQuantity!.trim() != '0';
+    final hasStartImage =
+        childItem.startImage != null && childItem.startImage!.trim().isNotEmpty;
+
+    return hasMachine ||
+        hasTray ||
+        hasStartReading ||
+        hasCutQuantity ||
+        hasStartImage;
+  }
+
+  // CARD: Start Operation Details (Machine ID, Input Tray ID, Start Reading, Cut Qnty, Counter Start Image)
+  Widget _buildStartDetailsCard(ChildStatusModel childItem) {
+    final machineId = childItem.machineId;
+    final trayId = childItem.trayId;
+    final startImage = childItem.startImage;
+    final startReading = childItem.startReading;
+    final cutQuantity = childItem.cutQuantity;
+
+    final bool hasMachine = machineId != null && machineId.trim().isNotEmpty;
+    final bool hasTray = trayId != null && trayId.trim().isNotEmpty;
+    final bool hasStartReading = startReading != null && startReading > 0;
+    final bool hasCutQuantity = cutQuantity != null &&
+        cutQuantity.trim().isNotEmpty &&
+        cutQuantity.trim() != '0';
+    final bool hasStartImage =
+        startImage != null && startImage.trim().isNotEmpty;
+
+    if (!hasMachine &&
+        !hasTray &&
+        !hasStartReading &&
+        !hasCutQuantity &&
+        !hasStartImage) {
+      return const SizedBox.shrink();
+    }
+
+    final String startReadingFormatted =
+        hasStartReading ? startReading.toString() : '';
+    final String cutQuantityFormatted =
+        hasCutQuantity ? cutQuantity!.trim() : '';
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF04244C).withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header: Info icon + Title "Start Details" + Badge "IN PROGRESS"
+          Row(
+            children: [
+              Container(
+                width: 26,
+                height: 26,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE0F2FE),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.info_outline_rounded,
+                    size: 15,
+                    color: Color(0xFF0284C7),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Start Details',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF0A2540),
+                  ),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF3B82F6).withOpacity(0.3),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.timelapse_rounded,
+                        size: 12, color: Color(0xFF2563EB)),
+                    SizedBox(width: 4),
+                    Text(
+                      'IN PROGRESS',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1D4ED8),
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+
+          // 1. MACHINE ID (only if not empty)
+          if (hasMachine) ...[
+            _buildFieldLabel('MACHINE ID'),
+            const SizedBox(height: 6),
+            _buildReadOnlyField(
+              icon: Icons.precision_manufacturing_outlined,
+              value: machineId!.trim(),
+              placeholder: '',
+            ),
+            const SizedBox(height: 14),
+          ],
+
+          // 2. INPUT TRAY ID (only if not empty)
+          if (hasTray) ...[
+            _buildFieldLabel('INPUT TRAY ID'),
+            const SizedBox(height: 6),
+            _buildReadOnlyField(
+              icon: Icons.inbox_outlined,
+              value: trayId!.trim(),
+              placeholder: '',
+            ),
+            const SizedBox(height: 14),
+          ],
+
+          // 3. START READING & CUT QUANTITY (only if not empty)
+          if (hasStartReading && hasCutQuantity) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildFieldLabel('START READING'),
+                      const SizedBox(height: 6),
+                      _buildReadOnlyField(
+                        icon: Icons.tag_rounded,
+                        value: startReadingFormatted,
+                        placeholder: '',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildFieldLabel('CUT QUANTITY'),
+                      const SizedBox(height: 6),
+                      _buildReadOnlyField(
+                        icon: Icons.content_cut_rounded,
+                        value: cutQuantityFormatted,
+                        placeholder: '',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+          ] else if (hasStartReading) ...[
+            _buildFieldLabel('START READING'),
+            const SizedBox(height: 6),
+            _buildReadOnlyField(
+              icon: Icons.tag_rounded,
+              value: startReadingFormatted,
+              placeholder: '',
+            ),
+            const SizedBox(height: 14),
+          ] else if (hasCutQuantity) ...[
+            _buildFieldLabel('CUT QUANTITY'),
+            const SizedBox(height: 6),
+            _buildReadOnlyField(
+              icon: Icons.content_cut_rounded,
+              value: cutQuantityFormatted,
+              placeholder: '',
+            ),
+            const SizedBox(height: 14),
+          ],
+
+          // 4. COUNTER START IMAGE (only if not empty)
+          if (hasStartImage) ...[
+            _buildFieldLabel('COUNTER START IMAGE'),
+            const SizedBox(height: 6),
+            _buildStartImageViewer(startImage!.trim()),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // Read-only Field tile for displaying machine & tray values
+  Widget _buildReadOnlyField({
+    required IconData icon,
+    required String value,
+    required String placeholder,
+  }) {
+    final bool isEmpty = value == '--';
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFE2E8F0),
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: isEmpty ? const Color(0xFF94A3B8) : const Color(0xFF0284C7),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: isEmpty ? FontWeight.w500 : FontWeight.w700,
+                color:
+                    isEmpty ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
+                letterSpacing: -0.2,
+              ),
+            ),
+          ),
+          if (!isEmpty)
+            const Icon(
+              Icons.check_circle_rounded,
+              size: 18,
+              color: Color(0xFF10B981),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // Counter start image viewer box with zoom on tap
+  Widget _buildStartImageViewer(String? imagePath) {
+    final bool hasImage = imagePath != null && imagePath.isNotEmpty;
+    if (!hasImage) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: const Color(0xFFE2E8F0),
+            width: 1.2,
+          ),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.image_not_supported_outlined,
+                size: 20, color: Color(0xFF94A3B8)),
+            SizedBox(width: 8),
+            Text(
+              'No counter start photo recorded',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF64748B),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final fullUrl =
+        imagePath.startsWith('http') ? imagePath : '$baseUrl$imagePath';
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showFullImageDialog(
+          context,
+          fullUrl,
+          'Counter Start Photo',
+        ),
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0FDF4),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFF86EFAC).withOpacity(0.7),
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  fullUrl,
+                  width: 58,
+                  height: 58,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 58,
+                    height: 58,
+                    color: const Color(0xFFE2E8F0),
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 24,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(
+                      width: 58,
+                      height: 58,
+                      color: const Color(0xFFF1F5F9),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 16,
+                          color: Color(0xFF16A34A),
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          'Start Counter Photo',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF15803D),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      imagePath,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF64748B),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      'Tap to view full photo',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF0284C7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xFF86EFAC).withOpacity(0.8),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.zoom_in_rounded,
+                  size: 20,
+                  color: Color(0xFF15803D),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Full-screen image preview dialog
+  void _showFullImageDialog(
+    BuildContext context,
+    String imageUrl,
+    String title,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                color: Color(0xFF0F172A),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon:
+                        const Icon(Icons.close, color: Colors.white, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Container(
+                color: Colors.black,
+                constraints: const BoxConstraints(maxHeight: 500),
+                child: InteractiveViewer(
+                  minScale: 0.8,
+                  maxScale: 4.0,
+                  child: Center(
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Container(
+                        padding: const EdgeInsets.all(32),
+                        color: Colors.black,
+                        child: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.broken_image,
+                                size: 48, color: Colors.white54),
+                            SizedBox(height: 12),
+                            Text(
+                              'Failed to load image',
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: const BoxDecoration(
+                color: Color(0xFF0F172A),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(16)),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'Pinch to zoom',
+                style: TextStyle(color: Colors.white60, fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // CARD 1 (Complete Operation): Output Card
   Widget _buildOutputCard(
     OperationScanModel data,
@@ -948,7 +1500,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               ),
               const SizedBox(width: 10),
               const Text(
-                'Rejection',
+                'Scrap',
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
@@ -959,16 +1511,16 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           ),
           const SizedBox(height: 18),
           // REJECTION TRAY
-          _buildFieldLabel('REJECTION TRAY'),
+          _buildFieldLabel('SCRAP TRAY'),
           const SizedBox(height: 6),
           _buildScanItem(
             value: binQrCode,
-            hint: 'Scan rejection tray',
+            hint: 'Scan scrap tray',
             onTap: _scanRejectionTray,
           ),
           const SizedBox(height: 14),
           // REJECTION COUNT
-          _buildFieldLabel('REJECTION COUNT'),
+          _buildFieldLabel('SCRAP COUNT'),
           const SizedBox(height: 6),
           _buildInputField(
             controller: rejectionCountController,

@@ -85,10 +85,10 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                     ],
                     // Your sections Card
-                    if (sections.isNotEmpty) ...[
-                      _buildSectionsCard(sections),
-                      const SizedBox(height: 24),
-                    ],
+                    // if (sections.isNotEmpty) ...[
+                    //   _buildSectionsCard(sections),
+                    //   const SizedBox(height: 24),
+                    // ],
                   ],
                 ),
               ),

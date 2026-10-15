@@ -161,7 +161,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           "operation": model.operation,
           "child_id": model.childId,
           "output_tray": model.outputTray,
-          "counter_end_readings": model.startReadings,
+          "counter_end_readings": model.endReadings,
           "rejection_tray": model.rejectionTray,
           "rejection_counter": model.rejectionCounter,
           "rejection_tray_image": model.rejectionTrayImage,
@@ -171,6 +171,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           return p0['message']['message'] as String;
         },
       );
+      print('config...:$config');
 
       final response = await post(config);
       return response.process((r) => right(r.data!));
