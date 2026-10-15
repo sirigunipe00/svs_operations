@@ -56,6 +56,12 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   int? selectedItemCount;
   List<ChildStatusModel> childStatusList = [];
 
+  // Loading & error states for OCR counter reading
+  bool isReadingStartCounter = false;
+  bool isReadingEndCounter = false;
+  String? startReadingError;
+  String? endReadingError;
+
   static const String baseUrl = 'https://svserpnextuat.easycloud.co.in';
 
   @override
@@ -145,45 +151,151 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
     final picker = ImagePicker();
     final photo = await picker.pickImage(
-      source: ImageSource.gallery,
+      source: ImageSource.camera,
       imageQuality: 80,
     );
 
-    if (photo != null) {
-      setState(() async {
+    if (photo == null) return;
+
+    setState(() {
+      if (isStart) {
+        startImage = photo.path;
+        startReadingController.clear();
+        isReadingStartCounter = true;
+        startReadingError = null;
+      } else {
+        endImage = photo.path;
+        endReadingController.clear();
+        isReadingEndCounter = true;
+        endReadingError = null;
+      }
+    });
+
+    if (isStart) {
+      context
+          .read<CreateItemCubit>()
+          .onValueChanged(startImage: File(photo.path));
+    } else {
+      context
+          .read<CreateItemCubit>()
+          .onValueChanged(endImage: File(photo.path));
+    }
+
+    try {
+      final CounterReadingResult result =
+          await counterReaderService.readFile(photo);
+
+      if (!mounted) return;
+
+      if (result.reading != null && result.reading!.trim().isNotEmpty) {
+        final readingText = result.reading!.trim();
+        log('Counter reading: $readingText');
+        setState(() {
+          if (isStart) {
+            isReadingStartCounter = false;
+            startReadingError = null;
+            startReadingController.text = readingText;
+          } else {
+            isReadingEndCounter = false;
+            endReadingError = null;
+            endReadingController.text = readingText;
+          }
+        });
+
         if (isStart) {
-          startImage = photo.path;
-          context
-              .read<CreateItemCubit>()
-              .onValueChanged(startImage: File(photo.path));
-
-          final CounterReadingResult result =
-              await counterReaderService.readFile(photo);
-
-          if (result.reading != null && result.reading != '') {
-            log('Counter reading: ${result.reading}');
-            startReadingController.text = result.reading ?? '';
-            context.read<CreateItemCubit>().onValueChanged(
-                startReading: int.tryParse(result.reading ?? ''));
-          }
+          context.read<CreateItemCubit>().onValueChanged(
+                startReading: int.tryParse(readingText),
+              );
         } else {
-          endImage = photo.path;
-          context
-              .read<CreateItemCubit>()
-              .onValueChanged(endImage: File(photo.path));
+          context.read<CreateItemCubit>().onValueChanged(
+                endReading: int.tryParse(readingText),
+              );
+        }
 
-          final CounterReadingResult result =
-              await counterReaderService.readFile(photo);
-
-          if (result.reading != null && result.reading != '') {
-            log('Counter reading: ${result.reading}');
-            endReadingController.text = result.reading ?? '';
-            context
-                .read<CreateItemCubit>()
-                .onValueChanged(endReading: int.tryParse(result.reading ?? ''));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_rounded,
+                    color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Counter reading captured: $readingText',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF16A34A),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        log('No counter reading found: ${result.error}');
+        setState(() {
+          if (isStart) {
+            isReadingStartCounter = false;
+            startReadingError = 'No readings captured, take a valid photo';
+          } else {
+            isReadingEndCounter = false;
+            endReadingError = 'No readings captured, take a valid photo';
           }
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    color: Colors.white, size: 20),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'No readings captured, take a valid photo.',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Color(0xFFDC2626),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      log('Error reading counter: $e');
+      if (!mounted) return;
+      setState(() {
+        if (isStart) {
+          isReadingStartCounter = false;
+          startReadingError = 'No readings captured, take a valid photo';
+        } else {
+          isReadingEndCounter = false;
+          endReadingError = 'No readings captured, take a valid photo';
         }
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded,
+                  color: Colors.white, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'No readings captured, take a valid photo.',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Color(0xFFDC2626),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 4),
+        ),
+      );
     }
   }
 
@@ -803,7 +915,14 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           _buildInputField(
             controller: startReadingController,
             hint: 'Enter counter reading',
+            isLoading: isReadingStartCounter,
+            errorText: startReadingError,
             onChanged: (val) {
+              if (startReadingError != null) {
+                setState(() {
+                  startReadingError = null;
+                });
+              }
               context.read<CreateItemCubit>().onValueChanged(
                     startReading: int.tryParse(val),
                   );
@@ -816,6 +935,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             networkImagePath: childItem?.startImage,
             label: 'Capture counter photo',
             color: const Color(0xFF0C6ECB),
+            isLoading: isReadingStartCounter,
             onTap: () => _capturePhoto(isStart: true),
           ),
           // Item count dropdown (if title == 'Tube Cutting' and !inProgress)
@@ -1424,7 +1544,14 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             _buildInputField(
               controller: endReadingController,
               hint: 'Enter counter reading',
+              isLoading: isReadingEndCounter,
+              errorText: endReadingError,
               onChanged: (val) {
+                if (endReadingError != null) {
+                  setState(() {
+                    endReadingError = null;
+                  });
+                }
                 context.read<CreateItemCubit>().onValueChanged(
                       endReading: int.tryParse(val),
                     );
@@ -1432,19 +1559,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             ),
             const SizedBox(height: 14),
           ],
-          // FINAL QUANTITY
-          // _buildFieldLabel('FINAL QUANTITY'),
-          // const SizedBox(height: 6),
-          // _buildInputField(
-          //   controller: finalQtyController,
-          //   hint: 'Enter final quantity',
-          //   onChanged: (val) {
-          //     context.read<CreateItemCubit>().onValueChanged(
-          //           cutQty: int.tryParse(val),
-          //         );
-          //   },
-          // ),
-          const SizedBox(height: 14),
           // Capture counter photo
           if (data.isCounterScan == 1) ...[
             _buildPhotoCaptureBox(
@@ -1452,6 +1566,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               networkImagePath: childItem?.endImage,
               label: 'Capture counter photo',
               color: const Color(0xFF0C6ECB),
+              isLoading: isReadingEndCounter,
               onTap: () => _capturePhoto(isStart: false),
             ),
           ],
@@ -1619,73 +1734,128 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     );
   }
 
-  // Text input field helper with '#' prefix icon
+  // Text input field helper with '#' prefix icon, loading indicator & error message
   Widget _buildInputField({
     required TextEditingController controller,
     required String hint,
     required ValueChanged<String> onChanged,
+    bool isLoading = false,
+    String? errorText,
   }) {
-    return Container(
-      height: 52,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFE2E8F0),
-          width: 1.2,
-        ),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.tag_rounded,
-            color: Color(0xFF0C6ECB),
-            size: 20,
+    final bool hasError = errorText != null && errorText.isNotEmpty;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 52,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF8FAFC),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: hasError
+                  ? const Color(0xFFEF4444)
+                  : (isLoading
+                      ? const Color(0xFF0C6ECB).withOpacity(0.5)
+                      : const Color(0xFFE2E8F0)),
+              width: 1.2,
+            ),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF0F172A),
+          child: Row(
+            children: [
+              Icon(
+                Icons.tag_rounded,
+                color: hasError
+                    ? const Color(0xFFEF4444)
+                    : const Color(0xFF0C6ECB),
+                size: 20,
               ),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: hint,
-                hintStyle: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF94A3B8),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  onChanged: onChanged,
+                  keyboardType: TextInputType.number,
+                  enabled: !isLoading,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF0F172A),
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: isLoading ? 'Reading counter...' : hint,
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight:
+                          isLoading ? FontWeight.w500 : FontWeight.w400,
+                      color: isLoading
+                          ? const Color(0xFF0C6ECB)
+                          : const Color(0xFF94A3B8),
+                    ),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                 ),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
               ),
+              if (isLoading)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF0C6ECB)),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (hasError) ...[
+          const SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.info_outline_rounded,
+                  size: 13,
+                  color: Color(0xFFDC2626),
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    errorText,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFFDC2626),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
-      ),
+      ],
     );
   }
 
-  // Dashed Photo Capture box with thumbnail preview
+  // Dashed Photo Capture box with thumbnail preview and loading indicator
   Widget _buildPhotoCaptureBox({
     required String? imagePath,
     String? networkImagePath,
     required String label,
     required Color color,
     required VoidCallback onTap,
+    bool isLoading = false,
   }) {
     final hasLocal = imagePath != null && imagePath.isNotEmpty;
     final hasNetwork = networkImagePath != null && networkImagePath.isNotEmpty;
     final hasImage = hasLocal || hasNetwork;
 
     return DashedBorderBox(
-      color: color.withOpacity(0.55),
+      color: isLoading ? color : color.withOpacity(0.55),
       strokeWidth: 1.5,
       dashWidth: 6,
       dashSpace: 4,
@@ -1694,7 +1864,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
+          onTap: isLoading ? null : onTap,
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -1730,11 +1900,24 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.check_circle_rounded,
-                                    size: 16, color: color),
+                                if (isLoading)
+                                  SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor:
+                                          AlwaysStoppedAnimation<Color>(color),
+                                    ),
+                                  )
+                                else
+                                  Icon(Icons.check_circle_rounded,
+                                      size: 16, color: color),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'Photo captured',
+                                  isLoading
+                                      ? 'Reading counter...'
+                                      : 'Photo captured',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
@@ -1744,9 +1927,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                               ],
                             ),
                             const SizedBox(height: 2),
-                            const Text(
-                              'Tap to retake photo',
-                              style: TextStyle(
+                            Text(
+                              isLoading
+                                  ? 'Analyzing photo for readings'
+                                  : 'Tap to retake photo',
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF64748B),
@@ -1755,24 +1940,44 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           ],
                         ),
                       ),
-                      Icon(
-                        Icons.camera_alt_outlined,
-                        color: color,
-                        size: 22,
-                      ),
+                      if (isLoading)
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(color),
+                          ),
+                        )
+                      else
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          color: color,
+                          size: 22,
+                        ),
                     ],
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.camera_alt_outlined,
-                        color: color,
-                        size: 20,
-                      ),
+                      if (isLoading)
+                        SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(color),
+                          ),
+                        )
+                      else
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          color: color,
+                          size: 20,
+                        ),
                       const SizedBox(width: 10),
                       Text(
-                        label,
+                        isLoading ? 'Reading counter...' : label,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,

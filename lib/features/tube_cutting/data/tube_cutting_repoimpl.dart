@@ -145,6 +145,8 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
         },
       );
 
+      print('config...:$config');
+
       final response = await post(config);
       return response.process((r) => right(r.data!));
     });
