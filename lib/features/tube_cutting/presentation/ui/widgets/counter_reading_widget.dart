@@ -1,20 +1,17 @@
 
 import 'dart:developer';
+import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/counter_reader.dart';
-
-// Import the file containing readCounterNumber.
-// import '../utils/counter_reader.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/gemini_counter_reader.dart';
 
 class CounterReaderService {
   Future<CounterReadingResult> readFile(XFile file) async {
     try {
       final bytes = await file.readAsBytes();
-      final reading = await compute(readCounterNumber, bytes);
+      final reading = await GeminiCounterReader.readCounter(bytes);
 
-      log('reading...:$reading');
+      log('CounterReaderService reading: $reading');
 
       if (reading == null) {
         return CounterReadingResult(
@@ -27,7 +24,8 @@ class CounterReaderService {
         imageBytes: bytes,
         reading: reading,
       );
-    } catch (_) {
+    } catch (e, stack) {
+      log('CounterReaderService error: $e\n$stack');
       return const CounterReadingResult(
         error: 'Could not read that image.',
       );
