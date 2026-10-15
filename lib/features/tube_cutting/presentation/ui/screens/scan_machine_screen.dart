@@ -159,27 +159,17 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
     setState(() {
       if (isStart) {
-        startImage = photo.path;
         startReadingController.clear();
         isReadingStartCounter = true;
         startReadingError = null;
+        context.read<CreateItemCubit>().onValueChanged(startReading: null);
       } else {
-        endImage = photo.path;
         endReadingController.clear();
         isReadingEndCounter = true;
         endReadingError = null;
+        context.read<CreateItemCubit>().onValueChanged(endReading: null);
       }
     });
-
-    if (isStart) {
-      context
-          .read<CreateItemCubit>()
-          .onValueChanged(startImage: File(photo.path));
-    } else {
-      context
-          .read<CreateItemCubit>()
-          .onValueChanged(endImage: File(photo.path));
-    }
 
     try {
       final CounterReadingResult result =
@@ -192,10 +182,12 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         log('Counter reading: $readingText');
         setState(() {
           if (isStart) {
+            startImage = photo.path;
             isReadingStartCounter = false;
             startReadingError = null;
             startReadingController.text = readingText;
           } else {
+            endImage = photo.path;
             isReadingEndCounter = false;
             endReadingError = null;
             endReadingController.text = readingText;
@@ -204,10 +196,12 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
         if (isStart) {
           context.read<CreateItemCubit>().onValueChanged(
+                startImage: File(photo.path),
                 startReading: int.tryParse(readingText),
               );
         } else {
           context.read<CreateItemCubit>().onValueChanged(
+                endImage: File(photo.path),
                 endReading: int.tryParse(readingText),
               );
         }
@@ -232,34 +226,47 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         );
       } else {
         log('No counter reading found: ${result.error}');
+        final errorMsg =
+            (result.error != null && result.error!.trim().isNotEmpty)
+                ? result.error!.trim()
+                : 'No readings captured, take a valid photo.';
+
         setState(() {
           if (isStart) {
+            startImage = null;
             isReadingStartCounter = false;
-            startReadingError = 'No readings captured, take a valid photo';
+            startReadingError = errorMsg;
           } else {
+            endImage = null;
             isReadingEndCounter = false;
-            endReadingError = 'No readings captured, take a valid photo';
+            endReadingError = errorMsg;
           }
         });
 
+        if (isStart) {
+          context.read<CreateItemCubit>().clearStartPhoto();
+        } else {
+          context.read<CreateItemCubit>().clearEndPhoto();
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
-                Icon(Icons.warning_amber_rounded,
-                    color: Colors.white, size: 20),
-                SizedBox(width: 10),
+                const Icon(Icons.warning_amber_rounded,
+                    color: Colors.white, size: 22),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'No readings captured, take a valid photo.',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    errorMsg,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
             ),
-            backgroundColor: Color(0xFFDC2626),
+            backgroundColor: const Color(0xFFDC2626),
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 4),
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -268,13 +275,21 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
       if (!mounted) return;
       setState(() {
         if (isStart) {
+          startImage = null;
           isReadingStartCounter = false;
           startReadingError = 'No readings captured, take a valid photo';
         } else {
+          endImage = null;
           isReadingEndCounter = false;
           endReadingError = 'No readings captured, take a valid photo';
         }
       });
+
+      if (isStart) {
+        context.read<CreateItemCubit>().clearStartPhoto();
+      } else {
+        context.read<CreateItemCubit>().clearEndPhoto();
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -359,9 +374,345 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
       context.read<CreateItemCubit>().onValueChanged(outputTray: outputtray);
     }
 
-    if (mounted) {
+    if (!mounted) return;
+
+    // Show popup dialog with start reading, end reading, final qnty (end - start), and scrap count
+    final confirmed = await _showCompleteConfirmationDialog();
+
+    if (confirmed == true && mounted) {
+      final endReadingVal = int.tryParse(endReadingController.text.trim());
+      if (endReadingVal != null) {
+        context.read<CreateItemCubit>().onValueChanged(endReading: endReadingVal);
+      }
+      final scrapVal = int.tryParse(rejectionCountController.text.trim());
+      if (scrapVal != null) {
+        context.read<CreateItemCubit>().onValueChanged(rejectedQty: scrapVal);
+      }
       context.read<CreateItemCubit>().save(true);
     }
+  }
+
+  // Confirmation dialog showing Start Reading, End Reading, Final Qnty (End - Start), and Scrap Count
+  Future<bool?> _showCompleteConfirmationDialog() {
+    print('endReadingController...:${endReadingController.text}');
+    print('state.form.endReadings...:${context.read<CreateItemCubit>().state.form.endReadings}');
+    final inProgressChild = childStatusList
+        .where((item) => item.status == 'In Progress')
+        .firstOrNull;
+
+    final num? startReadingNum = inProgressChild?.startReading ??
+        num.tryParse(startReadingController.text.trim()) ??
+        context.read<CreateItemCubit>().state.form.startReadings;
+
+    final num? endReadingNum =
+        num.tryParse(endReadingController.text.trim());
+        // context.read<CreateItemCubit>().state.form.endReadings;
+
+    final num? finalQty = (endReadingNum != null && startReadingNum != null)
+        ? (endReadingNum - startReadingNum)
+        : null;
+
+    final int scrapCount =
+        int.tryParse(rejectionCountController.text.trim()) ??
+        context.read<CreateItemCubit>().state.form.rejectionCounter ??
+        0;
+
+    String formatNum(num? n) {
+      if (n == null) return '--';
+      if (n % 1 == 0) return n.toInt().toString();
+      return n.toString();
+    }
+
+    final startReadingStr = formatNum(startReadingNum);
+    final endReadingStr = formatNum(endReadingNum);
+    final finalQtyStr = formatNum(finalQty);
+    final scrapCountStr = scrapCount.toString();
+
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 380),
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF04244C).withOpacity(0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header: Icon + Title
+                Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE0F2FE),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Icons.fact_check_rounded,
+                        color: Color(0xFF0C6ECB),
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Complete Operation',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF0F172A),
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Review readings before submission',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Details Card Container
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: const Color(0xFFE2E8F0),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Row 1: Start Reading & End Reading
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDialogMetricTile(
+                              title: 'START READING',
+                              value: startReadingStr,
+                              icon: Icons.tag_rounded,
+                              iconColor: const Color(0xFF0284C7),
+                              iconBg: const Color(0xFFE0F2FE),
+                            ),
+                          ),
+                          Container(
+                            height: 48,
+                            width: 1.2,
+                            color: const Color(0xFFE2E8F0),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          Expanded(
+                            child: _buildDialogMetricTile(
+                              title: 'END READING',
+                              value: endReadingStr,
+                              icon: Icons.tag_rounded,
+                              iconColor: const Color(0xFF0C6ECB),
+                              iconBg: const Color(0xFFE0F2FE),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Divider(color: Color(0xFFE2E8F0), height: 1),
+                      const SizedBox(height: 12),
+
+                      // Row 2: Final Quantity (End - Start) & Scrap Count
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDialogMetricTile(
+                              title: 'FINAL QNTY',
+                              subtitle: '(End - Start)',
+                              value: finalQtyStr,
+                              icon: Icons.check_circle_rounded,
+                              iconColor: const Color(0xFF16A34A),
+                              iconBg: const Color(0xFFDCFCE7),
+                              valueColor: const Color(0xFF15803D),
+                            ),
+                          ),
+                          Container(
+                            height: 48,
+                            width: 1.2,
+                            color: const Color(0xFFE2E8F0),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          Expanded(
+                            child: _buildDialogMetricTile(
+                              title: 'SCRAP COUNT',
+                              value: scrapCountStr,
+                              icon: Icons.delete_outline_rounded,
+                              iconColor: const Color(0xFFDC2626),
+                              iconBg: const Color(0xFFFEE2E2),
+                              valueColor: const Color(0xFFB91C1C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 22),
+
+                // Action Buttons: "No" vs "Confirm"
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Color(0xFFCBD5E1),
+                              width: 1.2,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: const Text(
+                            'No',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0C6ECB),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: const Text(
+                            'Confirm',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Dialog metric tile helper
+  Widget _buildDialogMetricTile({
+    required String title,
+    String? subtitle,
+    required String value,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    Color? valueColor,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Icon(icon, size: 14, color: iconColor),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.3,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (subtitle != null)
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF94A3B8),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: valueColor ?? const Color(0xFF0F172A),
+            letterSpacing: -0.3,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -913,6 +1264,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           _buildFieldLabel('START READING'),
           const SizedBox(height: 6),
           _buildInputField(
+            isReadOnly: true,
             controller: startReadingController,
             hint: 'Enter counter reading',
             isLoading: isReadingStartCounter,
@@ -1542,6 +1894,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             _buildFieldLabel('END READING'),
             const SizedBox(height: 6),
             _buildInputField(
+              isReadOnly: true,
               controller: endReadingController,
               hint: 'Enter counter reading',
               isLoading: isReadingEndCounter,
@@ -1638,6 +1991,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           _buildFieldLabel('SCRAP COUNT'),
           const SizedBox(height: 6),
           _buildInputField(
+             isReadOnly: false,
             controller: rejectionCountController,
             hint: 'Enter count',
             onChanged: (val) {
@@ -1740,6 +2094,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     required String hint,
     required ValueChanged<String> onChanged,
     bool isLoading = false,
+    required bool isReadOnly,
     String? errorText,
   }) {
     final bool hasError = errorText != null && errorText.isNotEmpty;
@@ -1773,6 +2128,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
+                  readOnly: isReadOnly,
                   controller: controller,
                   onChanged: onChanged,
                   keyboardType: TextInputType.number,

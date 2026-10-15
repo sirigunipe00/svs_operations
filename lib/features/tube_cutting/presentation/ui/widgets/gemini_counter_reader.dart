@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -6,36 +7,58 @@ import 'package:image/image.dart' as img;
 import 'package:svs_operations/core/consts/api_keys.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/ui/widgets/counter_reader.dart';
 
+class GeminiCounterResult {
+  final String? reading;
+  final String? error;
+  final bool isInvalid;
+
+  const GeminiCounterResult({
+    this.reading,
+    this.error,
+    this.isInvalid = false,
+  });
+}
+
 /// Service that utilizes Google Gemini Vision AI to read industrial counter displays
-/// with high accuracy.
+/// with high accuracy, fast validation, and immediate rejection of non-counter images.
 class GeminiCounterReader {
   static const String _prompt = '''
-You are an expert industrial meter reading system.
-Look at this industrial meter photo (such as SELEC XC 22B, Etsilon CNT701).
+You are an expert industrial OCR meter reading system.
+Your job is to read dedicated physical 7-segment digital machine counter meters (e.g. SELEC XC 22B, Etsilon CNT701, Autonics).
 
-STRICT EXTRACTION RULES:
-1. Locate the main illuminated digital 7-segment LED display.
-2. Read ONLY the actively illuminated (bright glowing red/cyan/white) digits on that display.
-3. CRITICAL: Unlit, blank, or dark digit positions can faintly show unlit segments in the dark glass (which look like faint dark gray '8's). DO NOT read unlit or dark digits! Omit them completely. For example, if the first two digits are dark and the last two are glowing '33', the answer is 33.
-4. Ignore mechanical thumbwheels, rotary dials, or push-buttons (such as '5000' or '8000') below the display.
-5. Ignore printed labels, brand names, and model numbers (such as SELEC, XC 22B, RST, RLY).
-6. Output ONLY the raw active digits as a plain number (e.g. 128, 132, 208, 33, 28, 2080, 234, 1962, 2038).
-7. Do NOT include any spaces, words, punctuation, explanation, or markdown formatting.
-8. If the display is completely unreadable, dark, or no lit digital counter is visible, return 'NONE'.
+CRITICAL EXTRACTION RULES:
+1. Is this a physical 7-segment digital machine counter meter?
+   If NO (for example: it is a computer monitor, graphical touchscreen/HMI, CNC display screen, paper, floor, or unrelated machinery), reply ONLY with: INVALID_IMAGE
+2. Read ONLY the actively illuminated (GLOWING RED/CYAN/WHITE) digits on the 7-segment LED display.
+3. CRITICAL RULE FOR UNLIT LEADING DIGITS:
+   - Inactive/unlit digit positions appear as faint dark gray or black '8's etched on the glass.
+   - THEY ARE POWERED OFF. DO NOT READ THEM AS '8'!
+   - For example: if position 1 is dark/unlit and positions 2, 3, 4 are glowing '1', '2', '4', the reading is 124 (NEVER 8124).
+   - If position 1 is dark and positions 2, 3, 4 are glowing '1', '2', '8', the reading is 128 (NEVER 8128).
+   - If positions 1 & 2 are dark and positions 3, 4 are glowing '3', '3', the reading is 33 (NEVER 8833).
+   - If positions 1 & 2 are dark and positions 3, 4 are glowing '2', '8', the reading is 28 (NEVER 8828).
+   - A segment is ONLY lit if it emits active bright glowing colored light.
+4. Ignore preset dials/thumbwheels below (such as 5000 or 8000).
+5. Ignore printed labels/text (such as SELEC, XC 22B, RST, RLY).
+6. Output ONLY the raw active digits as a plain number (e.g. 124, 128, 132, 208, 33, 28, 2080, 234).
+7. If the display is dark, blank, unreadable, or no lit counter digits are found, reply ONLY with: INVALID_IMAGE
 ''';
 
   static const List<String> _candidateModels = [
     'gemini-3.5-flash-lite',
     'gemini-3.5-flash',
     'gemini-flash-latest',
-    'gemini-1.5-flash',
   ];
 
   /// Reads the counter value from [imageBytes] using Gemini Vision AI.
-  ///
-  /// Falls back to local [decodeCounter] if Gemini is unavailable, offline,
-  /// or if no API key is configured.
   static Future<String?> readCounter(Uint8List imageBytes) async {
+    final result = await readCounterResult(imageBytes);
+    return result.reading;
+  }
+
+  /// Full result including error reason and invalid-image detection.
+  static Future<GeminiCounterResult> readCounterResult(
+      Uint8List imageBytes) async {
     final apiKey = ApiKeys.geminiApiKey;
 
     if (apiKey.isNotEmpty) {
@@ -43,7 +66,7 @@ STRICT EXTRACTION RULES:
 
       for (final modelName in _candidateModels) {
         try {
-          log('GeminiCounterReader: Trying model $modelName...');
+          log('GeminiCounterReader: Checking with $modelName...');
           final model = GenerativeModel(
             model: modelName,
             apiKey: apiKey,
@@ -60,44 +83,75 @@ STRICT EXTRACTION RULES:
             ]),
           ];
 
-          final response = await model.generateContent(content);
+          // 6-second timeout per model to prevent long hangs
+          final response = await model
+              .generateContent(content)
+              .timeout(const Duration(seconds: 6));
+
           final rawText = response.text?.trim() ?? '';
-          log('GeminiCounterReader ($modelName): Raw response = "$rawText"');
+          log('GeminiCounterReader ($modelName): Response = "$rawText"');
+
+          final upper = rawText.toUpperCase();
+          if (upper.contains('INVALID') ||
+              upper.contains('NONE') ||
+              rawText.isEmpty) {
+            log('GeminiCounterReader: Image identified as non-counter / invalid.');
+            return const GeminiCounterResult(
+              isInvalid: true,
+              error:
+                  'Invalid or non-detectable image. Please take a clear photo of the 7-segment machine counter meter.',
+            );
+          }
 
           final cleaned = _sanitizeReading(rawText);
           if (cleaned != null && cleaned.isNotEmpty) {
-            log('GeminiCounterReader ($modelName): Succeeded with $cleaned');
-            return cleaned;
+            log('GeminiCounterReader ($modelName): Successfully read $cleaned');
+            return GeminiCounterResult(reading: cleaned);
           }
+
+          // If the model replied with text but no digits were extracted
+          return const GeminiCounterResult(
+            isInvalid: true,
+            error:
+                'No counter numbers detected. Please take a valid photo of the machine counter.',
+          );
+        } on TimeoutException {
+          log('GeminiCounterReader ($modelName) timed out after 6s. Trying next...');
+          continue;
         } catch (e) {
-          log('GeminiCounterReader ($modelName) failed: $e. Trying next model...');
+          log('GeminiCounterReader ($modelName) network/API error: $e');
+          // Only retry if network / server issue
           continue;
         }
       }
-      log('GeminiCounterReader: All Gemini models failed or returned empty.');
+      log('GeminiCounterReader: All Gemini models failed due to network/API.');
     } else {
-      log('GeminiCounterReader: No Gemini API key configured. Using local fallback.');
+      log('GeminiCounterReader: No Gemini API key configured.');
     }
 
-    // Fallback to on-device heuristic counter reader
+    // Only fallback to local CV if offline or no API key configured
     try {
-      log('GeminiCounterReader: Running local fallback decoder...');
+      log('GeminiCounterReader: Running fast local fallback...');
       final localResult = decodeCounter(imageBytes);
       if (localResult.value != null && localResult.value!.isNotEmpty) {
-        log('GeminiCounterReader: Local fallback succeeded with ${localResult.value}');
-        return localResult.value;
+        return GeminiCounterResult(reading: localResult.value);
       }
     } catch (e) {
       log('GeminiCounterReader: Local fallback error: $e');
     }
 
-    return null;
+    return const GeminiCounterResult(
+      isInvalid: true,
+      error:
+          'No counter reading detected. Please take a valid photo of the machine counter.',
+    );
   }
 
   /// Cleans the LLM output to strictly extract digits.
   static String? _sanitizeReading(String raw) {
     if (raw.isEmpty) return null;
-    if (raw.toUpperCase().contains('NONE')) return null;
+    final upper = raw.toUpperCase();
+    if (upper.contains('NONE') || upper.contains('INVALID')) return null;
 
     // Remove any markdown code blocks, backticks, or extra whitespace
     var text = raw.replaceAll('`', '').trim();
@@ -116,7 +170,7 @@ STRICT EXTRACTION RULES:
   /// Downscales very large camera images to ~1280px to speed up network transmission
   /// while preserving high-contrast 7-segment details.
   static Uint8List _optimizeImageForVision(Uint8List bytes) {
-    if (bytes.lengthInBytes <= 500 * 1024) {
+    if (bytes.lengthInBytes <= 400 * 1024) {
       return bytes;
     }
 
@@ -128,14 +182,16 @@ STRICT EXTRACTION RULES:
       final maxDim = baked.width > baked.height ? baked.width : baked.height;
 
       if (maxDim <= 1280) {
-        return Uint8List.fromList(img.encodeJpg(baked, quality: 85));
+        return Uint8List.fromList(img.encodeJpg(baked, quality: 80));
       }
 
       final resized = baked.width >= baked.height
-          ? img.copyResize(baked, width: 1280, interpolation: img.Interpolation.linear)
-          : img.copyResize(baked, height: 1280, interpolation: img.Interpolation.linear);
+          ? img.copyResize(baked,
+              width: 1280, interpolation: img.Interpolation.linear)
+          : img.copyResize(baked,
+              height: 1280, interpolation: img.Interpolation.linear);
 
-      return Uint8List.fromList(img.encodeJpg(resized, quality: 85));
+      return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
     } catch (_) {
       return bytes;
     }

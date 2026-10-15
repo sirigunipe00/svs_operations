@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -9,25 +8,28 @@ class CounterReaderService {
   Future<CounterReadingResult> readFile(XFile file) async {
     try {
       final bytes = await file.readAsBytes();
-      final reading = await GeminiCounterReader.readCounter(bytes);
+      final result = await GeminiCounterReader.readCounterResult(bytes);
 
-      log('CounterReaderService reading: $reading');
+      log('CounterReaderService reading: ${result.reading}, error: ${result.error}');
 
-      if (reading == null) {
+      if (result.reading != null && result.reading!.isNotEmpty) {
         return CounterReadingResult(
           imageBytes: bytes,
-          error: 'No counter number found. Use a straight-on photo of the lit display.',
+          reading: result.reading,
         );
       }
 
       return CounterReadingResult(
         imageBytes: bytes,
-        reading: reading,
+        error: result.error ??
+            'Invalid or non-detectable image. Please take a clear photo of the machine counter.',
+        isInvalidImage: result.isInvalid,
       );
     } catch (e, stack) {
       log('CounterReaderService error: $e\n$stack');
       return const CounterReadingResult(
-        error: 'Could not read that image.',
+        error: 'Could not read image. Please take a valid photo.',
+        isInvalidImage: true,
       );
     }
   }
@@ -37,10 +39,12 @@ class CounterReadingResult {
   final Uint8List? imageBytes;
   final String? reading;
   final String? error;
+  final bool isInvalidImage;
 
   const CounterReadingResult({
     this.imageBytes,
     this.reading,
     this.error,
+    this.isInvalidImage = false,
   });
 }
