@@ -55,8 +55,6 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
         ? form.rejectionTrayImage
         : base64Encode(rejectionImage!.readAsBytesSync());
 
-        print('end readig...:$endReading');
-
     final newForm = form.copyWith(
         jobCard: jobCard ?? form.jobCard,
         childId: childId ?? form.childId,

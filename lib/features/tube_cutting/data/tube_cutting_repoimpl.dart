@@ -145,8 +145,6 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
         },
       );
 
-      print('config...:$config');
-
       final response = await post(config);
       return response.process((r) => right(r.data!));
     });
@@ -173,7 +171,6 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           return p0['message']['message'] as String;
         },
       );
-      print('config...:$config');
 
       final response = await post(config);
       return response.process((r) => right(r.data!));

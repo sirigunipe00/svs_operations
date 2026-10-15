@@ -179,7 +179,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
       if (result.reading != null && result.reading!.trim().isNotEmpty) {
         final readingText = result.reading!.trim();
-        log('Counter reading: $readingText');
         setState(() {
           if (isStart) {
             startImage = photo.path;
@@ -225,7 +224,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           ),
         );
       } else {
-        log('No counter reading found: ${result.error}');
         final errorMsg =
             (result.error != null && result.error!.trim().isNotEmpty)
                 ? result.error!.trim()
@@ -394,8 +392,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
   // Confirmation dialog showing Start Reading, End Reading, Final Qnty (End - Start), and Scrap Count
   Future<bool?> _showCompleteConfirmationDialog() {
-    print('endReadingController...:${endReadingController.text}');
-    print('state.form.endReadings...:${context.read<CreateItemCubit>().state.form.endReadings}');
     final inProgressChild = childStatusList
         .where((item) => item.status == 'In Progress')
         .firstOrNull;
@@ -770,8 +766,6 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                   .where((item) => item.status == 'In Progress')
                   .firstOrNull;
               final bool inProgress = (childItem != null);
-              log('childItem ...:$childItem');
-              log('IN PROGRESS...:$inProgress');
 
               return Scaffold(
                 backgroundColor: const Color(0xFFEDF2F9),

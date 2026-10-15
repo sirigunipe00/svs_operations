@@ -66,7 +66,6 @@ CRITICAL EXTRACTION RULES:
 
       for (final modelName in _candidateModels) {
         try {
-          log('GeminiCounterReader: Checking with $modelName...');
           final model = GenerativeModel(
             model: modelName,
             apiKey: apiKey,
@@ -89,13 +88,11 @@ CRITICAL EXTRACTION RULES:
               .timeout(const Duration(seconds: 6));
 
           final rawText = response.text?.trim() ?? '';
-          log('GeminiCounterReader ($modelName): Response = "$rawText"');
 
           final upper = rawText.toUpperCase();
           if (upper.contains('INVALID') ||
               upper.contains('NONE') ||
               rawText.isEmpty) {
-            log('GeminiCounterReader: Image identified as non-counter / invalid.');
             return const GeminiCounterResult(
               isInvalid: true,
               error:
@@ -105,7 +102,6 @@ CRITICAL EXTRACTION RULES:
 
           final cleaned = _sanitizeReading(rawText);
           if (cleaned != null && cleaned.isNotEmpty) {
-            log('GeminiCounterReader ($modelName): Successfully read $cleaned');
             return GeminiCounterResult(reading: cleaned);
           }
 
