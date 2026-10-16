@@ -1,12 +1,12 @@
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:svs_operations/core/core.dart';
+import 'package:svs_operations/features/gate_entry/model/item_name.dart';
 import 'package:svs_operations/features/gate_entry/model/purchase_order.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/bloc_provider.dart';
-import 'package:svs_operations/styles/app_colors.dart';
-import 'package:svs_operations/widgets/inputs/image_selection_widget1.dart';
-import 'package:svs_operations/widgets/widgets.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/new_gate_entry/new_gate_entry_cubit.dart';
+import 'package:svs_operations/features/gate_entry/presentation/widgets/gate_ui_components.dart';
 
 class GateEntryFormWidget extends StatefulWidget {
   const GateEntryFormWidget({super.key});
@@ -16,321 +16,513 @@ class GateEntryFormWidget extends StatefulWidget {
 }
 
 class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
-  bool? isJobWork; // checkbox value
-  bool? isJobWorkEnabled;
+  // Local controllers for driver mockup fields so user can input if desired
+  final TextEditingController _driverNameController = TextEditingController();
+  final TextEditingController _driverLicenseController = TextEditingController();
+  final TextEditingController _mobileNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    _driverNameController.dispose();
+    _driverLicenseController.dispose();
+    _mobileNumberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final formState = context.read<NewGateEntryCubit>().state;
-    final isCreating = formState.view == GateEntryView.create;
+    final formState = context.watch<NewGateEntryCubit>().state;
     final isCompleted = formState.view == GateEntryView.completed;
     final form = formState.form;
 
-    return SpacedColumn(
-      margin: const EdgeInsets.all(12.0),
-      defaultHeight: 8,
-      children: [
-        BlocBuilder<PurchaseOrders, PurchaseOrdersState>(
-          builder: (_, state) {
-            final items = state.maybeWhen(
-              orElse: () => <PurchaseOrder>[],
-              success: (data) => data,
-            );
-            return AppDropDownWidget<PurchaseOrder>(
-              title: 'PO Number',
-              items: items,
-              readOnly: isCompleted,
-              hint: 'Select PO Number',
-              isMandatory: true,
-              headerBuilder: (_, item, __) => Text(item.poNumber),
-              defaultSelection: form.poNumber.containsValidValue
-                  ? PurchaseOrder(
-                      name: '',
-                      poNumber: form.poNumber!,
-                      date: '',
-                      totalAmount: 0.0)
-                  : null,
-              futureRequest: (query) => _onSearch(items, query),
-              listItemBuilder: (_, item, isSelected, p3) => Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // CARD 1: VEHICLE
+          GateSectionCard(
+            number: '1',
+            title: 'Vehicle',
+            children: [
+              // Vehicle Number
+              GateInputField(
+                label: 'Vehicle Number',
+                hintText: 'e.g. TS09AB1234',
+                initialValue: form.vehicleNo,
+                isRequired: true,
+                readOnly: isCompleted,
+                inputFormatters: [UpperCaseTextFormatter()],
+                prefixIcon: const Icon(
+                  Icons.local_shipping_outlined,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+                onChanged: (vehicleNum) {
+                  context
+                      .cubit<NewGateEntryCubit>()
+                      .onValueChanged(vehicleNo: vehicleNum);
+                },
+              ),
+
+              // Driver Name
+              GateInputField(
+                label: 'Driver Name',
+                hintText: 'Enter driver name',
+                controller: _driverNameController,
+                readOnly: isCompleted,
+                prefixIcon: const Icon(
+                  Icons.person_outline_rounded,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+              ),
+
+              // Driver License
+              GateInputField(
+                label: 'Driver License',
+                hintText: 'Enter license number',
+                controller: _driverLicenseController,
+                readOnly: isCompleted,
+                prefixIcon: const Icon(
+                  Icons.badge_outlined,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+              ),
+
+              // Mobile Number
+              GateInputField(
+                label: 'Mobile Number',
+                hintText: 'Enter mobile number',
+                controller: _mobileNumberController,
+                readOnly: isCompleted,
+                keyboardType: TextInputType.phone,
+                prefixIcon: const Icon(
+                  Icons.phone_outlined,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+              ),
+
+              // Gate Entry Date
+              GateDatePickerField(
+                label: 'Gate Entry Date',
+                initialValue: form.entryDate,
+                readOnly: true,
+                isRequired: true,
+                onDateSelected: (_) {},
+              ),
+            ],
+          ),
+
+          // CARD 2: MATERIAL
+          GateSectionCard(
+            number: '2',
+            title: 'Material',
+            children: [
+              // Purchase Order Dropdown
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.poNumber,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text(item.name),
-                  Row(
+                  const Row(
                     children: [
-                      Text(item.date),
-                      const SizedBox(width: 4.0),
-                      Text(item.totalAmount.toString()),
+                      Text(
+                        'PURCHASE ORDER',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '*',
+                        style: TextStyle(
+                          color: Color(0xFFDC2626),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
+                  const SizedBox(height: 6),
+                  BlocBuilder<PurchaseOrders, PurchaseOrdersState>(
+                    builder: (_, poState) {
+                      final items = poState.maybeWhen(
+                        orElse: () => <PurchaseOrder>[],
+                        success: (data) => data,
+                      );
+
+                      return AbsorbPointer(
+                        absorbing: isCompleted,
+                        child: CustomDropdown<PurchaseOrder>.searchRequest(
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: isCompleted
+                                ? const Color(0xFFF1F5F9)
+                                : const Color(0xFFF8FAFC),
+                            expandedFillColor: Colors.white,
+                            closedBorder: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1.0,
+                            ),
+                            expandedBorder: Border.all(
+                              color: const Color(0xFF0284C7),
+                              width: 1.2,
+                            ),
+                            closedBorderRadius: BorderRadius.circular(10),
+                            expandedBorderRadius: BorderRadius.circular(10),
+                            hintStyle: const TextStyle(
+                              color: Color(0xFF94A3B8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            headerStyle: const TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            closedShadow: const [],
+                          ),
+                          futureRequest: (query) => _onSearchPO(items, query),
+                          hintText: 'Select purchase order',
+                          items: items,
+                          headerBuilder: (_, item, __) => Text(item.poNumber),
+                          listItemBuilder: (_, item, isSelected, __) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.poNumber,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                item.name,
+                                style: const TextStyle(
+                                  color: Color(0xFF64748B),
+                                  fontSize: 12,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Text(
+                                    item.date,
+                                    style: const TextStyle(
+                                      color: Color(0xFF94A3B8),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '₹${item.totalAmount}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF0284C7),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          initialItem: form.poNumber.containsValidValue
+                              ? PurchaseOrder(
+                                  name: '',
+                                  poNumber: form.poNumber!,
+                                  date: '',
+                                  totalAmount: 0.0,
+                                )
+                              : null,
+                          onChanged: (order) {
+                            if (order == null) return;
+                            context
+                                .cubit<ItemNameCubit>()
+                                .request(order.poNumber);
+                            context.cubit<NewGateEntryCubit>().onValueChanged(
+                                  poNumber: order.poNumber,
+                                );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
                 ],
               ),
-              onSelected: (order) {
-                if (order.isNull) {
-                  return;
-                }
 
-                context.cubit<ItemNameCubit>().request(order!.poNumber);
-                context.cubit<NewGateEntryCubit>().onValueChanged(
-                      poNumber: order.poNumber,
+              // Item Dropdown
+              BlocBuilder<ItemNameCubit, ItemNameCubitState>(
+                builder: (_, itemState) {
+                  final items = itemState.maybeWhen(
+                    orElse: () => <ItemName>[],
+                    success: (data) => data,
+                  );
+
+                  if (items.isEmpty) {
+                    return const GateInputField(
+                      label: 'Item',
+                      hintText: 'Select item',
+                      readOnly: true,
+                      prefixIcon: Icon(
+                        Icons.inventory_2_outlined,
+                        color: Color(0xFF94A3B8),
+                        size: 18,
+                      ),
                     );
-              },
-            );
-          },
-        ),
-        // BlocBuilder<ItemNameCubit, ItemNameCubitState>(
-        //   builder: (context, itemState) {
-        //     bool isEnabled = false;
+                  }
 
-        //     itemState.maybeWhen(
-        //       success: (items) {
-        //         isEnabled = items.any((item) {
-        //           final name = item.itemName.toLowerCase();
-        //           return name.contains('job work') ||
-        //               name.contains('jobwork') ||
-        //               name.contains('jw');
-        //         });
-
-        //         // auto set value
-        //         WidgetsBinding.instance.addPostFrameCallback((_) {
-        //           context
-        //               .cubit<NewGateEntryCubit>()
-        //               .onValueChanged(isJobWork: isEnabled ? 1 : 0);
-        //         });
-        //       },
-        //       orElse: () {},
-        //     );
-
-        //     return _buildCheckbox(context, isEnabled);
-        //   },
-        // ),
-        InputField(
-          title: 'Vechicle Number',
-          readOnly: isCompleted,
-          isRequired: true,
-          initialValue: form.vehicleNo,
-          inputFormatters: [UpperCaseTextFormatter()],
-          borderColor: AppColors.marigoldDDust,
-          onChanged: (vehicleNum) {
-            context
-                .cubit<NewGateEntryCubit>()
-                .onValueChanged(vehicleNo: vehicleNum);
-          },
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
-                buildWhen: (pv, curr) =>
-                    pv.form.vehiclePhoto != curr.form.vehiclePhoto,
-                builder: (_, state) {
-                  return ImageSelectionWidget1(
-                    title: 'Vechicle Front Photo',
-                    readOnly: isCompleted,
-                    key: ValueKey(state.form.vehiclePhoto),
-                    borderColor: AppColors.marigoldDDust,
-                    defaultVal: state.form.vehiclePhoto,
-                    placeholder: const Icon(Icons.local_shipping,
-                        size: 64, color: AppColors.chimneySweep),
-                    onView: () {
-                      final data = Pair(form.name ?? 'Vechicle Front Photo',
-                          state.form.vehiclePhoto);
-                      AppRoute.newGateEntryPreview.push(context, extra: data);
-                    },
-                    onImage: (file) {
-                      if (file.isNull) {
-                        context.cubit<NewGateEntryCubit>().clearVehiclePhoto();
-                      } else {
-                        context
-                            .cubit<NewGateEntryCubit>()
-                            .onValueChanged(vehiclePhoto: file);
-                      }
-                    },
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'ITEM',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      AbsorbPointer(
+                        absorbing: isCompleted,
+                        child: CustomDropdown<ItemName>(
+                          decoration: CustomDropdownDecoration(
+                            closedFillColor: isCompleted
+                                ? const Color(0xFFF1F5F9)
+                                : const Color(0xFFF8FAFC),
+                            expandedFillColor: Colors.white,
+                            closedBorder: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1.0,
+                            ),
+                            expandedBorder: Border.all(
+                              color: const Color(0xFF0284C7),
+                              width: 1.2,
+                            ),
+                            closedBorderRadius: BorderRadius.circular(10),
+                            expandedBorderRadius: BorderRadius.circular(10),
+                            hintStyle: const TextStyle(
+                              color: Color(0xFF94A3B8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            headerStyle: const TextStyle(
+                              color: Color(0xFF0F172A),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            closedShadow: const [],
+                          ),
+                          hintText: 'Select item',
+                          items: items,
+                          headerBuilder: (_, item, __) => Text(item.itemName),
+                          listItemBuilder: (_, item, isSelected, __) =>
+                              Text(item.itemName,
+                                  style: const TextStyle(fontSize: 14)),
+                          onChanged: (_) {},
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                   );
                 },
               ),
-            ),
-            AppSpacer.p12(),
-            Expanded(
-              child: BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
-                buildWhen: (pv, curr) =>
-                    pv.form.vehicleBackPhoto != curr.form.vehicleBackPhoto,
-                builder: (_, state) {
-                  return ImageSelectionWidget1(
-                    title: 'Vechicle Back Photo',
-                    readOnly: isCompleted,
-                    key: ValueKey(state.form.vehicleBackPhoto),
-                    borderColor: AppColors.marigoldDDust,
-                    defaultVal: state.form.vehicleBackPhoto,
-                    placeholder: const Icon(Icons.local_shipping,
-                        size: 64, color: AppColors.chimneySweep),
-                    onView: () {
-                      final data = Pair(form.name ?? 'Vechicle Back Photo',
-                          state.form.vehicleBackPhoto);
-                      AppRoute.newGateEntryPreview.push(context, extra: data);
-                    },
-                    onImage: (file) {
-                      if (file.isNull) {
-                        context
-                            .cubit<NewGateEntryCubit>()
-                            .clearVehicleBackPhoto();
-                      } else {
-                        context
-                            .cubit<NewGateEntryCubit>()
-                            .onValueChanged(vehicleBackPhoto: file);
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
-          buildWhen: (pv, curr) =>
-              pv.form.vendorInvPhoto != curr.form.vendorInvPhoto,
-          builder: (context, state) {
-            return ImageSelectionWidget1(
-              title: 'Vendor Invoice Photo',
-              readOnly: isCompleted,
-              key: ValueKey(state.form.vendorInvPhoto),
-              borderColor: AppColors.marigoldDDust,
-              defaultVal: state.form.vendorInvPhoto,
-              placeholder: const Icon(Icons.description,
-                  size: 64, color: AppColors.chimneySweep),
-              onView: () {
-                final data = Pair(form.name ?? 'Vendor Invoice Photo',
-                    state.form.vendorInvPhoto);
-                AppRoute.newGateEntryPreview.push(context, extra: data);
-              },
-              onImage: (file) {
-                if (file.isNull) {
-                  context.cubit<NewGateEntryCubit>().clearInvPhoto();
-                } else {
+
+              // Vendor Invoice Number
+              GateInputField(
+                label: 'Vendor Invoice No.',
+                hintText: 'Enter invoice number',
+                isRequired: true,
+                initialValue: form.vendorInvNo,
+                readOnly: isCompleted,
+                prefixIcon: const Icon(
+                  Icons.description_outlined,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+                onChanged: (invNumber) {
                   context
                       .cubit<NewGateEntryCubit>()
-                      .onValueChanged(invoicePhoto: file);
-                }
-              },
-            );
-          },
-        ),
-        InputField(
-          title: 'Vendor Invoice Number',
-          readOnly: isCompleted,
-          isRequired: true,
-          initialValue: form.vendorInvNo,
-          borderColor: AppColors.marigoldDDust,
-          onChanged: (invNumber) {
-            context
-                .cubit<NewGateEntryCubit>()
-                .onValueChanged(vendorInvNo: invNumber);
-          },
-        ),
-        DateSelectionField(
-          title: 'Vendor Invoice Date',
-          isRequired: true,
-          initialValue: form.invoiceDate,
-          readOnly: isCompleted,
-          firstDate: DFU.now().subtract(const Duration(days: 60)),
-          lastDate: DFU.now(),
-          onDateSelect: (date) {
-            final formattedDate = DFU.friendlyFormat(date);
-            context
-                .cubit<NewGateEntryCubit>()
-                .onValueChanged(invoiceDate: formattedDate);
-          },
-          borderColor: AppColors.marigoldDDust,
-          suffixIcon: const Icon(Icons.calendar_month_outlined,
-              color: AppColors.chimneySweep),
-        ),
-        InputField(
-          title: 'Vendor Invoice Quantity',
-          readOnly: isCompleted,
-          initialValue: form.invoiceQty,
-          borderColor: AppColors.marigoldDDust,
-          inputType: const TextInputType.numberWithOptions(decimal: true),
-          onChanged: (qty) {
-            context.cubit<NewGateEntryCubit>().onValueChanged(invoiceQty: qty);
-          },
-        ),
-        InputField(
-          title: 'Invoice Amount',
-          readOnly: isCompleted,
-          initialValue: form.invoiceAmt,
-          borderColor: AppColors.marigoldDDust,
-          inputType: const TextInputType.numberWithOptions(decimal: true),
-          onChanged: (amount) {
-            context
-                .cubit<NewGateEntryCubit>()
-                .onValueChanged(invoiceAmt: amount);
-          },
-        ),
-        DateSelectionField(
-          title: 'Gate Entry Date',
-          filled: true,
-          initialValue: form.entryDate,
-          firstDate: DFU.now(),
-          lastDate: DFU.now(),
-          onDateSelect: (date) {},
-          readOnly: true,
-          isRequired: true,
-          borderColor: AppColors.marigoldDDust,
-          suffixIcon:
-              const Icon(Icons.calendar_month_outlined, color: AppColors.black),
-        ),
-        InputField(
-          title: 'Remarks',
-          readOnly: isCompleted,
-          initialValue: form.remarks,
-          borderColor: AppColors.marigoldDDust,
-          minLines: 3,
-          onChanged: (remarks) {
-            context.cubit<NewGateEntryCubit>().onValueChanged(remarks: remarks);
-          },
-        ),
-        if (!isCompleted) ...[
-          BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
-            builder: (_, state) => AppButton(
-              label: isCreating ? 'Save' : 'Submit',
-              isLoading: state.isLoading,
-              bgColor: AppColors.haintBlue,
-              margin: const EdgeInsets.all(12.0),
-              onPressed: context.cubit<NewGateEntryCubit>().save,
-            ),
+                      .onValueChanged(vendorInvNo: invNumber);
+                },
+              ),
+
+              // Invoice Quantity
+              GateInputField(
+                label: 'Invoice Quantity',
+                hintText: 'Enter quantity',
+                initialValue: form.invoiceQty,
+                readOnly: isCompleted,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                prefixIcon: const Icon(
+                  Icons.tag_rounded,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+                onChanged: (qty) {
+                  context
+                      .cubit<NewGateEntryCubit>()
+                      .onValueChanged(invoiceQty: qty);
+                },
+              ),
+
+              // Vendor Invoice Date
+              GateDatePickerField(
+                label: 'Vendor Invoice Date',
+                hintText: 'Select invoice date',
+                isRequired: true,
+                readOnly: isCompleted,
+                initialValue: form.invoiceDate,
+                firstDate: DFU.now().subtract(const Duration(days: 60)),
+                lastDate: DFU.now(),
+                onDateSelected: (date) {
+                  final formattedDate = DFU.friendlyFormat(date);
+                  context
+                      .cubit<NewGateEntryCubit>()
+                      .onValueChanged(invoiceDate: formattedDate);
+                },
+              ),
+
+              // Invoice Amount (optional)
+              GateInputField(
+                label: 'Invoice Amount',
+                hintText: 'Enter invoice amount',
+                initialValue: form.invoiceAmt,
+                readOnly: isCompleted,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                prefixIcon: const Icon(
+                  Icons.currency_rupee_rounded,
+                  color: Color(0xFF94A3B8),
+                  size: 18,
+                ),
+                onChanged: (amount) {
+                  context
+                      .cubit<NewGateEntryCubit>()
+                      .onValueChanged(invoiceAmt: amount);
+                },
+              ),
+            ],
           ),
+
+          // CARD 3: PHOTOS & REMARKS
+          GateSectionCard(
+            number: '3',
+            title: 'Photos & remarks',
+            children: [
+              // Vehicle Front Photo
+              GatePhotoPickerBox(
+                title: 'Capture vehicle front photo',
+                readOnly: isCompleted,
+                imageValue: form.vehiclePhoto,
+                onView: () {
+                  final data = Pair(
+                    form.name ?? 'Vehicle Front Photo',
+                    form.vehiclePhoto,
+                  );
+                  AppRoute.newGateEntryPreview.push(context, extra: data);
+                },
+                onImage: (file) {
+                  if (file == null) {
+                    context.cubit<NewGateEntryCubit>().clearVehiclePhoto();
+                  } else {
+                    context
+                        .cubit<NewGateEntryCubit>()
+                        .onValueChanged(vehiclePhoto: file);
+                  }
+                },
+              ),
+
+              // Vehicle Back Photo
+              GatePhotoPickerBox(
+                title: 'Capture vehicle back photo',
+                readOnly: isCompleted,
+                imageValue: form.vehicleBackPhoto,
+                onView: () {
+                  final data = Pair(
+                    form.name ?? 'Vehicle Back Photo',
+                    form.vehicleBackPhoto,
+                  );
+                  AppRoute.newGateEntryPreview.push(context, extra: data);
+                },
+                onImage: (file) {
+                  if (file == null) {
+                    context.cubit<NewGateEntryCubit>().clearVehicleBackPhoto();
+                  } else {
+                    context
+                        .cubit<NewGateEntryCubit>()
+                        .onValueChanged(vehicleBackPhoto: file);
+                  }
+                },
+              ),
+
+              // Vendor Invoice Photo
+              GatePhotoPickerBox(
+                title: 'Capture vendor invoice',
+                readOnly: isCompleted,
+                imageValue: form.vendorInvPhoto,
+                onView: () {
+                  final data = Pair(
+                    form.name ?? 'Vendor Invoice Photo',
+                    form.vendorInvPhoto,
+                  );
+                  AppRoute.newGateEntryPreview.push(context, extra: data);
+                },
+                onImage: (file) {
+                  if (file == null) {
+                    context.cubit<NewGateEntryCubit>().clearInvPhoto();
+                  } else {
+                    context
+                        .cubit<NewGateEntryCubit>()
+                        .onValueChanged(invoicePhoto: file);
+                  }
+                },
+              ),
+
+              // Remarks
+              GateInputField(
+                label: 'Remarks',
+                hintText: 'Add remarks (optional)',
+                initialValue: form.remarks,
+                readOnly: isCompleted,
+                minLines: 3,
+                maxLines: 4,
+                prefixIcon: const Icon(
+                  Icons.notes_rounded,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+                onChanged: (remarks) {
+                  context
+                      .cubit<NewGateEntryCubit>()
+                      .onValueChanged(remarks: remarks);
+                },
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
         ],
-      ],
+      ),
     );
   }
 
-  Widget _buildCheckbox(BuildContext context, bool isEnabled) {
-    return BlocBuilder<NewGateEntryCubit, NewGateEntryState>(
-      builder: (context, state) {
-        return CheckboxListTile(
-          dense: true,
-          visualDensity: const VisualDensity(vertical: -4),
-          title: const Text(
-            'Is Job Work',
-            style: TextStyle(color: Colors.black),
-          ),
-          value: isEnabled,
-          onChanged: isEnabled
-              ? (value) {
-                  context
-                      .cubit<NewGateEntryCubit>()
-                      .onValueChanged(isJobWork: value == true ? 1 : 0);
-                }
-              : null, // disabled
-        );
-      },
-    );
-  }
-
-  Future<List<PurchaseOrder>> _onSearch(
-      List<PurchaseOrder> data, String query) async {
-    final filterData = data.where((e) => e.poNumber.contains(query)).toList();
-    return filterData;
+  Future<List<PurchaseOrder>> _onSearchPO(
+    List<PurchaseOrder> data,
+    String query,
+  ) async {
+    final lower = query.toLowerCase();
+    return data
+        .where((e) =>
+            e.poNumber.toLowerCase().contains(lower) ||
+            e.name.toLowerCase().contains(lower))
+        .toList();
   }
 }

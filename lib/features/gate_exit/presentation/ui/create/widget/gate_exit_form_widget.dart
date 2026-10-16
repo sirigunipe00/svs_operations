@@ -2,15 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
+import 'package:svs_operations/core/core.dart';
+import 'package:svs_operations/features/gate_entry/presentation/widgets/gate_ui_components.dart';
 import 'package:svs_operations/features/gate_exit/presentation/bloc/bloc_provider.dart';
 import 'package:svs_operations/features/gate_exit/presentation/bloc/create_gate_exit/create_gate_exit_cubit.dart';
-import 'package:svs_operations/core/core.dart';
-import 'package:svs_operations/styles/app_colors.dart';
-import 'package:svs_operations/widgets/inputs/image_selection_widget1.dart';
-import 'package:svs_operations/widgets/widgets.dart';
 
 class GateExitFormWidget extends StatefulWidget {
   const GateExitFormWidget({super.key});
@@ -22,179 +19,190 @@ class GateExitFormWidget extends StatefulWidget {
 class _GateExitFormWidgetState extends State<GateExitFormWidget> {
   @override
   Widget build(BuildContext context) {
-    final formState = context.read<CreateGateExitCubit>().state;
-    final isCreating = formState.view == GateExitView.create;
+    final formState = context.watch<CreateGateExitCubit>().state;
     final isCompleted = formState.view == GateExitView.completed;
     final form = formState.form;
 
-    return SpacedColumn(
-      defaultHeight: 10,
-      margin: const EdgeInsets.all(12.0),
-      children: [
-        BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
-          buildWhen: (pv, curr) =>
-              pv.form.salesInvNumber != curr.form.salesInvNumber,
-          builder: (_, state) => InputField(
-            title: 'Sales Invoice Number',
-            initialValue: state.form.salesInvNumber,
-            // readOnly: true,
-            isRequired: true,
-            suffixIcon: IconButton(
-              onPressed: isCompleted ? null : () => onScan(context),
-              icon: const Icon(Icons.document_scanner_outlined,
-                  color: AppColors.chimneySweep),
-            ),
-            borderColor: AppColors.lavender,
-            onChanged: (text) {
-              context
-                  .cubit<CreateGateExitCubit>()
-                  .onFieldChange(salesInvNo: text);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // CARD 1: VEHICLE
+          GateSectionCard(
+            number: '1',
+            title: 'Vehicle',
+            children: [
+              BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
+                buildWhen: (pv, curr) =>
+                    pv.form.salesInvNumber != curr.form.salesInvNumber,
+                builder: (_, state) => GateInputField(
+                  label: 'Sales Invoice',
+                  hintText: 'Select sales invoice',
+                  isRequired: true,
+                  initialValue: state.form.salesInvNumber,
+                  readOnly: isCompleted,
+                  prefixIcon: const Icon(
+                    Icons.receipt_long_outlined,
+                    color: Color(0xFF94A3B8),
+                    size: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: isCompleted ? null : () => onScan(context),
+                    icon: const Icon(
+                      Icons.qr_code_scanner_rounded,
+                      color: Color(0xFF0284C7),
+                      size: 22,
+                    ),
+                    tooltip: 'Scan Barcode',
+                  ),
+                  onChanged: (text) {
+                    context
+                        .cubit<CreateGateExitCubit>()
+                        .onFieldChange(salesInvNo: text);
+                    unawaited(context.cubit<GetVehicleNumber>().request(text));
+                  },
+                ),
+              ),
+              // Vehicle Number (Auto-filled from invoice)
+              BlocConsumer<GetVehicleNumber, GetVehicleNumberState>(
+                listener: (_, state) {
+                  state.maybeWhen(
+                    orElse: () {},
+                    success: (data) { 
+                      context
+                          .cubit<CreateGateExitCubit>()
+                          .onFieldChange(vehicleNo: data);
+                      setState(() {});
+                    },
+                  );
+                },
+                builder: (_, state) {
+                  return GateInputField(
+                    label: 'Vehicle Number',
+                    hintText: 'Auto-filled from invoice',
+                    initialValue: form.vehicleNo,
+                    isRequired: true,
+                    readOnly: isCompleted,
+                    inputFormatters: [UpperCaseTextFormatter()],
+                    prefixIcon: const Icon(
+                      Icons.local_shipping_outlined,
+                      color: Color(0xFF94A3B8),
+                      size: 20,
+                    ),
+                    suffixIcon: state.isLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: CupertinoActivityIndicator(),
+                          )
+                        : null,
+                    onChanged: (text) {
+                      context
+                          .cubit<CreateGateExitCubit>()
+                          .onFieldChange(vehicleNo: text);
+                    },
+                  );
+                },
+              ),
 
-              unawaited(context.cubit<GetVehicleNumber>().request(text));
-            },
-          ),
-        ),
-        BlocConsumer<GetVehicleNumber, GetVehicleNumberState>(
-          listener: (_, state) {
-            state.maybeWhen(
-              orElse: () {},
-              success: (data) {
-                context
-                    .cubit<CreateGateExitCubit>()
-                    .onFieldChange(vehicleNo: data);
-                setState(() {});
-              },
-            );
-          },
-          builder: (_, state) {
-            return InputField(
-              title: 'Vechicle Number',
-              readOnly: isCompleted,
-              isRequired: true,
-              suffixIcon: state.isLoading
-                  ? const CupertinoActivityIndicator()
-                  : const SizedBox.shrink(),
-              inputFormatters: [UpperCaseTextFormatter()],
-              initialValue: form.vehicleNo,
-              borderColor: AppColors.lavender,
-              onChanged: (text) {
-                context
-                    .cubit<CreateGateExitCubit>()
-                    .onFieldChange(vehicleNo: text);
-              },
-            );
-          },
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
-                buildWhen: (pv, curr) =>
-                    (pv.form.vehiclePhoto != curr.form.vehiclePhoto),
-                builder: (_, state) => ImageSelectionWidget1(
-                  title: 'Vechicle Front Photo',
-                  borderColor: AppColors.lavender,
-                  readOnly: isCompleted,
-                  defaultVal: state.form.vehiclePhoto,
-                  placeholder: const Icon(Icons.local_shipping,
-                      size: 64, color: AppColors.chimneySweep),
-                  onView: () {
-                    final data = Pair(form.name ?? 'Vehicle Front Photo',
-                        state.form.vehiclePhoto);
-                    AppRoute.newGateExitPreview.push(context, extra: data);
-                  },
-                  onImage: (file) {
-                    if (file.isNull) {
-                      context.cubit<CreateGateExitCubit>().clearVehiclePhoto();
-                    } else {
-                      context
-                          .cubit<CreateGateExitCubit>()
-                          .onFieldChange(vehiclePhoto: file);
-                    }
-                  },
-                ),
+              // Gate Exit Date
+              GateDatePickerField(
+                label: 'Gate Exit Date',
+                initialValue: form.exitDate,
+                readOnly: true,
+                isRequired: true,
+                onDateSelected: (_) {},
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
-                buildWhen: (pv, curr) =>
-                    (pv.form.vehicleBackPhoto != curr.form.vehicleBackPhoto),
-                builder: (_, state) => ImageSelectionWidget1(
-                  title: 'Vechicle Back Photo',
-                  borderColor: AppColors.lavender,
-                  readOnly: isCompleted,
-                  defaultVal: state.form.vehicleBackPhoto,
-                  placeholder: const Icon(Icons.local_shipping,
-                      size: 64, color: AppColors.chimneySweep),
-                  onView: () {
-                    final data = Pair(form.name ?? 'Vehicle Photo',
-                        state.form.vehicleBackPhoto);
-                    AppRoute.newGateExitPreview.push(context, extra: data);
-                  },
-                  onImage: (file) {
-                    if (file.isNull) {
-                      context
-                          .cubit<CreateGateExitCubit>()
-                          .clearVehicleBackPhoto();
-                    } else {
-                      context
-                          .cubit<CreateGateExitCubit>()
-                          .onFieldChange(vehicleBackPhoto: file);
-                    }
-                  },
-                ),
+            ],
+          ),
+
+
+          // CARD 3: PHOTOS & REMARKS
+          GateSectionCard(
+            number: '3',
+            title: 'Photos & remarks',
+            children: [
+              // Vehicle Exit Photo
+              GatePhotoPickerBox(
+                title: 'Capture vehicle exit photo',
+                readOnly: isCompleted,
+                imageValue: form.vehiclePhoto,
+                onView: () {
+                  final data = Pair(
+                    form.name ?? 'Vehicle Exit Photo',
+                    form.vehiclePhoto,
+                  );
+                  AppRoute.newGateExitPreview.push(context, extra: data);
+                },
+                onImage: (file) {
+                  if (file == null) {
+                    context.cubit<CreateGateExitCubit>().clearVehiclePhoto();
+                  } else {
+                    context
+                        .cubit<CreateGateExitCubit>()
+                        .onFieldChange(vehiclePhoto: file);
+                  }
+                },
               ),
-            ),
-          ],
-        ),
-        DateSelectionField(
-          title: 'Gate Exit Date',
-          initialValue: form.exitDate,
-          firstDate: DFU.now(),
-          lastDate: DFU.now(),
-          onDateSelect: (date) {},
-          readOnly: true,
-          filled: true,
-          borderColor: AppColors.lavender,
-          suffixIcon: const Icon(
-            Icons.calendar_month_outlined,
-            color: AppColors.black,
+
+              // Vehicle Back Photo
+              GatePhotoPickerBox(
+                title: 'Capture vehicle back photo',
+                readOnly: isCompleted,
+                imageValue: form.vehicleBackPhoto,
+                onView: () {
+                  final data = Pair(
+                    form.name ?? 'Vehicle Back Photo',
+                    form.vehicleBackPhoto,
+                  );
+                  AppRoute.newGateExitPreview.push(context, extra: data);
+                },
+                onImage: (file) {
+                  if (file == null) {
+                    context
+                        .cubit<CreateGateExitCubit>()
+                        .clearVehicleBackPhoto();
+                  } else {
+                    context
+                        .cubit<CreateGateExitCubit>()
+                        .onFieldChange(vehicleBackPhoto: file);
+                  }
+                },
+              ),
+
+              // Remarks
+              GateInputField(
+                label: 'Remarks',
+                hintText: 'Add remarks (optional)',
+                initialValue: form.remarks,
+                readOnly: isCompleted,
+                minLines: 3,
+                maxLines: 4,
+                prefixIcon: const Icon(
+                  Icons.notes_rounded,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
+                ),
+                onChanged: (text) {
+                  context
+                      .cubit<CreateGateExitCubit>()
+                      .onFieldChange(remarks: text);
+                },
+              ),
+            ],
           ),
-        ),
-        InputField(
-          title: 'Remarks',
-          readOnly: isCompleted,
-          initialValue: form.remarks,
-          borderColor: AppColors.lavender,
-          minLines: 3,
-          onChanged: (text) {
-            context.cubit<CreateGateExitCubit>().onFieldChange(remarks: text);
-          },
-        ),
-        if (!isCompleted) ...[
-          BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
-            buildWhen: (pv, curr) => pv.isLoading != curr.isLoading,
-            builder: (_, state) => AppButton(
-              label: isCreating ? 'Save' : 'Submit',
-              isLoading: state.isLoading,
-              bgColor: AppColors.haintBlue,
-              margin: const EdgeInsets.all(12.0),
-              onPressed: context.cubit<CreateGateExitCubit>().save,
-            ),
-          ),
+
+          const SizedBox(height: 20),
         ],
-      ],
+      ),
     );
   }
 
   void onScan(BuildContext context) async {
-    String? barcodeScanRes = await SimpleBarcodeScanner.scanBarcode(
+    final barcodeScanRes = await SimpleBarcodeScanner.scanBarcode(
       context,
       barcodeAppBar: const BarcodeAppBar(
-        appBarTitle: 'Test',
+        appBarTitle: 'Scan Sales Invoice',
         centerTitle: false,
         enableBackButton: true,
         backButtonIcon: Icon(Icons.arrow_back_ios),

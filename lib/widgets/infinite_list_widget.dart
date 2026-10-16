@@ -27,6 +27,7 @@ class InfiniteListViewWidget<T extends StateStreamable<InfiniteListState<D>>, D>
   Widget build(BuildContext context) {
     return BlocBuilder<T, InfiniteListState<D>>(
       builder: (_, InfiniteListState<D> state) {
+        print('state..:$state');
         return state.when(
           initial: () => const Center(child: LoadingIndicator()),
           loading: () => const Center(child: LoadingIndicator()),
@@ -100,7 +101,7 @@ class _InfiniteListViewState<T> extends State<_InfiniteListView<T>> {
     return Material(
       type: MaterialType.transparency,
       child: ListView.separated(
-        separatorBuilder: (_, __) => AppSpacer.p12(),
+        separatorBuilder: (_, __) => AppSpacer.p4(),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(0.0),
         itemCount: listLen,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -19,6 +18,7 @@ class GateEntryRepoImpl extends BaseApiRepository implements GateEntryRepo {
   @override
   AsyncValueOf<List<GateEntry>> fetchEntries(
       int start, int end, PageListFilters filters) async {
+        print('filters..:$filters');
     final requestConfig = RequestConfig(
       url: Urls.gateEntryList,
       parser: (json) {
@@ -32,8 +32,7 @@ class GateEntryRepoImpl extends BaseApiRepository implements GateEntryRepo {
       },
       reqParams: {
         if (filters.query.containsValidValue &&
-    filters.query != null &&
-    filters.query!.length >= 2) ...{
+            filters.query != null) ...{
           'name': filters.query,
         },
         'status': filters.status,

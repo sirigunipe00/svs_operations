@@ -58,14 +58,15 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
         ? form.vehicleBackPhoto
         : base64Encode(vehicleBackPhoto!.readAsBytesSync());
     final updatedForm = form.copyWith(
-      name: form.name,
+      name: form.name ,
       exitDate: form.exitDate,
       salesInvNumber: salesInvNo ?? form.salesInvNumber,
       vehicleNo: vehicleNo ?? form.vehicleNo,
-      vehiclePhoto: vehPhoto,
+      vehiclePhoto: vehPhoto ?? form.vehiclePhoto,
       remarks: remarks ?? form.remarks,
       vehicleBackPhoto: vehBackPhoto ?? form.vehicleBackPhoto,
     );
+    print('updated form..:$updatedForm');
     emitSafeState(state.copyWith(form: updatedForm));
   }
 
@@ -123,10 +124,11 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
 
   Option<String> _validate() {
     final form = state.form;
-    if (form.salesInvNumber.doesNotHaveValue) {
+    print('form..:$form');
+     if (form.vehicleNo.doesNotHaveValue) {
+      return optionOf('Enter Vehicle Number.');
+    } else if (form.salesInvNumber.doesNotHaveValue) {
       return optionOf('Scan Sales Invoice Document No.');
-    } else if (form.vehicleNo.doesNotHaveValue) {
-      return optionOf('Enter Vehcile Number.');
     } else if (form.vehiclePhoto.doesNotHaveValue) {
       return optionOf('Capture Vehicle Front Photo.');
     } else if (form.vehicleBackPhoto.doesNotHaveValue) {

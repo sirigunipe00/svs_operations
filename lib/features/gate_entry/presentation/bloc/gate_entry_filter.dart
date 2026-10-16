@@ -13,11 +13,16 @@ class GateEntryFilterCubit extends FiltersCubit {
 
   @override
   void onSearch([String? query]) {
-    if (query!.doesNotHaveValue) {
+    if (query.doesNotHaveValue) {
       emitSafeState(PageListFilters(status: state.status));
     } else {
       final newState = state.copyWith(query: query);
       emitSafeState(newState);
     }
+  }
+
+  @override
+  void reset() {
+    emitSafeState(PageListFilters.initial());
   }
 }

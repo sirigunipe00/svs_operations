@@ -5,10 +5,10 @@ import 'package:svs_operations/features/gate_entry/presentation/bloc/bloc_provid
 import 'package:svs_operations/features/gate_entry/presentation/bloc/gate_entry_filter.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/new_gate_entry/new_gate_entry_cubit.dart';
 import 'package:svs_operations/features/gate_entry/presentation/ui/create/widget/gate_entry_form_widget.dart';
-import 'package:svs_operations/styles/app_colors.dart';
+import 'package:svs_operations/features/gate_entry/presentation/widgets/gate_ui_components.dart';
 import 'package:svs_operations/widgets/app_error_widget.dart';
+import 'package:svs_operations/widgets/dialogs/app_dialogs.dart';
 import 'package:svs_operations/widgets/loading_indicator.dart';
-import 'package:svs_operations/widgets/widgets.dart';
 
 class NewGateEntry extends StatefulWidget {
   const NewGateEntry({super.key});
@@ -20,21 +20,18 @@ class NewGateEntry extends StatefulWidget {
 class _NewGateEntryState extends State<NewGateEntry> {
   @override
   Widget build(BuildContext context) {
-    final gateEntryState = context.read<NewGateEntryCubit>().state;
+    final gateEntryState = context.watch<NewGateEntryCubit>().state;
     final form = gateEntryState.form;
     final status = form.status;
     final name = form.name;
-
     final isNew = gateEntryState.view == GateEntryView.create;
+    final isCompleted = gateEntryState.view == GateEntryView.completed;
+
+    final headerTitle = isNew ? 'New Gate Entry' : name;
+    final headerTag = isNew ? null : status;
+
     return Scaffold(
-      appBar: isNew
-          ? const SimpleAppBar(title: 'New Gate Entry')
-          : TitleStatusAppBar(
-              title: 'Gate Entry',
-              docNo: name.valueOrEmpty,
-              status: status.valueOrEmpty,
-              textColor: AppColors.marigoldDDust,
-            ) as PreferredSizeWidget,
+      backgroundColor: const Color(0xFFF8FAFC),
       body: BlocListener<NewGateEntryCubit, NewGateEntryState>(
         listener: (_, state) async {
           if (state.isSuccess && state.successMsg.isNotNull) {
@@ -43,16 +40,13 @@ class _NewGateEntryState extends State<NewGateEntry> {
               title: 'Success',
               content: state.successMsg.valueOrEmpty,
               onTapDismiss: context.exit,
-            ).then(
-              (_){
-                if (!context.mounted) return;
-                final filter = context.read<GateEntryFilterCubit>().state;
-                context
-                  ..cubit<GateEntriesCubit>().fetchInitial(filter)
-                  ..cubit<NewGateEntryCubit>().errorHandled();
-              }
-            );
-            // context.cubit<GateEntriesCubit>().fetchInitial();
+            ).then((_) {
+              if (!context.mounted) return;
+              final filter = context.read<GateEntryFilterCubit>().state;
+              context
+                ..cubit<GateEntriesCubit>().fetchInitial(filter)
+                ..cubit<NewGateEntryCubit>().errorHandled();
+            });
             setState(() {});
           }
           if (state.error.isNotNull) {
@@ -67,25 +61,53 @@ class _NewGateEntryState extends State<NewGateEntry> {
             return;
           }
         },
-        child: BlocConsumer<GateEntryDetails, GateEntryDetailsState>(
-          listener: (_, state) {
-            state.maybeWhen(
-              success: (data) {
-                context.cubit<NewGateEntryCubit>().initDetails(data);
-                setState(() {});
-              },
-              orElse: () {},
-            );
-          },
-          builder: (_, state) {
-            return state.maybeWhen(
-              orElse: () => SingleChildScrollView(child: GateEntryFormWidget(key: ValueKey(status))),
-              loading: () => const Center(child: LoadingIndicator()),
-              failure: (failure) => AppErrorWidget(error: failure.error),
-            );
-          },
+        child: Column(
+          children: [
+            // Navy Gradient Header
+            GateHeader(
+              title: headerTitle ?? '',
+              tagText: headerTag,
+              onBack: () => Navigator.of(context).maybePop(),
+            ),
+
+            // Form Body
+            Expanded(
+              child: BlocConsumer<GateEntryDetails, GateEntryDetailsState>(
+                listener: (_, state) {
+                  state.maybeWhen(
+                    success: (data) {
+                      context.cubit<NewGateEntryCubit>().initDetails(data);
+                      setState(() {});
+                    },
+                    orElse: () {},
+                  );
+                },
+                builder: (_, state) {
+                  return state.maybeWhen(
+                    orElse: () => SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: GateEntryFormWidget(key: ValueKey(status)),
+                    ),
+                    loading: () => const Center(child: LoadingIndicator()),
+                    failure: (failure) => AppErrorWidget(error: failure.error),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
+
+      // Bottom Action Button "Save gate entry ✓"
+      bottomNavigationBar: !isCompleted
+          ? GatePrimaryButton(
+              label: isNew ? 'Save gate entry ✓' : 'Submit gate entry ✓',
+              isLoading: gateEntryState.isLoading,
+              onPressed: () {
+                context.cubit<NewGateEntryCubit>().save();
+              },
+            )
+          : null,
     );
   }
 }

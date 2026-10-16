@@ -5,10 +5,6 @@ import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:svs_operations/core/core.dart';
-import 'package:svs_operations/core/cubit/base/base_cubit.dart';
-import 'package:svs_operations/core/model/failure.dart';
-import 'package:svs_operations/core/utils/date_format_util.dart';
-import 'package:svs_operations/core/utils/string_utils.dart';
 import 'package:svs_operations/features/gate_entry/data/gate_entry_repo.dart';
 import 'package:svs_operations/features/gate_entry/model/gate_entry.dart';
 import 'package:svs_operations/features/gate_entry/model/new_gate_entry_form.dart';
@@ -97,7 +93,8 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
     final form = state.form.copyWith(vehiclePhoto: null);
     emitSafeState(state.copyWith(form: form));
   }
-    void clearVehicleBackPhoto() {
+
+  void clearVehicleBackPhoto() {
     final form = state.form.copyWith(vehicleBackPhoto: null);
     emitSafeState(state.copyWith(form: form));
   }
@@ -153,20 +150,20 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
 
   Option<String> _validate() {
     final form = state.form;
-    if (form.poNumber.doesNotHaveValue) {
-      return optionOf('Enter Purchase Order Document No.');
-    } else if (form.vehicleNo.doesNotHaveValue) {
+    if (form.vehicleNo.doesNotHaveValue) {
       return optionOf('Enter Vehcile Number');
-    } else if (form.vehiclePhoto.doesNotHaveValue) {
-      return optionOf('Capture Vehicle Photo');
-    } else if (form.vehicleBackPhoto.doesNotHaveValue) {
-      return optionOf('Capture Vehicle Back Photo');
-    } else if (form.vendorInvPhoto.doesNotHaveValue) {
-      return optionOf('Capture Vendor Invoice');
+    } else if (form.poNumber.doesNotHaveValue) {
+      return optionOf('Enter Purchase Order Document No.');
     } else if (form.vendorInvNo.doesNotHaveValue) {
       return optionOf('Enter Vendor Invoice No.');
     } else if (form.invoiceDate.doesNotHaveValue) {
       return optionOf('Enter Vendor Invoice Date');
+    } else if (form.vehiclePhoto.doesNotHaveValue) {
+      return optionOf('Capture Vehicle Photo');
+    }  else if (form.vehicleBackPhoto.doesNotHaveValue) {
+      return optionOf('Capture Vehicle Back Photo');
+    } else if (form.vendorInvPhoto.doesNotHaveValue) {
+      return optionOf('Capture Vendor Invoice');
     }
     return const None();
   }
