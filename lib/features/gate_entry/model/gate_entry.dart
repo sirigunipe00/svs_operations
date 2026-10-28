@@ -17,6 +17,7 @@ class GateEntry with _$GateEntry {
     @JsonKey(name: 'gate_entry_date', defaultValue: '') required String entryDate,
     @JsonKey(name: 'vehicle_image') String? vehiclePhoto,
     @JsonKey(name: 'vehicle_back_photo') String? vehicleBackPhoto,
+    @JsonKey(name: 'vendor_name') String? vendorName,
     @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
     @JsonKey(name: 'remarks') String? remarks,
     @JsonKey(name: 'is_job_work') int? isJobWork,

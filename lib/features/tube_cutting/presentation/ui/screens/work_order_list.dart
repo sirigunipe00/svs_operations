@@ -165,6 +165,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                           child: AppErrorWidget(
                             error: failure.error,
                             onRefresh: () async => _fetchWorkOrders(),
+                            isRefresh: true,
                           ),
                         ),
                       ],

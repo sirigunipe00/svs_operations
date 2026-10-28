@@ -110,7 +110,7 @@ class _GateEntryListScrnState extends State<GateEntryListScrn> {
                   ),
                   fetchInitial: () => fetchInital(context),
                   fetchMore: () => fetchMore(context),
-                  emptyListText: 'No Gate Entries Found',
+                  emptyListText: 'No ${filterState.status} records found',
                 ),
               ),
             ),

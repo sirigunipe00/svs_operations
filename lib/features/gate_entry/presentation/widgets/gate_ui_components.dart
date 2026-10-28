@@ -463,7 +463,7 @@ class GateSectionCard extends StatelessWidget {
 }
 
 /// Styled Input Field with Uppercase Label, prefix icon, and soft border
-class GateInputField extends StatelessWidget {
+class GateInputField extends StatefulWidget {
   const GateInputField({
     super.key,
     required this.label,
@@ -496,6 +496,45 @@ class GateInputField extends StatelessWidget {
   final int? maxLines;
 
   @override
+  State<GateInputField> createState() => _GateInputFieldState();
+}
+
+class _GateInputFieldState extends State<GateInputField> {
+  TextEditingController? _internalController;
+
+  TextEditingController get _effectiveController =>
+      widget.controller ?? _internalController!;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller == null) {
+      _internalController =
+          TextEditingController(text: widget.initialValue ?? '');
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant GateInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller == null) {
+      if (_internalController == null) {
+        _internalController =
+            TextEditingController(text: widget.initialValue ?? '');
+      } else if (oldWidget.initialValue != widget.initialValue &&
+          (widget.initialValue ?? '') != _internalController!.text) {
+        _internalController!.text = widget.initialValue ?? '';
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _internalController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -505,7 +544,7 @@ class GateInputField extends StatelessWidget {
           Row(
             children: [
               Text(
-                label.toUpperCase(),
+                widget.label.toUpperCase(),
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -513,7 +552,7 @@ class GateInputField extends StatelessWidget {
                   color: Color(0xFF64748B),
                 ),
               ),
-              if (isRequired) ...[
+              if (widget.isRequired) ...[
                 const SizedBox(width: 4),
                 const Text(
                   '*',
@@ -528,42 +567,43 @@ class GateInputField extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           TextFormField(
-            controller: controller,
-            initialValue: controller == null ? initialValue : null,
-            readOnly: readOnly,
-            onChanged: onChanged,
-            keyboardType: keyboardType,
-            inputFormatters: inputFormatters,
-            minLines: minLines,
-            maxLines: maxLines,
+            controller: _effectiveController,
+            readOnly: widget.readOnly,
+            onChanged: widget.onChanged,
+            keyboardType: widget.keyboardType,
+            inputFormatters: widget.inputFormatters,
+            minLines: widget.minLines,
+            maxLines: widget.maxLines,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color:
-                  readOnly ? const Color(0xFF64748B) : const Color(0xFF0F172A),
+              color: widget.readOnly
+                  ? const Color(0xFF64748B)
+                  : const Color(0xFF0F172A),
             ),
             decoration: InputDecoration(
               isDense: true,
               filled: true,
-              fillColor:
-                  readOnly ? const Color(0xFFF1F5F9) : const Color(0xFFF8FAFC),
-              hintText: hintText,
+              fillColor: widget.readOnly
+                  ? const Color(0xFFF1F5F9)
+                  : const Color(0xFFF8FAFC),
+              hintText: widget.hintText,
               hintStyle: const TextStyle(
                 color: Color(0xFF94A3B8),
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
               ),
-              prefixIcon: prefixIcon != null
+              prefixIcon: widget.prefixIcon != null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: prefixIcon,
+                      child: widget.prefixIcon,
                     )
                   : null,
               prefixIconConstraints: const BoxConstraints(
                 minWidth: 38,
                 minHeight: 38,
               ),
-              suffixIcon: suffixIcon,
+              suffixIcon: widget.suffixIcon,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 14,
                 vertical: 12,

@@ -758,6 +758,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                   onRefresh: () async {
                     context.cubit<OperationStatus>().request(widget.title);
                   },
+                  isRefresh: true,
                 ),
               ),
             ),
@@ -1507,7 +1508,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           if (hasStartImage) ...[
             _buildFieldLabel('COUNTER START IMAGE'),
             const SizedBox(height: 6),
-            _buildStartImageViewer(startImage!.trim()),
+            _buildStartImageViewer(startImage.trim()),
           ],
         ],
       ),

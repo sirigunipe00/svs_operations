@@ -23,6 +23,7 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
     String? poNumber,
     String? vehicleNo,
     String? vendorInvNo,
+    String? vendorname,
     String? invoiceDate,
     String? invoiceQty,
     String? invoiceAmt,
@@ -55,6 +56,7 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
       invoiceAmt: invoiceAmt ?? form.invoiceAmt,
       remarks: remarks ?? form.remarks,
       vehicleBackPhoto: vehbackPhoto,
+      vendorName: vendorname ?? form.vendorName
     );
     emitSafeState(state.copyWith(form: newForm));
   }
@@ -72,6 +74,7 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
       poNumber: entry.poNumber,
       vehicleNo: entry.vehicleNo,
       vendorInvNo: entry.vendorInvNo,
+      vendorName: entry.vendorName,
       vehiclePhoto: entry.vehiclePhoto,
       vendorInvPhoto: entry.invoicePhoto,
       vehicleBackPhoto: entry.vehicleBackPhoto,

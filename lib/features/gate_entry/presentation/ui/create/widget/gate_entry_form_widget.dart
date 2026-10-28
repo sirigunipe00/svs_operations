@@ -2,7 +2,6 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:svs_operations/core/core.dart';
-import 'package:svs_operations/features/gate_entry/model/item_name.dart';
 import 'package:svs_operations/features/gate_entry/model/purchase_order.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/bloc_provider.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/new_gate_entry/new_gate_entry_cubit.dart';
@@ -17,13 +16,14 @@ class GateEntryFormWidget extends StatefulWidget {
 
 class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
   // Local controllers for driver mockup fields so user can input if desired
-  final TextEditingController _driverNameController = TextEditingController();
+  // final TextEditingController _driverNameController = TextEditingController();
+  final TextEditingController _vendorNameController = TextEditingController();
   final TextEditingController _driverLicenseController = TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
 
   @override
   void dispose() {
-    _driverNameController.dispose();
+    _vendorNameController.dispose();
     _driverLicenseController.dispose();
     _mobileNumberController.dispose();
     super.dispose();
@@ -66,44 +66,44 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
               ),
 
               // Driver Name
-              GateInputField(
-                label: 'Driver Name',
-                hintText: 'Enter driver name',
-                controller: _driverNameController,
-                readOnly: isCompleted,
-                prefixIcon: const Icon(
-                  Icons.person_outline_rounded,
-                  color: Color(0xFF94A3B8),
-                  size: 20,
-                ),
-              ),
+              // GateInputField(
+              //   label: 'Driver Name',
+              //   hintText: 'Enter driver name',
+              //   controller: _driverNameController,
+              //   readOnly: isCompleted,
+              //   prefixIcon: const Icon(
+              //     Icons.person_outline_rounded,
+              //     color: Color(0xFF94A3B8),
+              //     size: 20,
+              //   ),
+              // ),
 
-              // Driver License
-              GateInputField(
-                label: 'Driver License',
-                hintText: 'Enter license number',
-                controller: _driverLicenseController,
-                readOnly: isCompleted,
-                prefixIcon: const Icon(
-                  Icons.badge_outlined,
-                  color: Color(0xFF94A3B8),
-                  size: 20,
-                ),
-              ),
+              // // Driver License
+              // GateInputField(
+              //   label: 'Driver License',
+              //   hintText: 'Enter license number',
+              //   controller: _driverLicenseController,
+              //   readOnly: isCompleted,
+              //   prefixIcon: const Icon(
+              //     Icons.badge_outlined,
+              //     color: Color(0xFF94A3B8),
+              //     size: 20,
+              //   ),
+              // ),
 
               // Mobile Number
-              GateInputField(
-                label: 'Mobile Number',
-                hintText: 'Enter mobile number',
-                controller: _mobileNumberController,
-                readOnly: isCompleted,
-                keyboardType: TextInputType.phone,
-                prefixIcon: const Icon(
-                  Icons.phone_outlined,
-                  color: Color(0xFF94A3B8),
-                  size: 20,
-                ),
-              ),
+              // GateInputField(
+              //   label: 'Mobile Number',
+              //   hintText: 'Enter mobile number',
+              //   controller: _mobileNumberController,
+              //   readOnly: isCompleted,
+              //   keyboardType: TextInputType.phone,
+              //   prefixIcon: const Icon(
+              //     Icons.phone_outlined,
+              //     color: Color(0xFF94A3B8),
+              //     size: 20,
+              //   ),
+              // ),
 
               // Gate Entry Date
               GateDatePickerField(
@@ -256,83 +256,101 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
               ),
 
               // Item Dropdown
-              BlocBuilder<ItemNameCubit, ItemNameCubitState>(
-                builder: (_, itemState) {
-                  final items = itemState.maybeWhen(
-                    orElse: () => <ItemName>[],
-                    success: (data) => data,
-                  );
+              // BlocBuilder<ItemNameCubit, ItemNameCubitState>(
+              //   builder: (_, itemState) {
+              //     final items = itemState.maybeWhen(
+              //       orElse: () => <ItemName>[],
+              //       success: (data) => data,
+              //     );
 
-                  if (items.isEmpty) {
-                    return const GateInputField(
-                      label: 'Item',
-                      hintText: 'Select item',
-                      readOnly: true,
-                      prefixIcon: Icon(
-                        Icons.inventory_2_outlined,
-                        color: Color(0xFF94A3B8),
-                        size: 18,
-                      ),
-                    );
-                  }
+              //     if (items.isEmpty) {
+              //       return const GateInputField(
+              //         label: 'Item',
+              //         hintText: 'Select item',
+              //         readOnly: true,
+              //         prefixIcon: Icon(
+              //           Icons.inventory_2_outlined,
+              //           color: Color(0xFF94A3B8),
+              //           size: 18,
+              //         ),
+              //       );
+              //     }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'ITEM',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
-                          color: Color(0xFF64748B),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      AbsorbPointer(
-                        absorbing: isCompleted,
-                        child: CustomDropdown<ItemName>(
-                          decoration: CustomDropdownDecoration(
-                            closedFillColor: isCompleted
-                                ? const Color(0xFFF1F5F9)
-                                : const Color(0xFFF8FAFC),
-                            expandedFillColor: Colors.white,
-                            closedBorder: Border.all(
-                              color: const Color(0xFFE2E8F0),
-                              width: 1.0,
-                            ),
-                            expandedBorder: Border.all(
-                              color: const Color(0xFF0284C7),
-                              width: 1.2,
-                            ),
-                            closedBorderRadius: BorderRadius.circular(10),
-                            expandedBorderRadius: BorderRadius.circular(10),
-                            hintStyle: const TextStyle(
-                              color: Color(0xFF94A3B8),
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            headerStyle: const TextStyle(
-                              color: Color(0xFF0F172A),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            closedShadow: const [],
-                          ),
-                          hintText: 'Select item',
-                          items: items,
-                          headerBuilder: (_, item, __) => Text(item.itemName),
-                          listItemBuilder: (_, item, isSelected, __) =>
-                              Text(item.itemName,
-                                  style: const TextStyle(fontSize: 14)),
-                          onChanged: (_) {},
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  );
-                },
-              ),
+              //     return Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         const Text(
+              //           'ITEM',
+              //           style: TextStyle(
+              //             fontSize: 11,
+              //             fontWeight: FontWeight.w700,
+              //             letterSpacing: 0.5,
+              //             color: Color(0xFF64748B),
+              //           ),
+              //         ),
+              //         const SizedBox(height: 6),
+              //         AbsorbPointer(
+              //           absorbing: isCompleted,
+              //           child: CustomDropdown<ItemName>(
+              //             decoration: CustomDropdownDecoration(
+              //               closedFillColor: isCompleted
+              //                   ? const Color(0xFFF1F5F9)
+              //                   : const Color(0xFFF8FAFC),
+              //               expandedFillColor: Colors.white,
+              //               closedBorder: Border.all(
+              //                 color: const Color(0xFFE2E8F0),
+              //                 width: 1.0,
+              //               ),
+              //               expandedBorder: Border.all(
+              //                 color: const Color(0xFF0284C7),
+              //                 width: 1.2,
+              //               ),
+              //               closedBorderRadius: BorderRadius.circular(10),
+              //               expandedBorderRadius: BorderRadius.circular(10),
+              //               hintStyle: const TextStyle(
+              //                 color: Color(0xFF94A3B8),
+              //                 fontSize: 14,
+              //                 fontWeight: FontWeight.normal,
+              //               ),
+              //               headerStyle: const TextStyle(
+              //                 color: Color(0xFF0F172A),
+              //                 fontSize: 14,
+              //                 fontWeight: FontWeight.w500,
+              //               ),
+              //               closedShadow: const [],
+              //             ),
+              //             hintText: 'Select item',
+              //             items: items,
+              //             headerBuilder: (_, item, __) => Text(item.itemName),
+              //             listItemBuilder: (_, item, isSelected, __) =>
+              //                 Text(item.itemName,
+              //                     style: const TextStyle(fontSize: 14)),
+              //             onChanged: (_) {},
+              //           ),
+              //         ),
+              //         const SizedBox(height: 12),
+              //       ],
+              //     );
+              //   },
+              // ),
+
+              //  GateInputField(
+              //   label: 'Vendor Name',
+              //   hintText: 'Enter vendor name',
+              //   controller: _vendorNameController,
+              //   readOnly: isCompleted,
+              //   prefixIcon: const Icon(
+              //     Icons.person_outline_rounded,
+              //     color: Color(0xFF94A3B8),
+              //     size: 20,
+              //   ),
+              //   onChanged: (value) {
+              //      context
+              //         .cubit<NewGateEntryCubit>()
+              //         .onValueChanged(vendorname: value);
+
+              //   },
+              // ),
 
               // Vendor Invoice Number
               GateInputField(

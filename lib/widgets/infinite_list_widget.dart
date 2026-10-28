@@ -27,13 +27,12 @@ class InfiniteListViewWidget<T extends StateStreamable<InfiniteListState<D>>, D>
   Widget build(BuildContext context) {
     return BlocBuilder<T, InfiniteListState<D>>(
       builder: (_, InfiniteListState<D> state) {
-        print('state..:$state');
         return state.when(
           initial: () => const Center(child: LoadingIndicator()),
           loading: () => const Center(child: LoadingIndicator()),
           success: (List<D> data,bool hasReachedMax,bool isloadingMore, Failure? failure) {
             if (data.isEmpty) {
-              return AppErrorWidget(error: emptyListText, onRefresh: fetchInitial);
+              return AppErrorWidget(error: emptyListText, onRefresh: fetchInitial, isRefresh: false,);
             }
 
             return _InfiniteListView<D>(
@@ -45,7 +44,7 @@ class InfiniteListViewWidget<T extends StateStreamable<InfiniteListState<D>>, D>
               failure: failure,
             );
           },
-          failed: (Failure f) => AppErrorWidget(error: f.error, onRefresh: fetchInitial)
+          failed: (Failure f) => AppErrorWidget(error: f.error, onRefresh: fetchInitial, isRefresh: true,)
         );
       },
     );
@@ -110,6 +109,7 @@ class _InfiniteListViewState<T> extends State<_InfiniteListView<T>> {
           if (idx >= data.length) {
             if(widget.failure != null) {
               return AppErrorWidget(
+                isRefresh: true,
                 error: widget.failure!.error,
                 onRefresh: widget.fetchMore,
               );

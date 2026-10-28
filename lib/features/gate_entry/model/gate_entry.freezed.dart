@@ -40,6 +40,8 @@ mixin _$GateEntry {
   String? get vehiclePhoto => throw _privateConstructorUsedError;
   @JsonKey(name: 'vehicle_back_photo')
   String? get vehicleBackPhoto => throw _privateConstructorUsedError;
+  @JsonKey(name: 'vendor_name')
+  String? get vendorName => throw _privateConstructorUsedError;
   @JsonKey(name: 'vendor_invoice_photo')
   String? get invoicePhoto => throw _privateConstructorUsedError;
   @JsonKey(name: 'remarks')
@@ -74,6 +76,7 @@ abstract class $GateEntryCopyWith<$Res> {
       @JsonKey(name: 'gate_entry_date', defaultValue: '') String entryDate,
       @JsonKey(name: 'vehicle_image') String? vehiclePhoto,
       @JsonKey(name: 'vehicle_back_photo') String? vehicleBackPhoto,
+      @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
       @JsonKey(name: 'remarks') String? remarks,
       @JsonKey(name: 'is_job_work') int? isJobWork});
@@ -105,6 +108,7 @@ class _$GateEntryCopyWithImpl<$Res, $Val extends GateEntry>
     Object? entryDate = null,
     Object? vehiclePhoto = freezed,
     Object? vehicleBackPhoto = freezed,
+    Object? vendorName = freezed,
     Object? invoicePhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
@@ -154,6 +158,10 @@ class _$GateEntryCopyWithImpl<$Res, $Val extends GateEntry>
           ? _value.vehicleBackPhoto
           : vehicleBackPhoto // ignore: cast_nullable_to_non_nullable
               as String?,
+      vendorName: freezed == vendorName
+          ? _value.vendorName
+          : vendorName // ignore: cast_nullable_to_non_nullable
+              as String?,
       invoicePhoto: freezed == invoicePhoto
           ? _value.invoicePhoto
           : invoicePhoto // ignore: cast_nullable_to_non_nullable
@@ -190,6 +198,7 @@ abstract class _$$GateEntryImplCopyWith<$Res>
       @JsonKey(name: 'gate_entry_date', defaultValue: '') String entryDate,
       @JsonKey(name: 'vehicle_image') String? vehiclePhoto,
       @JsonKey(name: 'vehicle_back_photo') String? vehicleBackPhoto,
+      @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
       @JsonKey(name: 'remarks') String? remarks,
       @JsonKey(name: 'is_job_work') int? isJobWork});
@@ -219,6 +228,7 @@ class __$$GateEntryImplCopyWithImpl<$Res>
     Object? entryDate = null,
     Object? vehiclePhoto = freezed,
     Object? vehicleBackPhoto = freezed,
+    Object? vendorName = freezed,
     Object? invoicePhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
@@ -268,6 +278,10 @@ class __$$GateEntryImplCopyWithImpl<$Res>
           ? _value.vehicleBackPhoto
           : vehicleBackPhoto // ignore: cast_nullable_to_non_nullable
               as String?,
+      vendorName: freezed == vendorName
+          ? _value.vendorName
+          : vendorName // ignore: cast_nullable_to_non_nullable
+              as String?,
       invoicePhoto: freezed == invoicePhoto
           ? _value.invoicePhoto
           : invoicePhoto // ignore: cast_nullable_to_non_nullable
@@ -302,6 +316,7 @@ class _$GateEntryImpl implements _GateEntry {
       required this.entryDate,
       @JsonKey(name: 'vehicle_image') this.vehiclePhoto,
       @JsonKey(name: 'vehicle_back_photo') this.vehicleBackPhoto,
+      @JsonKey(name: 'vendor_name') this.vendorName,
       @JsonKey(name: 'vendor_invoice_photo') this.invoicePhoto,
       @JsonKey(name: 'remarks') this.remarks,
       @JsonKey(name: 'is_job_work') this.isJobWork});
@@ -341,6 +356,9 @@ class _$GateEntryImpl implements _GateEntry {
   @JsonKey(name: 'vehicle_back_photo')
   final String? vehicleBackPhoto;
   @override
+  @JsonKey(name: 'vendor_name')
+  final String? vendorName;
+  @override
   @JsonKey(name: 'vendor_invoice_photo')
   final String? invoicePhoto;
   @override
@@ -352,7 +370,7 @@ class _$GateEntryImpl implements _GateEntry {
 
   @override
   String toString() {
-    return 'GateEntry(name: $name, status: $status, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, invoicePhoto: $invoicePhoto, remarks: $remarks, isJobWork: $isJobWork)';
+    return 'GateEntry(name: $name, status: $status, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorName: $vendorName, invoicePhoto: $invoicePhoto, remarks: $remarks, isJobWork: $isJobWork)';
   }
 
   @override
@@ -380,6 +398,8 @@ class _$GateEntryImpl implements _GateEntry {
                 other.vehiclePhoto == vehiclePhoto) &&
             (identical(other.vehicleBackPhoto, vehicleBackPhoto) ||
                 other.vehicleBackPhoto == vehicleBackPhoto) &&
+            (identical(other.vendorName, vendorName) ||
+                other.vendorName == vendorName) &&
             (identical(other.invoicePhoto, invoicePhoto) ||
                 other.invoicePhoto == invoicePhoto) &&
             (identical(other.remarks, remarks) || other.remarks == remarks) &&
@@ -402,6 +422,7 @@ class _$GateEntryImpl implements _GateEntry {
       entryDate,
       vehiclePhoto,
       vehicleBackPhoto,
+      vendorName,
       invoicePhoto,
       remarks,
       isJobWork);
@@ -439,6 +460,7 @@ abstract class _GateEntry implements GateEntry {
       required final String entryDate,
       @JsonKey(name: 'vehicle_image') final String? vehiclePhoto,
       @JsonKey(name: 'vehicle_back_photo') final String? vehicleBackPhoto,
+      @JsonKey(name: 'vendor_name') final String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') final String? invoicePhoto,
       @JsonKey(name: 'remarks') final String? remarks,
       @JsonKey(name: 'is_job_work') final int? isJobWork}) = _$GateEntryImpl;
@@ -477,6 +499,9 @@ abstract class _GateEntry implements GateEntry {
   @override
   @JsonKey(name: 'vehicle_back_photo')
   String? get vehicleBackPhoto;
+  @override
+  @JsonKey(name: 'vendor_name')
+  String? get vendorName;
   @override
   @JsonKey(name: 'vendor_invoice_photo')
   String? get invoicePhoto;

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:svs_operations/core/di/injector.dart';
 
 final _reqisteredUrl = $sl.get<Urls>(instanceName: 'baseUrl');
@@ -7,8 +5,10 @@ final _reqisteredUrl = $sl.get<Urls>(instanceName: 'baseUrl');
 class Urls {
   factory Urls.aparnaUAT() =>
       const Urls('https://svserpnextuat.easycloud.co.in/api');
-      factory Urls.local() => const Urls('https://svserpnextuat.easycloud.co.in/api');
-  factory Urls.aparnaLive() => const Urls('https://aparnagmlive.easycloud.co.in/api');
+  factory Urls.local() =>
+      const Urls('https://svserpnextuat.easycloud.co.in/api');
+  factory Urls.aparnaLive() =>
+      const Urls('https://aparnagmlive.easycloud.co.in/api');
 
   const Urls(this.url);
 
@@ -26,7 +26,7 @@ class Urls {
   static final cusWs = '$baseUrl/method';
   static final uploadFiles = '$cusWs/svs_operations.api.upload_files';
 
-  static final appUpdate ='$cusWs/easy_common.api.get_app_version';
+  static final appUpdate = '$cusWs/easy_common.api.get_app_version';
 
   static final login = '$cusWs/svserpnext.api.getUsers';
 
@@ -34,11 +34,6 @@ class Urls {
   static final userOperations = '$cusWs/svserpnext.api.get_user_operations';
   static final addItem = '$cusWs/svserpnext.api.add_time_log';
   static final updateItem = '$cusWs/svserpnext.api.update_time_log';
-
-  
-
-
-
 
   static final getList = '$cusWs/frappe.client.get_list';
 
@@ -51,13 +46,9 @@ class Urls {
   static final getGateExit = '$cusWs/easygateentry.api.getGateExitDetails';
   static final newGateExit = '$cusWs/easygateentry.api.createGateExit';
   static final submitGateExit = '$cusWs/easygateentry.api.submitGateExit';
-  static final getVehicleNumber = '$cusWs/easygateentry.api.getvehiclenumberfromsalesinvoice';
+  static final getVehicleNumber =
+      '$cusWs/easygateentry.api.getvehiclenumberfromsalesinvoice';
   static final poList = '$cusWs/easygateentry.api.po_list';
-
-  
-
-
-
 
   static filepath(String path) {
     return '${baseUrl.replaceAll('api', '')}/${path.replaceAll('/private', '').replaceAll("///", '/')}';

@@ -10,6 +10,7 @@ class NewGateEntryForm with _$NewGateEntryForm {
     @JsonKey(includeToJson: true, includeIfNull: false) String? name,
     @JsonKey(name: 'po_number') String? poNumber,
     @JsonKey(name: 'vehicle_no') String? vehicleNo,
+    @JsonKey(name: 'vendor_name') String? vendorName,
     @JsonKey(name: 'vendor_invoice_no') String? vendorInvNo,
     @JsonKey(name: 'invoice_date') String? invoiceDate,
     @JsonKey(name: 'invoice_qty') String? invoiceQty,

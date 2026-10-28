@@ -17,11 +17,47 @@ class GateExitFormWidget extends StatefulWidget {
 }
 
 class _GateExitFormWidgetState extends State<GateExitFormWidget> {
+  late final TextEditingController _salesInvoiceController;
+  late final TextEditingController _vehicleNoController;
+  late final TextEditingController _remarksController;
+
+  @override
+  void initState() {
+    super.initState();
+    final form = context.read<CreateGateExitCubit>().state.form;
+    _salesInvoiceController =
+        TextEditingController(text: form.salesInvNumber ?? '');
+    _vehicleNoController = TextEditingController(text: form.vehicleNo ?? '');
+    _remarksController = TextEditingController(text: form.remarks ?? '');
+  }
+
+  @override
+  void dispose() {
+    _salesInvoiceController.dispose();
+    _vehicleNoController.dispose();
+    _remarksController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final formState = context.watch<CreateGateExitCubit>().state;
     final isCompleted = formState.view == GateExitView.completed;
     final form = formState.form;
+
+    // Sync controllers if form state changed from outside (e.g. initDetails)
+    if (form.salesInvNumber != null &&
+        form.salesInvNumber != _salesInvoiceController.text) {
+      _salesInvoiceController.text = form.salesInvNumber!;
+    }
+    if (form.vehicleNo != null &&
+        form.vehicleNo != _vehicleNoController.text) {
+      _vehicleNoController.text = form.vehicleNo!;
+    }
+    if (form.remarks != null &&
+        form.remarks != _remarksController.text) {
+      _remarksController.text = form.remarks!;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -33,43 +69,40 @@ class _GateExitFormWidgetState extends State<GateExitFormWidget> {
             number: '1',
             title: 'Vehicle',
             children: [
-              BlocBuilder<CreateGateExitCubit, CreateGateExitState>(
-                buildWhen: (pv, curr) =>
-                    pv.form.salesInvNumber != curr.form.salesInvNumber,
-                builder: (_, state) => GateInputField(
-                  label: 'Sales Invoice',
-                  hintText: 'Select sales invoice',
-                  isRequired: true,
-                  initialValue: state.form.salesInvNumber,
-                  readOnly: isCompleted,
-                  prefixIcon: const Icon(
-                    Icons.receipt_long_outlined,
-                    color: Color(0xFF94A3B8),
-                    size: 20,
-                  ),
-                  suffixIcon: IconButton(
-                    onPressed: isCompleted ? null : () => onScan(context),
-                    icon: const Icon(
-                      Icons.qr_code_scanner_rounded,
-                      color: Color(0xFF0284C7),
-                      size: 22,
-                    ),
-                    tooltip: 'Scan Barcode',
-                  ),
-                  onChanged: (text) {
-                    context
-                        .cubit<CreateGateExitCubit>()
-                        .onFieldChange(salesInvNo: text);
-                    unawaited(context.cubit<GetVehicleNumber>().request(text));
-                  },
+              GateInputField(
+                label: 'Sales Invoice',
+                hintText: 'Select sales invoice',
+                isRequired: true,
+                controller: _salesInvoiceController,
+                readOnly: isCompleted,
+                prefixIcon: const Icon(
+                  Icons.receipt_long_outlined,
+                  color: Color(0xFF94A3B8),
+                  size: 20,
                 ),
+                suffixIcon: IconButton(
+                  onPressed: isCompleted ? null : () => onScan(context),
+                  icon: const Icon(
+                    Icons.qr_code_scanner_rounded,
+                    color: Color(0xFF0284C7),
+                    size: 22,
+                  ),
+                  tooltip: 'Scan Barcode',
+                ),
+                onChanged: (text) {
+                  context
+                      .cubit<CreateGateExitCubit>()
+                      .onFieldChange(salesInvNo: text);
+                  unawaited(context.cubit<GetVehicleNumber>().request(text));
+                },
               ),
               // Vehicle Number (Auto-filled from invoice)
               BlocConsumer<GetVehicleNumber, GetVehicleNumberState>(
                 listener: (_, state) {
                   state.maybeWhen(
                     orElse: () {},
-                    success: (data) { 
+                    success: (data) {
+                      _vehicleNoController.text = data ?? '';
                       context
                           .cubit<CreateGateExitCubit>()
                           .onFieldChange(vehicleNo: data);
@@ -81,7 +114,7 @@ class _GateExitFormWidgetState extends State<GateExitFormWidget> {
                   return GateInputField(
                     label: 'Vehicle Number',
                     hintText: 'Auto-filled from invoice',
-                    initialValue: form.vehicleNo,
+                    controller: _vehicleNoController,
                     isRequired: true,
                     readOnly: isCompleted,
                     inputFormatters: [UpperCaseTextFormatter()],
@@ -115,7 +148,6 @@ class _GateExitFormWidgetState extends State<GateExitFormWidget> {
               ),
             ],
           ),
-
 
           // CARD 3: PHOTOS & REMARKS
           GateSectionCard(
@@ -174,7 +206,7 @@ class _GateExitFormWidgetState extends State<GateExitFormWidget> {
               GateInputField(
                 label: 'Remarks',
                 hintText: 'Add remarks (optional)',
-                initialValue: form.remarks,
+                controller: _remarksController,
                 readOnly: isCompleted,
                 minLines: 3,
                 maxLines: 4,
@@ -216,6 +248,7 @@ class _GateExitFormWidgetState extends State<GateExitFormWidget> {
         barcodeScanRes.containsValidValue && barcodeScanRes != '-1';
     if (!context.mounted) return;
     if (isValidValue) {
+      _salesInvoiceController.text = barcodeScanRes ??'';
       context
           .cubit<CreateGateExitCubit>()
           .onFieldChange(salesInvNo: barcodeScanRes);

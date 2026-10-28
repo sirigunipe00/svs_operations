@@ -28,6 +28,8 @@ mixin _$NewGateEntryForm {
   String? get poNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'vehicle_no')
   String? get vehicleNo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'vendor_name')
+  String? get vendorName => throw _privateConstructorUsedError;
   @JsonKey(name: 'vendor_invoice_no')
   String? get vendorInvNo => throw _privateConstructorUsedError;
   @JsonKey(name: 'invoice_date')
@@ -70,6 +72,7 @@ abstract class $NewGateEntryFormCopyWith<$Res> {
       @JsonKey(includeToJson: true, includeIfNull: false) String? name,
       @JsonKey(name: 'po_number') String? poNumber,
       @JsonKey(name: 'vehicle_no') String? vehicleNo,
+      @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_no') String? vendorInvNo,
       @JsonKey(name: 'invoice_date') String? invoiceDate,
       @JsonKey(name: 'invoice_qty') String? invoiceQty,
@@ -101,6 +104,7 @@ class _$NewGateEntryFormCopyWithImpl<$Res, $Val extends NewGateEntryForm>
     Object? name = freezed,
     Object? poNumber = freezed,
     Object? vehicleNo = freezed,
+    Object? vendorName = freezed,
     Object? vendorInvNo = freezed,
     Object? invoiceDate = freezed,
     Object? invoiceQty = freezed,
@@ -128,6 +132,10 @@ class _$NewGateEntryFormCopyWithImpl<$Res, $Val extends NewGateEntryForm>
       vehicleNo: freezed == vehicleNo
           ? _value.vehicleNo
           : vehicleNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      vendorName: freezed == vendorName
+          ? _value.vendorName
+          : vendorName // ignore: cast_nullable_to_non_nullable
               as String?,
       vendorInvNo: freezed == vendorInvNo
           ? _value.vendorInvNo
@@ -186,6 +194,7 @@ abstract class _$$NewGateEntryFormImplCopyWith<$Res>
       @JsonKey(includeToJson: true, includeIfNull: false) String? name,
       @JsonKey(name: 'po_number') String? poNumber,
       @JsonKey(name: 'vehicle_no') String? vehicleNo,
+      @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_no') String? vendorInvNo,
       @JsonKey(name: 'invoice_date') String? invoiceDate,
       @JsonKey(name: 'invoice_qty') String? invoiceQty,
@@ -215,6 +224,7 @@ class __$$NewGateEntryFormImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? poNumber = freezed,
     Object? vehicleNo = freezed,
+    Object? vendorName = freezed,
     Object? vendorInvNo = freezed,
     Object? invoiceDate = freezed,
     Object? invoiceQty = freezed,
@@ -242,6 +252,10 @@ class __$$NewGateEntryFormImplCopyWithImpl<$Res>
       vehicleNo: freezed == vehicleNo
           ? _value.vehicleNo
           : vehicleNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      vendorName: freezed == vendorName
+          ? _value.vendorName
+          : vendorName // ignore: cast_nullable_to_non_nullable
               as String?,
       vendorInvNo: freezed == vendorInvNo
           ? _value.vendorInvNo
@@ -295,6 +309,7 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
       @JsonKey(includeToJson: true, includeIfNull: false) this.name,
       @JsonKey(name: 'po_number') this.poNumber,
       @JsonKey(name: 'vehicle_no') this.vehicleNo,
+      @JsonKey(name: 'vendor_name') this.vendorName,
       @JsonKey(name: 'vendor_invoice_no') this.vendorInvNo,
       @JsonKey(name: 'invoice_date') this.invoiceDate,
       @JsonKey(name: 'invoice_qty') this.invoiceQty,
@@ -321,6 +336,9 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
   @override
   @JsonKey(name: 'vehicle_no')
   final String? vehicleNo;
+  @override
+  @JsonKey(name: 'vendor_name')
+  final String? vendorName;
   @override
   @JsonKey(name: 'vendor_invoice_no')
   final String? vendorInvNo;
@@ -354,7 +372,7 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
 
   @override
   String toString() {
-    return 'NewGateEntryForm(status: $status, name: $name, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorInvPhoto: $vendorInvPhoto, remarks: $remarks, isJobWork: $isJobWork)';
+    return 'NewGateEntryForm(status: $status, name: $name, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorName: $vendorName, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorInvPhoto: $vendorInvPhoto, remarks: $remarks, isJobWork: $isJobWork)';
   }
 
   @override
@@ -368,6 +386,8 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
                 other.poNumber == poNumber) &&
             (identical(other.vehicleNo, vehicleNo) ||
                 other.vehicleNo == vehicleNo) &&
+            (identical(other.vendorName, vendorName) ||
+                other.vendorName == vendorName) &&
             (identical(other.vendorInvNo, vendorInvNo) ||
                 other.vendorInvNo == vendorInvNo) &&
             (identical(other.invoiceDate, invoiceDate) ||
@@ -397,6 +417,7 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
       name,
       poNumber,
       vehicleNo,
+      vendorName,
       vendorInvNo,
       invoiceDate,
       invoiceQty,
@@ -431,6 +452,7 @@ abstract class _NewGateEntryForm implements NewGateEntryForm {
       @JsonKey(includeToJson: true, includeIfNull: false) final String? name,
       @JsonKey(name: 'po_number') final String? poNumber,
       @JsonKey(name: 'vehicle_no') final String? vehicleNo,
+      @JsonKey(name: 'vendor_name') final String? vendorName,
       @JsonKey(name: 'vendor_invoice_no') final String? vendorInvNo,
       @JsonKey(name: 'invoice_date') final String? invoiceDate,
       @JsonKey(name: 'invoice_qty') final String? invoiceQty,
@@ -458,6 +480,9 @@ abstract class _NewGateEntryForm implements NewGateEntryForm {
   @override
   @JsonKey(name: 'vehicle_no')
   String? get vehicleNo;
+  @override
+  @JsonKey(name: 'vendor_name')
+  String? get vendorName;
   @override
   @JsonKey(name: 'vendor_invoice_no')
   String? get vendorInvNo;

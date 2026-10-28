@@ -66,7 +66,6 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
       remarks: remarks ?? form.remarks,
       vehicleBackPhoto: vehBackPhoto ?? form.vehicleBackPhoto,
     );
-    print('updated form..:$updatedForm');
     emitSafeState(state.copyWith(form: updatedForm));
   }
 
@@ -124,7 +123,6 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
 
   Option<String> _validate() {
     final form = state.form;
-    print('form..:$form');
      if (form.vehicleNo.doesNotHaveValue) {
       return optionOf('Enter Vehicle Number.');
     } else if (form.salesInvNumber.doesNotHaveValue) {

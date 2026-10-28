@@ -89,7 +89,7 @@ class _NewGateEntryState extends State<NewGateEntry> {
                       child: GateEntryFormWidget(key: ValueKey(status)),
                     ),
                     loading: () => const Center(child: LoadingIndicator()),
-                    failure: (failure) => AppErrorWidget(error: failure.error),
+                    failure: (failure) => AppErrorWidget(error: failure.error, isRefresh: true,),
                   );
                 },
               ),

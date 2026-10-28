@@ -83,7 +83,7 @@ class _NewGateExitState extends State<NewGateExit> {
                       child: GateExitFormWidget(key: ValueKey(status)),
                     ),
                     loading: () => const Center(child: LoadingIndicator()),
-                    failure: (failure) => AppErrorWidget(error: failure.error),
+                    failure: (failure) => AppErrorWidget(error: failure.error, isRefresh: true,),
                   );
                 },
               ),
