@@ -26,6 +26,8 @@ class AddItemModel with _$AddItemModel {
     String? rejectionTrayImage,
     @JsonKey(name: 'rejection_counter', defaultValue: 0)
     int? rejectionCounter,
+    @JsonKey(name: 'custom_scrap_kgs')
+    double? scrapKgs,
   }) = _AddItemModel;
 
   factory AddItemModel.fromJson(Map<String, dynamic> json) =>

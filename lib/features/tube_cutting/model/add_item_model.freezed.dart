@@ -52,6 +52,8 @@ mixin _$AddItemModel {
   String? get rejectionTrayImage => throw _privateConstructorUsedError;
   @JsonKey(name: 'rejection_counter', defaultValue: 0)
   int? get rejectionCounter => throw _privateConstructorUsedError;
+  @JsonKey(name: 'custom_scrap_kgs')
+  double? get scrapKgs => throw _privateConstructorUsedError;
 
   /// Serializes this AddItemModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -89,7 +91,9 @@ abstract class $AddItemModelCopyWith<$Res> {
       @JsonKey(name: 'rejection_tray_image', defaultValue: '')
       String? rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
-      int? rejectionCounter});
+      int? rejectionCounter,
+      @JsonKey(name: 'custom_scrap_kgs')
+      double? scrapKgs});
 }
 
 /// @nodoc
@@ -123,6 +127,7 @@ class _$AddItemModelCopyWithImpl<$Res, $Val extends AddItemModel>
     Object? rejectionTray = freezed,
     Object? rejectionTrayImage = freezed,
     Object? rejectionCounter = freezed,
+    Object? scrapKgs = freezed,
   }) {
     return _then(_value.copyWith(
       jobCard: freezed == jobCard
@@ -189,6 +194,10 @@ class _$AddItemModelCopyWithImpl<$Res, $Val extends AddItemModel>
           ? _value.rejectionCounter
           : rejectionCounter // ignore: cast_nullable_to_non_nullable
               as int?,
+      scrapKgs: freezed == scrapKgs
+          ? _value.scrapKgs
+          : scrapKgs // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
@@ -221,7 +230,9 @@ abstract class _$$AddItemModelImplCopyWith<$Res>
       @JsonKey(name: 'rejection_tray_image', defaultValue: '')
       String? rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
-      int? rejectionCounter});
+      int? rejectionCounter,
+      @JsonKey(name: 'custom_scrap_kgs')
+      double? scrapKgs});
 }
 
 /// @nodoc
@@ -253,6 +264,7 @@ class __$$AddItemModelImplCopyWithImpl<$Res>
     Object? rejectionTray = freezed,
     Object? rejectionTrayImage = freezed,
     Object? rejectionCounter = freezed,
+    Object? scrapKgs = freezed,
   }) {
     return _then(_$AddItemModelImpl(
       jobCard: freezed == jobCard
@@ -319,6 +331,10 @@ class __$$AddItemModelImplCopyWithImpl<$Res>
           ? _value.rejectionCounter
           : rejectionCounter // ignore: cast_nullable_to_non_nullable
               as int?,
+      scrapKgs: freezed == scrapKgs
+          ? _value.scrapKgs
+          : scrapKgs // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -345,7 +361,9 @@ class _$AddItemModelImpl extends _AddItemModel {
       @JsonKey(name: 'rejection_tray_image', defaultValue: '')
       this.rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
-      this.rejectionCounter})
+      this.rejectionCounter,
+      @JsonKey(name: 'custom_scrap_kgs')
+      this.scrapKgs})
       : super._();
 
   factory _$AddItemModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -399,10 +417,13 @@ class _$AddItemModelImpl extends _AddItemModel {
   @override
   @JsonKey(name: 'rejection_counter', defaultValue: 0)
   final int? rejectionCounter;
+  @override
+  @JsonKey(name: 'custom_scrap_kgs')
+  final double? scrapKgs;
 
   @override
   String toString() {
-    return 'AddItemModel(jobCard: $jobCard, workOrder: $workOrder, operation: $operation, employee: $employee, machine: $machine, inputTray: $inputTray, startReadings: $startReadings, startImage: $startImage, childId: $childId, outputTray: $outputTray, endReadings: $endReadings, endImage: $endImage, cutQnty: $cutQnty, rejectionTray: $rejectionTray, rejectionTrayImage: $rejectionTrayImage, rejectionCounter: $rejectionCounter)';
+    return 'AddItemModel(jobCard: $jobCard, workOrder: $workOrder, operation: $operation, employee: $employee, machine: $machine, inputTray: $inputTray, startReadings: $startReadings, startImage: $startImage, childId: $childId, outputTray: $outputTray, endReadings: $endReadings, endImage: $endImage, cutQnty: $cutQnty, rejectionTray: $rejectionTray, rejectionTrayImage: $rejectionTrayImage, rejectionCounter: $rejectionCounter, scrapKgs: $scrapKgs)';
   }
 
   @override
@@ -437,7 +458,9 @@ class _$AddItemModelImpl extends _AddItemModel {
             (identical(other.rejectionTrayImage, rejectionTrayImage) ||
                 other.rejectionTrayImage == rejectionTrayImage) &&
             (identical(other.rejectionCounter, rejectionCounter) ||
-                other.rejectionCounter == rejectionCounter));
+                other.rejectionCounter == rejectionCounter) &&
+            (identical(other.scrapKgs, scrapKgs) ||
+                other.scrapKgs == scrapKgs));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -459,7 +482,8 @@ class _$AddItemModelImpl extends _AddItemModel {
       cutQnty,
       rejectionTray,
       rejectionTrayImage,
-      rejectionCounter);
+      rejectionCounter,
+      scrapKgs);
 
   /// Create a copy of AddItemModel
   /// with the given fields replaced by the non-null parameter values.
@@ -501,7 +525,9 @@ abstract class _AddItemModel extends AddItemModel {
       @JsonKey(name: 'rejection_tray_image', defaultValue: '')
       final String? rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
-      final int? rejectionCounter}) = _$AddItemModelImpl;
+      final int? rejectionCounter,
+      @JsonKey(name: 'custom_scrap_kgs')
+      final double? scrapKgs}) = _$AddItemModelImpl;
   const _AddItemModel._() : super._();
 
   factory _AddItemModel.fromJson(Map<String, dynamic> json) =
@@ -555,6 +581,9 @@ abstract class _AddItemModel extends AddItemModel {
   @override
   @JsonKey(name: 'rejection_counter', defaultValue: 0)
   int? get rejectionCounter;
+  @override
+  @JsonKey(name: 'custom_scrap_kgs')
+  double? get scrapKgs;
 
   /// Create a copy of AddItemModel
   /// with the given fields replaced by the non-null parameter values.

@@ -24,6 +24,7 @@ _$AddItemModelImpl _$$AddItemModelImplFromJson(Map<String, dynamic> json) =>
       rejectionTray: json['rejection_tray'] as String? ?? '',
       rejectionTrayImage: json['rejection_tray_image'] as String? ?? '',
       rejectionCounter: (json['rejection_counter'] as num?)?.toInt() ?? 0,
+      scrapKgs: (json['custom_scrap_kgs'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$$AddItemModelImplToJson(_$AddItemModelImpl instance) =>
@@ -44,4 +45,5 @@ Map<String, dynamic> _$$AddItemModelImplToJson(_$AddItemModelImpl instance) =>
       'rejection_tray': instance.rejectionTray,
       'rejection_tray_image': instance.rejectionTrayImage,
       'rejection_counter': instance.rejectionCounter,
+      'custom_scrap_kgs': instance.scrapKgs,
     };

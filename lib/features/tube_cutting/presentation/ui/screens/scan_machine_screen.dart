@@ -52,6 +52,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   final TextEditingController finalQtyController = TextEditingController();
   final TextEditingController rejectionCountController =
       TextEditingController();
+  final TextEditingController scrapKgsController = TextEditingController();
 
   int? selectedItemCount;
   List<ChildStatusModel> childStatusList = [];
@@ -83,6 +84,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     endReadingController.dispose();
     finalQtyController.dispose();
     rejectionCountController.dispose();
+    scrapKgsController.dispose();
     super.dispose();
   }
 
@@ -117,11 +119,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanOutputTray() async {
-    // const scannedValue = 'A007';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    const scannedValue = 'A097';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
@@ -132,11 +134,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanRejectionTray() async {
-    // const scannedValue = 'A019';
-    final scannedValue = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    );
+    const scannedValue = 'A019';
+    // final scannedValue = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    // );
 
     if (scannedValue != null) {
       setState(() {
@@ -151,7 +153,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
     final picker = ImagePicker();
     final photo = await picker.pickImage(
-      source: ImageSource.camera,
+      source: ImageSource.gallery,
       imageQuality: 80,
     );
 
@@ -386,6 +388,10 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
       if (scrapVal != null) {
         context.read<CreateItemCubit>().onValueChanged(rejectedQty: scrapVal);
       }
+      final scrapKgVal = double.tryParse(scrapKgsController.text.trim());
+      if (scrapKgVal != null) {
+        context.read<CreateItemCubit>().onValueChanged(scrapKgs: scrapKgVal);
+      }
       context.read<CreateItemCubit>().save(true);
     }
   }
@@ -412,6 +418,13 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         int.tryParse(rejectionCountController.text.trim()) ??
         context.read<CreateItemCubit>().state.form.rejectionCounter ??
         0;
+
+    final double? scrapKgVal =
+        double.tryParse(scrapKgsController.text.trim()) ??
+        context.read<CreateItemCubit>().state.form.scrapKgs;
+    final String? scrapKgSubtitle = scrapKgVal != null
+        ? '(${scrapKgVal % 1 == 0 ? scrapKgVal.toInt() : scrapKgVal} kg)'
+        : null;
 
     String formatNum(num? n) {
       if (n == null) return '--';
@@ -565,6 +578,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                           Expanded(
                             child: _buildDialogMetricTile(
                               title: 'SCRAP COUNT',
+                              subtitle: scrapKgSubtitle,
                               value: scrapCountStr,
                               icon: Icons.delete_outline_rounded,
                               iconColor: const Color(0xFFDC2626),
@@ -1982,19 +1996,55 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             onTap: _scanRejectionTray,
           ),
           const SizedBox(height: 14),
-          // REJECTION COUNT
-          _buildFieldLabel('SCRAP COUNT'),
-          const SizedBox(height: 6),
-          _buildInputField(
-             isReadOnly: false,
-            controller: rejectionCountController,
-            hint: 'Enter count',
-            onChanged: (val) {
-              setState(() {});
-              context.read<CreateItemCubit>().onValueChanged(
-                    rejectedQty: int.tryParse(val),
-                  );
-            },
+          // SCRAP COUNT & SCRAP KG'S
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFieldLabel("SCRAP PC'S"),
+                    const SizedBox(height: 6),
+                    _buildInputField(
+                      isReadOnly: false,
+                      controller: rejectionCountController,
+                      hint: 'Enter count',
+                      onChanged: (val) {
+                        setState(() {});
+                        context.read<CreateItemCubit>().onValueChanged(
+                              rejectedQty: int.tryParse(val),
+                            );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFieldLabel("SCRAP KG'S"),
+                    const SizedBox(height: 6),
+                    _buildInputField(
+                      isReadOnly: false,
+                      controller: scrapKgsController,
+                      hint: 'Enter kg',
+                      prefixIcon: Icons.scale_outlined,
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (val) {
+                        setState(() {});
+                        context.read<CreateItemCubit>().onValueChanged(
+                              scrapKgs: double.tryParse(val),
+                            );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 14),
           // Capture tray photo
@@ -2083,7 +2133,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     );
   }
 
-  // Text input field helper with '#' prefix icon, loading indicator & error message
+  // Text input field helper with prefix icon, loading indicator & error message
   Widget _buildInputField({
     required TextEditingController controller,
     required String hint,
@@ -2091,6 +2141,8 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     bool isLoading = false,
     required bool isReadOnly,
     String? errorText,
+    IconData prefixIcon = Icons.tag_rounded,
+    TextInputType keyboardType = TextInputType.number,
   }) {
     final bool hasError = errorText != null && errorText.isNotEmpty;
     return Column(
@@ -2114,7 +2166,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           child: Row(
             children: [
               Icon(
-                Icons.tag_rounded,
+                prefixIcon,
                 color: hasError
                     ? const Color(0xFFEF4444)
                     : const Color(0xFF0C6ECB),
@@ -2126,7 +2178,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                   readOnly: isReadOnly,
                   controller: controller,
                   onChanged: onChanged,
-                  keyboardType: TextInputType.number,
+                  keyboardType: keyboardType,
                   enabled: !isLoading,
                   style: const TextStyle(
                     fontSize: 14,

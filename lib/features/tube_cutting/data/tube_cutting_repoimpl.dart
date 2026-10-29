@@ -164,6 +164,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           "counter_end_readings": model.endReadings,
           "rejection_tray": model.rejectionTray,
           "rejection_counter": model.rejectionCounter,
+          "custom_scrap_kgs": model.scrapKgs,
           "rejection_tray_image": model.rejectionTrayImage,
           "counter_end_image": model.endImage,
         }),

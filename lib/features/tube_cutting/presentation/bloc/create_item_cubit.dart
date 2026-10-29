@@ -42,6 +42,7 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
     int? rejectedQty,
     int? cutQty,
     String? rejectiontray,
+    double? scrapKgs,
   }) {
     final form = state.form;
     final startImg = startImage.isNull
@@ -68,10 +69,11 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
         workOrder: workOrder ?? form.workOrder,
         endImage: endImg ?? form.endImage,
         startImage: startImg ?? form.startImage,
-        rejectionCounter: rejectedQty ??form.rejectionCounter,
+        rejectionCounter: rejectedQty ?? form.rejectionCounter,
         cutQnty: cutQty ?? form.cutQnty,
         rejectionTrayImage: rejectimg ?? form.rejectionTrayImage,
-        rejectionTray: rejectiontray ?? form.rejectionTray
+        rejectionTray: rejectiontray ?? form.rejectionTray,
+        scrapKgs: scrapKgs ?? form.scrapKgs,
         );
       
     emitSafeState(state.copyWith(form: newForm));
