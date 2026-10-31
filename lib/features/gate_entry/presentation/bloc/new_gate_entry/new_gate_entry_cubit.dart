@@ -19,7 +19,7 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
 
   final GateEntryRepo repo;
 
-  void onValueChanged({
+  Future<void> onValueChanged({
     String? poNumber,
     String? vehicleNo,
     String? vendorInvNo,
@@ -32,17 +32,17 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
     File? vehiclePhoto,
     File? vehicleBackPhoto,
     int? isJobWork,
-  }) {
+  }) async {
     final form = state.form;
     final vendorInvPhoto = invoicePhoto.isNull
         ? form.vendorInvPhoto
-        : base64Encode(invoicePhoto!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(invoicePhoto!);
     final vehPhoto = vehiclePhoto.isNull
         ? form.vehiclePhoto
-        : base64Encode(vehiclePhoto!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(vehiclePhoto!);
     final vehbackPhoto = vehicleBackPhoto.isNull
         ? form.vehicleBackPhoto
-        : base64Encode(vehicleBackPhoto!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(vehicleBackPhoto!);
 
     final newForm = form.copyWith(
       isJobWork: isJobWork ?? form.isJobWork,
@@ -124,9 +124,26 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
           GateEntryView.edit || GateEntryView.completed => 'Submitted',
         };
 
+        var formToSubmit = state.form;
+        if (formToSubmit.vendorInvPhoto != null) {
+          final cmp = await ImageCompressUtil.compressBase64Image(
+              formToSubmit.vendorInvPhoto!);
+          formToSubmit = formToSubmit.copyWith(vendorInvPhoto: cmp);
+        }
+        if (formToSubmit.vehiclePhoto != null) {
+          final cmp = await ImageCompressUtil.compressBase64Image(
+              formToSubmit.vehiclePhoto!);
+          formToSubmit = formToSubmit.copyWith(vehiclePhoto: cmp);
+        }
+        if (formToSubmit.vehicleBackPhoto != null) {
+          final cmp = await ImageCompressUtil.compressBase64Image(
+              formToSubmit.vehicleBackPhoto!);
+          formToSubmit = formToSubmit.copyWith(vehicleBackPhoto: cmp);
+        }
+
         final response = state.view == GateEntryView.create
-            ? await repo.createGateEntry(state.form)
-            : await repo.submitGateEntry(state.form);
+            ? await repo.createGateEntry(formToSubmit)
+            : await repo.submitGateEntry(formToSubmit);
         return response.fold(
           (l) => emitSafeState(state.copyWith(isLoading: false, error: l)),
           (r) => emitSafeState(state.copyWith(

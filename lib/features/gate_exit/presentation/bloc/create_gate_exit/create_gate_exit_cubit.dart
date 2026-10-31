@@ -43,20 +43,20 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
     emitSafeState(state.copyWith(form: updatedForm, view: mode));
   }
 
-  void onFieldChange({
+  Future<void> onFieldChange({
     String? salesInvNo,
     String? vehicleNo,
     String? remarks,
     File? vehiclePhoto,
     File? vehicleBackPhoto,
-  }) {
+  }) async {
     final form = state.form;
     final vehPhoto = vehiclePhoto.isNull
         ? form.vehiclePhoto
-        : base64Encode(vehiclePhoto!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(vehiclePhoto!);
     final vehBackPhoto = vehicleBackPhoto.isNull
         ? form.vehicleBackPhoto
-        : base64Encode(vehicleBackPhoto!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(vehicleBackPhoto!);
     final updatedForm = form.copyWith(
       name: form.name ,
       exitDate: form.exitDate,
@@ -94,9 +94,21 @@ class CreateGateExitCubit extends AppBaseCubit<CreateGateExitState> {
           GateExitView.edit || GateExitView.completed => 'Submitted',
         };
 
+        var formToSubmit = state.form;
+        if (formToSubmit.vehiclePhoto != null) {
+          final cmp = await ImageCompressUtil.compressBase64Image(
+              formToSubmit.vehiclePhoto!);
+          formToSubmit = formToSubmit.copyWith(vehiclePhoto: cmp);
+        }
+        if (formToSubmit.vehicleBackPhoto != null) {
+          final cmp = await ImageCompressUtil.compressBase64Image(
+              formToSubmit.vehicleBackPhoto!);
+          formToSubmit = formToSubmit.copyWith(vehicleBackPhoto: cmp);
+        }
+
         final response = state.view == GateExitView.create
-            ? await repo.createGateExit(state.form)
-            : await repo.submitGateExit(state.form);
+            ? await repo.createGateExit(formToSubmit)
+            : await repo.submitGateExit(formToSubmit);
         return response.fold(
           (l) => emitSafeState(state.copyWith(isLoading: false, error: l)),
           (r) => emitSafeState(state.copyWith(

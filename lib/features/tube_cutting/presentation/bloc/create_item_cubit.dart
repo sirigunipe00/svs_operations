@@ -1,17 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:svs_operations/core/core.dart';
-import 'package:svs_operations/core/cubit/base/base_cubit.dart';
-import 'package:svs_operations/core/model/failure.dart';
-import 'package:svs_operations/core/utils/date_format_util.dart';
-import 'package:svs_operations/core/utils/string_utils.dart';
-import 'package:svs_operations/features/gate_entry/data/gate_entry_repo.dart';
 import 'package:svs_operations/features/gate_entry/model/gate_entry.dart';
-import 'package:svs_operations/features/gate_entry/model/new_gate_entry_form.dart';
 import 'package:svs_operations/features/tube_cutting/data/tube_cutting_repo.dart';
 import 'package:svs_operations/features/tube_cutting/model/add_item_model.dart';
 
@@ -25,7 +17,7 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
 
   final TubeCuttingRepo repo;
 
-  void onValueChanged({
+  Future<void> onValueChanged({
     String? jobCard,
     String? workOrder,
     String? operation,
@@ -43,18 +35,18 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
     int? cutQty,
     String? rejectiontray,
     double? scrapKgs,
-  }) {
+  }) async {
     final form = state.form;
     final startImg = startImage.isNull
         ? form.startImage
-        : base64Encode(startImage!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(startImage!);
     final endImg = endImage.isNull
         ? form.endImage
-        : base64Encode(endImage!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(endImage!);
 
     final rejectimg = rejectionImage.isNull
         ? form.rejectionTrayImage
-        : base64Encode(rejectionImage!.readAsBytesSync());
+        : await ImageCompressUtil.compressFileToBase64(rejectionImage!);
 
     final newForm = form.copyWith(
         jobCard: jobCard ?? form.jobCard,
@@ -118,9 +110,24 @@ class CreateItemCubit extends AppBaseCubit<CreateItemState> {
     //   AddItemView.update || AddItemView.completed => 'Submitted',
     // };
 
+    // Ensure any image base64 strings in form are compressed before sending to server
+    var formToSubmit = state.form;
+    if (formToSubmit.startImage != null) {
+      final cmp = await ImageCompressUtil.compressBase64Image(formToSubmit.startImage!);
+      formToSubmit = formToSubmit.copyWith(startImage: cmp);
+    }
+    if (formToSubmit.endImage != null) {
+      final cmp = await ImageCompressUtil.compressBase64Image(formToSubmit.endImage!);
+      formToSubmit = formToSubmit.copyWith(endImage: cmp);
+    }
+    if (formToSubmit.rejectionTrayImage != null) {
+      final cmp = await ImageCompressUtil.compressBase64Image(formToSubmit.rejectionTrayImage!);
+      formToSubmit = formToSubmit.copyWith(rejectionTrayImage: cmp);
+    }
+
     final response = !isInProgress
-        ? await repo.createItem(state.form)
-        : await repo.updateItem(state.form);
+        ? await repo.createItem(formToSubmit)
+        : await repo.updateItem(formToSubmit);
     return response.fold(
       (l) => emitSafeState(state.copyWith(isLoading: false, error: l)),
       (r) => emitSafeState(state.copyWith(

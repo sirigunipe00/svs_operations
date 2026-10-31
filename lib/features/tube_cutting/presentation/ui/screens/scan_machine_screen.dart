@@ -119,11 +119,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanOutputTray() async {
-    const scannedValue = 'A097';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // const scannedValue = 'A097';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -134,11 +134,11 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanRejectionTray() async {
-    const scannedValue = 'A019';
-    // final scannedValue = await Navigator.push<String>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const QrScannerScreen()),
-    // );
+    // const scannedValue = 'A019';
+    final scannedValue = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const QrScannerScreen()),
+    );
 
     if (scannedValue != null) {
       setState(() {
@@ -154,10 +154,15 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     final picker = ImagePicker();
     final photo = await picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 80,
+      imageQuality: 50,
+      maxWidth: 1280,
+      maxHeight: 1280,
     );
 
     if (photo == null) return;
+
+    final compressedFile =
+        await ImageCompressUtil.compressFile(File(photo.path));
 
     setState(() {
       if (isStart) {
@@ -175,7 +180,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
     try {
       final CounterReadingResult result =
-          await counterReaderService.readFile(photo);
+          await counterReaderService.readFile(XFile(compressedFile.path));
 
       if (!mounted) return;
 
@@ -183,12 +188,12 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         final readingText = result.reading!.trim();
         setState(() {
           if (isStart) {
-            startImage = photo.path;
+            startImage = compressedFile.path;
             isReadingStartCounter = false;
             startReadingError = null;
             startReadingController.text = readingText;
           } else {
-            endImage = photo.path;
+            endImage = compressedFile.path;
             isReadingEndCounter = false;
             endReadingError = null;
             endReadingController.text = readingText;
@@ -197,12 +202,12 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
         if (isStart) {
           context.read<CreateItemCubit>().onValueChanged(
-                startImage: File(photo.path),
+                startImage: compressedFile,
                 startReading: int.tryParse(readingText),
               );
         } else {
           context.read<CreateItemCubit>().onValueChanged(
-                endImage: File(photo.path),
+                endImage: compressedFile,
                 endReading: int.tryParse(readingText),
               );
         }
@@ -318,14 +323,18 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     final picker = ImagePicker();
     final photo = await picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 80,
+      imageQuality: 50,
+      maxWidth: 1280,
+      maxHeight: 1280,
     );
 
     if (photo != null) {
+      final compressedFile =
+          await ImageCompressUtil.compressFile(File(photo.path));
       setState(() {
-        rejectionTrayImagePath = photo.path;
+        rejectionTrayImagePath = compressedFile.path;
         context.read<CreateItemCubit>().onValueChanged(
-              rejectionImage: File(photo.path),
+              rejectionImage: compressedFile,
             );
       });
     }

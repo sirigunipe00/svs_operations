@@ -16,3 +16,6 @@ export 'boolean_util.dart';
 export 'num_utils.dart';
 
 export 'upper_case_formatter.dart';
+
+// Image compression
+export 'image_compress_util.dart';

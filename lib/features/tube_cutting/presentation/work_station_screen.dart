@@ -132,14 +132,19 @@ class _TubeCuttingWorkStationScreenState
 
     final XFile? photo = await picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 80,
+      imageQuality: 50,
+      maxWidth: 1280,
+      maxHeight: 1280,
     );
 
     if (photo == null) return;
 
+    final compressedFile =
+        await ImageCompressUtil.compressFile(File(photo.path));
+
     final directory = await getApplicationDocumentsDirectory();
 
-    final savedImage = await File(photo.path).copy(
+    final savedImage = await compressedFile.copy(
       '${directory.path}/rejection_tray_${DateTime.now().millisecondsSinceEpoch}.jpg',
     );
 
@@ -149,7 +154,7 @@ class _TubeCuttingWorkStationScreenState
       rejectionTrayImagePath = savedImage.path;
       context
           .read<CreateItemCubit>()
-          .onValueChanged(rejectionImage: File(rejectionTrayImagePath ?? ''));
+          .onValueChanged(rejectionImage: savedImage);
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -294,21 +299,26 @@ class _TubeCuttingWorkStationScreenState
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.camera,
+      imageQuality: 50,
+      maxWidth: 1280,
+      maxHeight: 1280,
     );
 
     if (image != null) {
+      final compressedFile =
+          await ImageCompressUtil.compressFile(File(image.path));
       setState(() {
         if (isStart) {
-          startImage = image.path;
+          startImage = compressedFile.path;
           context
               .read<CreateItemCubit>()
-              .onValueChanged(startImage: File(startImage ?? ''));
+              .onValueChanged(startImage: compressedFile);
         } else {
-          endImage = image.path;
+          endImage = compressedFile.path;
 
           context
               .read<CreateItemCubit>()
-              .onValueChanged(endImage: File(endImage ?? ''));
+              .onValueChanged(endImage: compressedFile);
         }
       });
     }

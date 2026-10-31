@@ -113,7 +113,8 @@ class ApiClient {
     final multiFiles = <http.MultipartFile>[];
     for (final file in files) {
       if (file != null) {
-        final multipartFile = await http.MultipartFile.fromPath(key, file.path);
+        final compressedFile = await ImageCompressUtil.compressFile(file);
+        final multipartFile = await http.MultipartFile.fromPath(key, compressedFile.path);
         multiFiles.add(multipartFile);
       }
     }
@@ -126,7 +127,8 @@ class ApiClient {
     http.MultipartRequest request,
   ) async {
     if (file != null) {
-      final multipartFile = await http.MultipartFile.fromPath(key, file.path, filename: key);
+      final compressedFile = await ImageCompressUtil.compressFile(file);
+      final multipartFile = await http.MultipartFile.fromPath(key, compressedFile.path, filename: key);
       request.files.add(multipartFile);
     }
   }
