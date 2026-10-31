@@ -20,9 +20,11 @@ import 'package:svs_operations/features/gate_exit/presentation/bloc/create_gate_
 import 'package:svs_operations/features/gate_exit/presentation/ui/create/new_gate_exit.dart';
 import 'package:svs_operations/features/gate_exit/presentation/ui/gate_exit_list/gate_exit_list.dart';
 import 'package:svs_operations/features/operations_screen.dart.dart';
+import 'package:svs_operations/features/tube_cutting/model/child_status_model.dart';
 import 'package:svs_operations/features/tube_cutting/model/work_order_model.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/bloc/bloc_provider.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/bloc/create_item_cubit.dart';
+import 'package:svs_operations/features/tube_cutting/presentation/ui/screens/job_card_item_list_screen.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/ui/screens/scan_machine_screen.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/ui/screens/work_order_list.dart';
 import 'package:svs_operations/features/tube_cutting/presentation/work_station_screen.dart';
@@ -200,6 +202,29 @@ class AppRouteConfig {
                                 },
                                 routes: [
                                   GoRoute(
+                                    path: _getPath(AppRoute.jobCardItems),
+                                    builder: (_, state) {
+                                      final data = state.extra!
+                                          as Map<String, dynamic>;
+                                      final name = data['name'] as String;
+                                      final workorder =
+                                          data['order'] as WorkOrderItem;
+                                      final selectedfilter =
+                                          data['filter'] as String;
+                                      return BlocProvider(
+                                        create: (context) =>
+                                            TubeCuttingBlocProvider.get()
+                                                .childStatusCubit()
+                                              ..request(workorder.name),
+                                        child: JobCardItemListScreen(
+                                          operation: name,
+                                          workOrder: workorder,
+                                          selectedFilter: selectedfilter,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  GoRoute(
                                       path: _getPath(AppRoute.scanMachine),
                                       builder: (_, state) {
                                         final data = state.extra!
@@ -208,6 +233,10 @@ class AppRouteConfig {
                                         final workorder =
                                             data['order'] as WorkOrderItem;
                                         final selectedfilter = data['filter'];
+                                        final initialChildItem =
+                                            data['childItem'] as ChildStatusModel?;
+                                        final isNewOperation =
+                                            data['isNewOperation'] as bool?;
                                         return MultiBlocProvider(
                                           providers: [
                                             BlocProvider(
@@ -230,6 +259,8 @@ class AppRouteConfig {
                                             selectedFilter: selectedfilter,
                                             title: name,
                                             workOrder: workorder,
+                                            initialChildItem: initialChildItem,
+                                            isNewOperation: isNewOperation,
                                           ),
                                         );
                                       },

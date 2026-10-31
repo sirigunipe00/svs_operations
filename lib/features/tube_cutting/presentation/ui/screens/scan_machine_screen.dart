@@ -21,12 +21,16 @@ class TubeCuttingScreen extends StatefulWidget {
   final String title;
   final String selectedFilter;
   final WorkOrderItem workOrder;
+  final ChildStatusModel? initialChildItem;
+  final bool? isNewOperation;
 
   const TubeCuttingScreen({
     super.key,
     required this.title,
     required this.workOrder,
     required this.selectedFilter,
+    this.initialChildItem,
+    this.isNewOperation,
   });
 
   @override
@@ -57,6 +61,34 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   int? selectedItemCount;
   List<ChildStatusModel> childStatusList = [];
 
+  ChildStatusModel? get _currentActiveChildItem {
+    if (widget.isNewOperation == true) return null;
+    if (widget.initialChildItem != null) {
+      return childStatusList
+              .where((item) => item.name == widget.initialChildItem!.name)
+              .firstOrNull ??
+          widget.initialChildItem;
+    }
+    return childStatusList
+        .where((item) => item.status == 'In Progress')
+        .firstOrNull;
+  }
+
+  bool get _isTubeCutting =>
+      widget.title.toLowerCase().contains('tube cutting');
+
+  bool get _isMechInsertion =>
+      widget.title.toLowerCase().contains('mesh insertion');
+
+  bool get _showCutQuantity => _isTubeCutting || _isMechInsertion;
+
+  List<int> get _itemCountOptions {
+    if (_isMechInsertion) {
+      return [1, 8, 16];
+    }
+    return [1, 2, 3, 4];
+  }
+
   // Loading & error states for OCR counter reading
   bool isReadingStartCounter = false;
   bool isReadingEndCounter = false;
@@ -69,11 +101,13 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   void initState() {
     super.initState();
 
+    final activeChild = _currentActiveChildItem;
     context.read<CreateItemCubit>().onValueChanged(
           workOrder: widget.workOrder.workOrder,
           jobCard: widget.workOrder.name,
           employee: context.user.email,
           operation: widget.title,
+          childId: activeChild?.name,
         );
   }
 
@@ -89,7 +123,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
   }
 
   Future<void> _scanMachine() async {
-    // const scannedValue = '4 Tube Cutting Machine - 01';
+    // const scannedValue = 'Tube Cutting Machine - 05';
     final scannedValue = await Navigator.push<String>(
       context,
       MaterialPageRoute(builder: (_) => const QrScannerScreen()),
@@ -153,7 +187,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
     final picker = ImagePicker();
     final photo = await picker.pickImage(
-      source: ImageSource.gallery,
+      source: ImageSource.camera,
       imageQuality: 50,
       maxWidth: 1280,
       maxHeight: 1280,
@@ -407,9 +441,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
 
   // Confirmation dialog showing Start Reading, End Reading, Final Qnty (End - Start), and Scrap Count
   Future<bool?> _showCompleteConfirmationDialog() {
-    final inProgressChild = childStatusList
-        .where((item) => item.status == 'In Progress')
-        .firstOrNull;
+    final inProgressChild = _currentActiveChildItem;
 
     final num? startReadingNum = inProgressChild?.startReading ??
         num.tryParse(startReadingController.text.trim()) ??
@@ -746,9 +778,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                 setState(() {
                   childStatusList = data;
                 });
-                final inProgressChild = data
-                    .where((item) => item.status == 'In Progress')
-                    .firstOrNull;
+                final inProgressChild = _currentActiveChildItem;
                 if (inProgressChild != null) {
                   context.read<CreateItemCubit>().onValueChanged(
                         childId: inProgressChild.name,
@@ -786,9 +816,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               ),
             ),
             success: (data) {
-              final childItem = childStatusList
-                  .where((item) => item.status == 'In Progress')
-                  .firstOrNull;
+              final childItem = _currentActiveChildItem;
               final bool inProgress = (childItem != null);
 
               return Scaffold(
@@ -1212,8 +1240,8 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             onTap: _scanInputTray,
           ),
           const SizedBox(height: 14),
-          // CUT QUANTITY
-          if (widget.title == 'Tube Cutting') ...[
+          // CUT QUANTITY (for Tube Cutting and Mech Insertion)
+          if (_showCutQuantity) ...[
             _buildFieldLabel('CUT QUANTITY'),
             const SizedBox(height: 6),
             _buildItemCountDropdown(),
@@ -2404,8 +2432,14 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     );
   }
 
-  // Item count dropdown (1, 2, 3, 4)
+  // Item count dropdown (Tube Cutting: 1, 2, 3, 4; Mech Insertion: 1, 8, 16)
   Widget _buildItemCountDropdown() {
+    final options = _itemCountOptions;
+    final currentValue =
+        (selectedItemCount != null && options.contains(selectedItemCount))
+            ? selectedItemCount
+            : null;
+
     return Container(
       height: 52,
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -2419,7 +2453,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
-          value: selectedItemCount,
+          value: currentValue,
           isExpanded: true,
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
@@ -2433,7 +2467,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
               color: Color(0xFF94A3B8),
             ),
           ),
-          items: [1, 2, 3, 4].map((count) {
+          items: options.map((count) {
             return DropdownMenuItem<int>(
               value: count,
               child: Text(

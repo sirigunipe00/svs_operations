@@ -36,6 +36,14 @@ mixin _$ChildStatusModel {
   double? get startReading => throw _privateConstructorUsedError;
   @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
   String? get cutQuantity => throw _privateConstructorUsedError;
+  @JsonKey(name: 'from_time', defaultValue: '')
+  String? get fromTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'to_time', defaultValue: '')
+  String? get toTime => throw _privateConstructorUsedError;
+  @JsonKey(name: 'completed_qty', defaultValue: 0.0)
+  double? get completedQty => throw _privateConstructorUsedError;
+  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  String? get outputTray => throw _privateConstructorUsedError;
 
   /// Serializes this ChildStatusModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -65,7 +73,12 @@ abstract class $ChildStatusModelCopyWith<$Res> {
       @JsonKey(name: 'custom_counter_start_reading', defaultValue: 0.0)
       double? startReading,
       @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
-      String? cutQuantity});
+      String? cutQuantity,
+      @JsonKey(name: 'from_time', defaultValue: '') String? fromTime,
+      @JsonKey(name: 'to_time', defaultValue: '') String? toTime,
+      @JsonKey(name: 'completed_qty', defaultValue: 0.0) double? completedQty,
+      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      String? outputTray});
 }
 
 /// @nodoc
@@ -91,6 +104,10 @@ class _$ChildStatusModelCopyWithImpl<$Res, $Val extends ChildStatusModel>
     Object? endImage = freezed,
     Object? startReading = freezed,
     Object? cutQuantity = freezed,
+    Object? fromTime = freezed,
+    Object? toTime = freezed,
+    Object? completedQty = freezed,
+    Object? outputTray = freezed,
   }) {
     return _then(_value.copyWith(
       name: freezed == name
@@ -125,6 +142,22 @@ class _$ChildStatusModelCopyWithImpl<$Res, $Val extends ChildStatusModel>
           ? _value.cutQuantity
           : cutQuantity // ignore: cast_nullable_to_non_nullable
               as String?,
+      fromTime: freezed == fromTime
+          ? _value.fromTime
+          : fromTime // ignore: cast_nullable_to_non_nullable
+              as String?,
+      toTime: freezed == toTime
+          ? _value.toTime
+          : toTime // ignore: cast_nullable_to_non_nullable
+              as String?,
+      completedQty: freezed == completedQty
+          ? _value.completedQty
+          : completedQty // ignore: cast_nullable_to_non_nullable
+              as double?,
+      outputTray: freezed == outputTray
+          ? _value.outputTray
+          : outputTray // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -149,7 +182,12 @@ abstract class _$$ChildStatusModelImplCopyWith<$Res>
       @JsonKey(name: 'custom_counter_start_reading', defaultValue: 0.0)
       double? startReading,
       @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
-      String? cutQuantity});
+      String? cutQuantity,
+      @JsonKey(name: 'from_time', defaultValue: '') String? fromTime,
+      @JsonKey(name: 'to_time', defaultValue: '') String? toTime,
+      @JsonKey(name: 'completed_qty', defaultValue: 0.0) double? completedQty,
+      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      String? outputTray});
 }
 
 /// @nodoc
@@ -173,6 +211,10 @@ class __$$ChildStatusModelImplCopyWithImpl<$Res>
     Object? endImage = freezed,
     Object? startReading = freezed,
     Object? cutQuantity = freezed,
+    Object? fromTime = freezed,
+    Object? toTime = freezed,
+    Object? completedQty = freezed,
+    Object? outputTray = freezed,
   }) {
     return _then(_$ChildStatusModelImpl(
       name: freezed == name
@@ -207,6 +249,22 @@ class __$$ChildStatusModelImplCopyWithImpl<$Res>
           ? _value.cutQuantity
           : cutQuantity // ignore: cast_nullable_to_non_nullable
               as String?,
+      fromTime: freezed == fromTime
+          ? _value.fromTime
+          : fromTime // ignore: cast_nullable_to_non_nullable
+              as String?,
+      toTime: freezed == toTime
+          ? _value.toTime
+          : toTime // ignore: cast_nullable_to_non_nullable
+              as String?,
+      completedQty: freezed == completedQty
+          ? _value.completedQty
+          : completedQty // ignore: cast_nullable_to_non_nullable
+              as double?,
+      outputTray: freezed == outputTray
+          ? _value.outputTray
+          : outputTray // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -225,7 +283,11 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
       this.endImage,
       @JsonKey(name: 'custom_counter_start_reading', defaultValue: 0.0)
       this.startReading,
-      @JsonKey(name: 'custom_cut_quantity', defaultValue: '') this.cutQuantity})
+      @JsonKey(name: 'custom_cut_quantity', defaultValue: '') this.cutQuantity,
+      @JsonKey(name: 'from_time', defaultValue: '') this.fromTime,
+      @JsonKey(name: 'to_time', defaultValue: '') this.toTime,
+      @JsonKey(name: 'completed_qty', defaultValue: 0.0) this.completedQty,
+      @JsonKey(name: 'custom_output_tray', defaultValue: '') this.outputTray})
       : super._();
 
   factory _$ChildStatusModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -255,10 +317,22 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
   @override
   @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
   final String? cutQuantity;
+  @override
+  @JsonKey(name: 'from_time', defaultValue: '')
+  final String? fromTime;
+  @override
+  @JsonKey(name: 'to_time', defaultValue: '')
+  final String? toTime;
+  @override
+  @JsonKey(name: 'completed_qty', defaultValue: 0.0)
+  final double? completedQty;
+  @override
+  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  final String? outputTray;
 
   @override
   String toString() {
-    return 'ChildStatusModel(name: $name, status: $status, machineId: $machineId, trayId: $trayId, startImage: $startImage, endImage: $endImage, startReading: $startReading, cutQuantity: $cutQuantity)';
+    return 'ChildStatusModel(name: $name, status: $status, machineId: $machineId, trayId: $trayId, startImage: $startImage, endImage: $endImage, startReading: $startReading, cutQuantity: $cutQuantity, fromTime: $fromTime, toTime: $toTime, completedQty: $completedQty, outputTray: $outputTray)';
   }
 
   @override
@@ -278,13 +352,32 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
             (identical(other.startReading, startReading) ||
                 other.startReading == startReading) &&
             (identical(other.cutQuantity, cutQuantity) ||
-                other.cutQuantity == cutQuantity));
+                other.cutQuantity == cutQuantity) &&
+            (identical(other.fromTime, fromTime) ||
+                other.fromTime == fromTime) &&
+            (identical(other.toTime, toTime) || other.toTime == toTime) &&
+            (identical(other.completedQty, completedQty) ||
+                other.completedQty == completedQty) &&
+            (identical(other.outputTray, outputTray) ||
+                other.outputTray == outputTray));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, name, status, machineId, trayId,
-      startImage, endImage, startReading, cutQuantity);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      status,
+      machineId,
+      trayId,
+      startImage,
+      endImage,
+      startReading,
+      cutQuantity,
+      fromTime,
+      toTime,
+      completedQty,
+      outputTray);
 
   /// Create a copy of ChildStatusModel
   /// with the given fields replaced by the non-null parameter values.
@@ -317,7 +410,13 @@ abstract class _ChildStatusModel extends ChildStatusModel {
       @JsonKey(name: 'custom_counter_start_reading', defaultValue: 0.0)
       final double? startReading,
       @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
-      final String? cutQuantity}) = _$ChildStatusModelImpl;
+      final String? cutQuantity,
+      @JsonKey(name: 'from_time', defaultValue: '') final String? fromTime,
+      @JsonKey(name: 'to_time', defaultValue: '') final String? toTime,
+      @JsonKey(name: 'completed_qty', defaultValue: 0.0)
+      final double? completedQty,
+      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      final String? outputTray}) = _$ChildStatusModelImpl;
   const _ChildStatusModel._() : super._();
 
   factory _ChildStatusModel.fromJson(Map<String, dynamic> json) =
@@ -347,6 +446,18 @@ abstract class _ChildStatusModel extends ChildStatusModel {
   @override
   @JsonKey(name: 'custom_cut_quantity', defaultValue: '')
   String? get cutQuantity;
+  @override
+  @JsonKey(name: 'from_time', defaultValue: '')
+  String? get fromTime;
+  @override
+  @JsonKey(name: 'to_time', defaultValue: '')
+  String? get toTime;
+  @override
+  @JsonKey(name: 'completed_qty', defaultValue: 0.0)
+  double? get completedQty;
+  @override
+  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  String? get outputTray;
 
   /// Create a copy of ChildStatusModel
   /// with the given fields replaced by the non-null parameter values.

@@ -15,6 +15,7 @@ abstract class _AppRoutePaths {
   static const newGateExit = '/home/gateexit/newGateExit';
   static const newGateExitPreview = '/home/gateexit/newGateExit/preview';
   static const tcList = '/home/operations/tcList';
+  static const jobCardItems = '/home/operations/tcList/jobCardItems';
   static const scanMachine = '/home/operations/tcList/scanMachine';
   static const workStation = '/home/operations/tcList/scanMachine/workStation';
 
@@ -50,6 +51,7 @@ enum AppRoute {
 
   operations(_AppRoutePaths.operations),
   tcList(_AppRoutePaths.tcList),
+  jobCardItems(_AppRoutePaths.jobCardItems),
   scanMachine(_AppRoutePaths.scanMachine),
   workStation(_AppRoutePaths.workStation),
   incidentRegister(_AppRoutePaths.incidentRegister),

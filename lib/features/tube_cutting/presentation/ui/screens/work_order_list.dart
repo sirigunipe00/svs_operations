@@ -629,7 +629,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
           borderRadius: BorderRadius.circular(20),
           onTap: () {
             if (order.status != 'Completed') {
-              AppRoute.scanMachine.push(
+              AppRoute.jobCardItems.push(
                 context,
                 extra: {
                   'name': widget.operation,
