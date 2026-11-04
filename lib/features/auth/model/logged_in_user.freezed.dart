@@ -50,12 +50,8 @@ mixin _$LoggedInUser {
   @JsonKey(name: 'section_roles_status')
   List<String>? get sectionRoles => throw _privateConstructorUsedError;
 
-  /// Serializes this LoggedInUser to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $LoggedInUserCopyWith<LoggedInUser> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -99,8 +95,6 @@ class _$LoggedInUserCopyWithImpl<$Res, $Val extends LoggedInUser>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -194,8 +188,6 @@ class _$LoggedInUserCopyWithImpl<$Res, $Val extends LoggedInUser>
     ) as $Val);
   }
 
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserRolesCopyWith<$Res>? get roles {
@@ -249,8 +241,6 @@ class __$$LoggedInUserImplCopyWithImpl<$Res>
       _$LoggedInUserImpl _value, $Res Function(_$LoggedInUserImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -466,7 +456,7 @@ class _$LoggedInUserImpl extends _LoggedInUser {
                 .equals(other._sectionRoles, _sectionRoles));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -488,9 +478,7 @@ class _$LoggedInUserImpl extends _LoggedInUser {
       roles,
       const DeepCollectionEquality().hash(_sectionRoles));
 
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$LoggedInUserImplCopyWith<_$LoggedInUserImpl> get copyWith =>
@@ -579,11 +567,8 @@ abstract class _LoggedInUser extends LoggedInUser {
   @override
   @JsonKey(name: 'section_roles_status')
   List<String>? get sectionRoles;
-
-  /// Create a copy of LoggedInUser
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$LoggedInUserImplCopyWith<_$LoggedInUserImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

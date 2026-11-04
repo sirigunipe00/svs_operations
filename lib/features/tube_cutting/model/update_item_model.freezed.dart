@@ -37,12 +37,8 @@ mixin _$UpdateItemModel {
   @JsonKey(name: 'counter_end_image', defaultValue: '')
   String? get endImage => throw _privateConstructorUsedError;
 
-  /// Serializes this UpdateItemModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of UpdateItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $UpdateItemModelCopyWith<UpdateItemModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -74,8 +70,6 @@ class _$UpdateItemModelCopyWithImpl<$Res, $Val extends UpdateItemModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of UpdateItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -152,8 +146,6 @@ class __$$UpdateItemModelImplCopyWithImpl<$Res>
       _$UpdateItemModelImpl _value, $Res Function(_$UpdateItemModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of UpdateItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -271,14 +263,12 @@ class _$UpdateItemModelImpl extends _UpdateItemModel {
                 other.endImage == endImage));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, jobCard, workOrder, operation,
       employee, childId, outputTray, readings, endImage);
 
-  /// Create a copy of UpdateItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$UpdateItemModelImplCopyWith<_$UpdateItemModelImpl> get copyWith =>
@@ -334,11 +324,8 @@ abstract class _UpdateItemModel extends UpdateItemModel {
   @override
   @JsonKey(name: 'counter_end_image', defaultValue: '')
   String? get endImage;
-
-  /// Create a copy of UpdateItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$UpdateItemModelImplCopyWith<_$UpdateItemModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

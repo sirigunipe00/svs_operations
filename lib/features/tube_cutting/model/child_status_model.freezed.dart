@@ -45,12 +45,8 @@ mixin _$ChildStatusModel {
   @JsonKey(name: 'custom_output_tray', defaultValue: '')
   String? get outputTray => throw _privateConstructorUsedError;
 
-  /// Serializes this ChildStatusModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of ChildStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $ChildStatusModelCopyWith<ChildStatusModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -91,8 +87,6 @@ class _$ChildStatusModelCopyWithImpl<$Res, $Val extends ChildStatusModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of ChildStatusModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -198,8 +192,6 @@ class __$$ChildStatusModelImplCopyWithImpl<$Res>
       $Res Function(_$ChildStatusModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ChildStatusModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -362,7 +354,7 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
                 other.outputTray == outputTray));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -379,9 +371,7 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
       completedQty,
       outputTray);
 
-  /// Create a copy of ChildStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ChildStatusModelImplCopyWith<_$ChildStatusModelImpl> get copyWith =>
@@ -458,11 +448,8 @@ abstract class _ChildStatusModel extends ChildStatusModel {
   @override
   @JsonKey(name: 'custom_output_tray', defaultValue: '')
   String? get outputTray;
-
-  /// Create a copy of ChildStatusModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ChildStatusModelImplCopyWith<_$ChildStatusModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

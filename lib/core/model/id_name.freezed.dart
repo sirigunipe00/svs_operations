@@ -24,12 +24,8 @@ mixin _$IdName {
   @JsonKey(defaultValue: '')
   String get name => throw _privateConstructorUsedError;
 
-  /// Serializes this IdName to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of IdName
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $IdNameCopyWith<IdName> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -51,8 +47,6 @@ class _$IdNameCopyWithImpl<$Res, $Val extends IdName>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of IdName
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -90,8 +84,6 @@ class __$$IdNameImplCopyWithImpl<$Res>
       _$IdNameImpl _value, $Res Function(_$IdNameImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of IdName
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -140,13 +132,11 @@ class _$IdNameImpl implements _IdName {
             (identical(other.name, name) || other.name == name));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name);
 
-  /// Create a copy of IdName
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$IdNameImplCopyWith<_$IdNameImpl> get copyWith =>
@@ -172,11 +162,8 @@ abstract class _IdName implements IdName {
   @override
   @JsonKey(defaultValue: '')
   String get name;
-
-  /// Create a copy of IdName
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$IdNameImplCopyWith<_$IdNameImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

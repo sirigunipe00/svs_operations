@@ -48,13 +48,19 @@ mixin _$GateEntry {
   String? get remarks => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_job_work')
   int? get isJobWork => throw _privateConstructorUsedError;
+  @JsonKey(name: 'receive_mode')
+  String? get receiveMode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'driver_name_person_name')
+  String? get driverName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  String? get driverMobileNo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'delivery_challan')
+  String? get deliveryChallan => throw _privateConstructorUsedError;
+  @JsonKey(name: 'lr_no')
+  String? get lrNo => throw _privateConstructorUsedError;
 
-  /// Serializes this GateEntry to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of GateEntry
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $GateEntryCopyWith<GateEntry> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -79,7 +85,13 @@ abstract class $GateEntryCopyWith<$Res> {
       @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
       @JsonKey(name: 'remarks') String? remarks,
-      @JsonKey(name: 'is_job_work') int? isJobWork});
+      @JsonKey(name: 'is_job_work') int? isJobWork,
+      @JsonKey(name: 'receive_mode') String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') String? deliveryChallan,
+      @JsonKey(name: 'lr_no') String? lrNo});
 }
 
 /// @nodoc
@@ -92,8 +104,6 @@ class _$GateEntryCopyWithImpl<$Res, $Val extends GateEntry>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of GateEntry
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -112,6 +122,11 @@ class _$GateEntryCopyWithImpl<$Res, $Val extends GateEntry>
     Object? invoicePhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
+    Object? receiveMode = freezed,
+    Object? driverName = freezed,
+    Object? driverMobileNo = freezed,
+    Object? deliveryChallan = freezed,
+    Object? lrNo = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -174,6 +189,26 @@ class _$GateEntryCopyWithImpl<$Res, $Val extends GateEntry>
           ? _value.isJobWork
           : isJobWork // ignore: cast_nullable_to_non_nullable
               as int?,
+      receiveMode: freezed == receiveMode
+          ? _value.receiveMode
+          : receiveMode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverName: freezed == driverName
+          ? _value.driverName
+          : driverName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverMobileNo: freezed == driverMobileNo
+          ? _value.driverMobileNo
+          : driverMobileNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deliveryChallan: freezed == deliveryChallan
+          ? _value.deliveryChallan
+          : deliveryChallan // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lrNo: freezed == lrNo
+          ? _value.lrNo
+          : lrNo // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -201,7 +236,13 @@ abstract class _$$GateEntryImplCopyWith<$Res>
       @JsonKey(name: 'vendor_name') String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
       @JsonKey(name: 'remarks') String? remarks,
-      @JsonKey(name: 'is_job_work') int? isJobWork});
+      @JsonKey(name: 'is_job_work') int? isJobWork,
+      @JsonKey(name: 'receive_mode') String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') String? deliveryChallan,
+      @JsonKey(name: 'lr_no') String? lrNo});
 }
 
 /// @nodoc
@@ -212,8 +253,6 @@ class __$$GateEntryImplCopyWithImpl<$Res>
       _$GateEntryImpl _value, $Res Function(_$GateEntryImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of GateEntry
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -232,6 +271,11 @@ class __$$GateEntryImplCopyWithImpl<$Res>
     Object? invoicePhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
+    Object? receiveMode = freezed,
+    Object? driverName = freezed,
+    Object? driverMobileNo = freezed,
+    Object? deliveryChallan = freezed,
+    Object? lrNo = freezed,
   }) {
     return _then(_$GateEntryImpl(
       name: null == name
@@ -294,6 +338,26 @@ class __$$GateEntryImplCopyWithImpl<$Res>
           ? _value.isJobWork
           : isJobWork // ignore: cast_nullable_to_non_nullable
               as int?,
+      receiveMode: freezed == receiveMode
+          ? _value.receiveMode
+          : receiveMode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverName: freezed == driverName
+          ? _value.driverName
+          : driverName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverMobileNo: freezed == driverMobileNo
+          ? _value.driverMobileNo
+          : driverMobileNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deliveryChallan: freezed == deliveryChallan
+          ? _value.deliveryChallan
+          : deliveryChallan // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lrNo: freezed == lrNo
+          ? _value.lrNo
+          : lrNo // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -319,7 +383,12 @@ class _$GateEntryImpl implements _GateEntry {
       @JsonKey(name: 'vendor_name') this.vendorName,
       @JsonKey(name: 'vendor_invoice_photo') this.invoicePhoto,
       @JsonKey(name: 'remarks') this.remarks,
-      @JsonKey(name: 'is_job_work') this.isJobWork});
+      @JsonKey(name: 'is_job_work') this.isJobWork,
+      @JsonKey(name: 'receive_mode') this.receiveMode,
+      @JsonKey(name: 'driver_name_person_name') this.driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no') this.driverMobileNo,
+      @JsonKey(name: 'delivery_challan') this.deliveryChallan,
+      @JsonKey(name: 'lr_no') this.lrNo});
 
   factory _$GateEntryImpl.fromJson(Map<String, dynamic> json) =>
       _$$GateEntryImplFromJson(json);
@@ -367,10 +436,25 @@ class _$GateEntryImpl implements _GateEntry {
   @override
   @JsonKey(name: 'is_job_work')
   final int? isJobWork;
+  @override
+  @JsonKey(name: 'receive_mode')
+  final String? receiveMode;
+  @override
+  @JsonKey(name: 'driver_name_person_name')
+  final String? driverName;
+  @override
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  final String? driverMobileNo;
+  @override
+  @JsonKey(name: 'delivery_challan')
+  final String? deliveryChallan;
+  @override
+  @JsonKey(name: 'lr_no')
+  final String? lrNo;
 
   @override
   String toString() {
-    return 'GateEntry(name: $name, status: $status, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorName: $vendorName, invoicePhoto: $invoicePhoto, remarks: $remarks, isJobWork: $isJobWork)';
+    return 'GateEntry(name: $name, status: $status, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorName: $vendorName, invoicePhoto: $invoicePhoto, remarks: $remarks, isJobWork: $isJobWork, receiveMode: $receiveMode, driverName: $driverName, driverMobileNo: $driverMobileNo, deliveryChallan: $deliveryChallan, lrNo: $lrNo)';
   }
 
   @override
@@ -404,32 +488,45 @@ class _$GateEntryImpl implements _GateEntry {
                 other.invoicePhoto == invoicePhoto) &&
             (identical(other.remarks, remarks) || other.remarks == remarks) &&
             (identical(other.isJobWork, isJobWork) ||
-                other.isJobWork == isJobWork));
+                other.isJobWork == isJobWork) &&
+            (identical(other.receiveMode, receiveMode) ||
+                other.receiveMode == receiveMode) &&
+            (identical(other.driverName, driverName) ||
+                other.driverName == driverName) &&
+            (identical(other.driverMobileNo, driverMobileNo) ||
+                other.driverMobileNo == driverMobileNo) &&
+            (identical(other.deliveryChallan, deliveryChallan) ||
+                other.deliveryChallan == deliveryChallan) &&
+            (identical(other.lrNo, lrNo) || other.lrNo == lrNo));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      status,
-      poNumber,
-      vehicleNo,
-      vendorInvNo,
-      invoiceDate,
-      invoiceQty,
-      invoiceAmt,
-      entryDate,
-      vehiclePhoto,
-      vehicleBackPhoto,
-      vendorName,
-      invoicePhoto,
-      remarks,
-      isJobWork);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        name,
+        status,
+        poNumber,
+        vehicleNo,
+        vendorInvNo,
+        invoiceDate,
+        invoiceQty,
+        invoiceAmt,
+        entryDate,
+        vehiclePhoto,
+        vehicleBackPhoto,
+        vendorName,
+        invoicePhoto,
+        remarks,
+        isJobWork,
+        receiveMode,
+        driverName,
+        driverMobileNo,
+        deliveryChallan,
+        lrNo
+      ]);
 
-  /// Create a copy of GateEntry
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$GateEntryImplCopyWith<_$GateEntryImpl> get copyWith =>
@@ -463,7 +560,13 @@ abstract class _GateEntry implements GateEntry {
       @JsonKey(name: 'vendor_name') final String? vendorName,
       @JsonKey(name: 'vendor_invoice_photo') final String? invoicePhoto,
       @JsonKey(name: 'remarks') final String? remarks,
-      @JsonKey(name: 'is_job_work') final int? isJobWork}) = _$GateEntryImpl;
+      @JsonKey(name: 'is_job_work') final int? isJobWork,
+      @JsonKey(name: 'receive_mode') final String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') final String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      final String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') final String? deliveryChallan,
+      @JsonKey(name: 'lr_no') final String? lrNo}) = _$GateEntryImpl;
 
   factory _GateEntry.fromJson(Map<String, dynamic> json) =
       _$GateEntryImpl.fromJson;
@@ -511,11 +614,23 @@ abstract class _GateEntry implements GateEntry {
   @override
   @JsonKey(name: 'is_job_work')
   int? get isJobWork;
-
-  /// Create a copy of GateEntry
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'receive_mode')
+  String? get receiveMode;
+  @override
+  @JsonKey(name: 'driver_name_person_name')
+  String? get driverName;
+  @override
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  String? get driverMobileNo;
+  @override
+  @JsonKey(name: 'delivery_challan')
+  String? get deliveryChallan;
+  @override
+  @JsonKey(name: 'lr_no')
+  String? get lrNo;
+  @override
+  @JsonKey(ignore: true)
   _$$GateEntryImplCopyWith<_$GateEntryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

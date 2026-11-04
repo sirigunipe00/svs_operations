@@ -1,11 +1,14 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:svs_operations/app/widgets/drop_down_options.dart';
 import 'package:svs_operations/core/core.dart';
 import 'package:svs_operations/features/gate_entry/model/purchase_order.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/bloc_provider.dart';
 import 'package:svs_operations/features/gate_entry/presentation/bloc/new_gate_entry/new_gate_entry_cubit.dart';
 import 'package:svs_operations/features/gate_entry/presentation/widgets/gate_ui_components.dart';
+import 'package:svs_operations/widgets/inputs/app_dropdown_widget.dart';
 
 class GateEntryFormWidget extends StatefulWidget {
   const GateEntryFormWidget({super.key});
@@ -18,7 +21,8 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
   // Local controllers for driver mockup fields so user can input if desired
   // final TextEditingController _driverNameController = TextEditingController();
   final TextEditingController _vendorNameController = TextEditingController();
-  final TextEditingController _driverLicenseController = TextEditingController();
+  final TextEditingController _driverLicenseController =
+      TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
 
   @override
@@ -429,10 +433,114 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
               ),
             ],
           ),
+          GateSectionCard(number: '3', title: 'Driver Details', children: [
+            GateInputField(
+              label: 'Driver Name/Person Name',
+              hintText: 'Enter driver name',
+              initialValue: form.driverName,
+              readOnly: isCompleted,
+              prefixIcon: const Icon(
+                Icons.person_outline_rounded,
+                color: Color(0xFF94A3B8),
+                size: 20,
+              ),
+              onChanged: (value) {
+                context
+                    .cubit<NewGateEntryCubit>()
+                    .onValueChanged(driverName: value);
+              },
+            ),
+            GateInputField(
+              label: 'Driver Mobiele No/Person Mobile No',
+              hintText: 'Enter driver mobile number',
+              initialValue: form.driverMobileNo,
+              readOnly: isCompleted,
+              keyboardType: TextInputType.phone,
+              prefixIcon: const Icon(
+                Icons.phone_outlined,
+                color: Color(0xFF94A3B8),
+                size: 20,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+              ],
+              onChanged: (value) {
+                context
+                    .cubit<NewGateEntryCubit>()
+                    .onValueChanged(driverMobileNo: value);
+              },
+            ),
+            GateInputField(
+              label: 'Delivery Challan',
+              hintText: 'Enter delivery challan number',
+              initialValue: form.deliveryChallan,
+              readOnly: isCompleted,
+              keyboardType: TextInputType.phone,
+              onChanged: (value) {
+                context
+                    .cubit<NewGateEntryCubit>()
+                    .onValueChanged(deliveryChallan: value);
+              },
+            ),
+            GateInputField(
+              label: 'LR No',
+              hintText: 'Enter LR number',
+              initialValue: form.lrNo,
+              readOnly: isCompleted,
+              keyboardType: TextInputType.phone,
+              onChanged: (value) {
+                context.cubit<NewGateEntryCubit>().onValueChanged(lrNo: value);
+              },
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    Text(
+                      'RECEIVE MODE',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: Color(0xFFDC2626),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                AppDropDownWidget<String>(
+                  hint: 'Select receive mode',
+                  items: Dropdownoptions.receiveModes,
+                  isMandatory: true,
+                  readOnly: isCompleted,
+                  defaultSelection: form.receiveMode,
+                  onSelected: (value) {
+                    if (value == null) return;
+
+                    context
+                        .cubit<NewGateEntryCubit>()
+                        .onValueChanged(receiveMode: value);
+                  },
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ]),
 
           // CARD 3: PHOTOS & REMARKS
           GateSectionCard(
-            number: '3',
+            number: '4',
             title: 'Photos & remarks',
             children: [
               // Vehicle Front Photo

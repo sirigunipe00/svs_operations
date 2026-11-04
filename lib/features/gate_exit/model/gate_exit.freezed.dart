@@ -34,12 +34,8 @@ mixin _$GateExit {
   String? get remarks => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
 
-  /// Serializes this GateExit to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of GateExit
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $GateExitCopyWith<GateExit> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -70,8 +66,6 @@ class _$GateExitCopyWithImpl<$Res, $Val extends GateExit>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of GateExit
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -148,8 +142,6 @@ class __$$GateExitImplCopyWithImpl<$Res>
       _$GateExitImpl _value, $Res Function(_$GateExitImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of GateExit
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -262,14 +254,12 @@ class _$GateExitImpl implements _GateExit {
             (identical(other.status, status) || other.status == status));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, name, salesInvNo, vehicleNo,
       exitDate, vehiclePhoto, vehicleBackPhoto, remarks, status);
 
-  /// Create a copy of GateExit
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$GateExitImplCopyWith<_$GateExitImpl> get copyWith =>
@@ -321,11 +311,8 @@ abstract class _GateExit implements GateExit {
   String? get remarks;
   @override
   String? get status;
-
-  /// Create a copy of GateExit
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$GateExitImplCopyWith<_$GateExitImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

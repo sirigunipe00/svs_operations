@@ -33,12 +33,8 @@ mixin _$WorkOrderItem {
   @JsonKey(name: 'total_completed_qty', defaultValue: 0.0)
   double get totalComplQnty => throw _privateConstructorUsedError;
 
-  /// Serializes this WorkOrderItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of WorkOrderItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $WorkOrderItemCopyWith<WorkOrderItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -69,8 +65,6 @@ class _$WorkOrderItemCopyWithImpl<$Res, $Val extends WorkOrderItem>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of WorkOrderItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -136,8 +130,6 @@ class __$$WorkOrderItemImplCopyWithImpl<$Res>
       _$WorkOrderItemImpl _value, $Res Function(_$WorkOrderItemImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of WorkOrderItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -234,14 +226,12 @@ class _$WorkOrderItemImpl extends _WorkOrderItem {
                 other.totalComplQnty == totalComplQnty));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, name, status, workOrder,
       productionItem, forQnty, totalComplQnty);
 
-  /// Create a copy of WorkOrderItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$WorkOrderItemImplCopyWith<_$WorkOrderItemImpl> get copyWith =>
@@ -289,11 +279,8 @@ abstract class _WorkOrderItem extends WorkOrderItem {
   @override
   @JsonKey(name: 'total_completed_qty', defaultValue: 0.0)
   double get totalComplQnty;
-
-  /// Create a copy of WorkOrderItem
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$WorkOrderItemImplCopyWith<_$WorkOrderItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

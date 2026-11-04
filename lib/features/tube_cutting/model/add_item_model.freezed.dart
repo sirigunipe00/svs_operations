@@ -55,12 +55,8 @@ mixin _$AddItemModel {
   @JsonKey(name: 'custom_scrap_kgs')
   double? get scrapKgs => throw _privateConstructorUsedError;
 
-  /// Serializes this AddItemModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of AddItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $AddItemModelCopyWith<AddItemModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -92,8 +88,7 @@ abstract class $AddItemModelCopyWith<$Res> {
       String? rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
       int? rejectionCounter,
-      @JsonKey(name: 'custom_scrap_kgs')
-      double? scrapKgs});
+      @JsonKey(name: 'custom_scrap_kgs') double? scrapKgs});
 }
 
 /// @nodoc
@@ -106,8 +101,6 @@ class _$AddItemModelCopyWithImpl<$Res, $Val extends AddItemModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of AddItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -231,8 +224,7 @@ abstract class _$$AddItemModelImplCopyWith<$Res>
       String? rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
       int? rejectionCounter,
-      @JsonKey(name: 'custom_scrap_kgs')
-      double? scrapKgs});
+      @JsonKey(name: 'custom_scrap_kgs') double? scrapKgs});
 }
 
 /// @nodoc
@@ -243,8 +235,6 @@ class __$$AddItemModelImplCopyWithImpl<$Res>
       _$AddItemModelImpl _value, $Res Function(_$AddItemModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AddItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -362,8 +352,7 @@ class _$AddItemModelImpl extends _AddItemModel {
       this.rejectionTrayImage,
       @JsonKey(name: 'rejection_counter', defaultValue: 0)
       this.rejectionCounter,
-      @JsonKey(name: 'custom_scrap_kgs')
-      this.scrapKgs})
+      @JsonKey(name: 'custom_scrap_kgs') this.scrapKgs})
       : super._();
 
   factory _$AddItemModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -463,7 +452,7 @@ class _$AddItemModelImpl extends _AddItemModel {
                 other.scrapKgs == scrapKgs));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -485,9 +474,7 @@ class _$AddItemModelImpl extends _AddItemModel {
       rejectionCounter,
       scrapKgs);
 
-  /// Create a copy of AddItemModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$AddItemModelImplCopyWith<_$AddItemModelImpl> get copyWith =>
@@ -584,11 +571,8 @@ abstract class _AddItemModel extends AddItemModel {
   @override
   @JsonKey(name: 'custom_scrap_kgs')
   double? get scrapKgs;
-
-  /// Create a copy of AddItemModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$AddItemModelImplCopyWith<_$AddItemModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

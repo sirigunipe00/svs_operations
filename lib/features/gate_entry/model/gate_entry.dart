@@ -21,6 +21,11 @@ class GateEntry with _$GateEntry {
     @JsonKey(name: 'vendor_invoice_photo') String? invoicePhoto,
     @JsonKey(name: 'remarks') String? remarks,
     @JsonKey(name: 'is_job_work') int? isJobWork,
+    @JsonKey(name: 'receive_mode') String? receiveMode,
+    @JsonKey(name: 'driver_name_person_name') String? driverName,
+    @JsonKey(name: 'driver_mobile_no_person_mobile_no') String? driverMobileNo,
+    @JsonKey(name: 'delivery_challan') String? deliveryChallan,
+    @JsonKey(name: 'lr_no') String? lrNo,
   }) = _GateEntry;
 
   factory GateEntry.fromJson(Map<String, Object?> json)

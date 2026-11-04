@@ -24,23 +24,41 @@ _$NewGateEntryFormImpl _$$NewGateEntryFormImplFromJson(
       vendorInvPhoto: json['invoice_photo'] as String?,
       remarks: json['remarks'] as String?,
       isJobWork: (json['custom_is_job_work'] as num?)?.toInt(),
+      receiveMode: json['receive_mode'] as String?,
+      driverName: json['driver_name_person_name'] as String?,
+      driverMobileNo: json['driver_mobile_no_person_mobile_no'] as String?,
+      deliveryChallan: json['delivery_challan'] as String?,
+      lrNo: json['lr_no'] as String?,
     );
 
 Map<String, dynamic> _$$NewGateEntryFormImplToJson(
-        _$NewGateEntryFormImpl instance) =>
-    <String, dynamic>{
-      if (instance.name case final value?) 'name': value,
-      'po_number': instance.poNumber,
-      'vehicle_no': instance.vehicleNo,
-      'vendor_name': instance.vendorName,
-      'vendor_invoice_no': instance.vendorInvNo,
-      'invoice_date': instance.invoiceDate,
-      'invoice_qty': instance.invoiceQty,
-      'invoice_amount': instance.invoiceAmt,
-      'entry_date': instance.entryDate,
-      'vehicle_photo': instance.vehiclePhoto,
-      'vehicle_back_photo': instance.vehicleBackPhoto,
-      'invoice_photo': instance.vendorInvPhoto,
-      'remarks': instance.remarks,
-      'custom_is_job_work': instance.isJobWork,
-    };
+    _$NewGateEntryFormImpl instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('name', instance.name);
+  val['po_number'] = instance.poNumber;
+  val['vehicle_no'] = instance.vehicleNo;
+  val['vendor_name'] = instance.vendorName;
+  val['vendor_invoice_no'] = instance.vendorInvNo;
+  val['invoice_date'] = instance.invoiceDate;
+  val['invoice_qty'] = instance.invoiceQty;
+  val['invoice_amount'] = instance.invoiceAmt;
+  val['entry_date'] = instance.entryDate;
+  val['vehicle_photo'] = instance.vehiclePhoto;
+  val['vehicle_back_photo'] = instance.vehicleBackPhoto;
+  val['invoice_photo'] = instance.vendorInvPhoto;
+  val['remarks'] = instance.remarks;
+  val['custom_is_job_work'] = instance.isJobWork;
+  val['receive_mode'] = instance.receiveMode;
+  val['driver_name_person_name'] = instance.driverName;
+  val['driver_mobile_no_person_mobile_no'] = instance.driverMobileNo;
+  val['delivery_challan'] = instance.deliveryChallan;
+  val['lr_no'] = instance.lrNo;
+  return val;
+}

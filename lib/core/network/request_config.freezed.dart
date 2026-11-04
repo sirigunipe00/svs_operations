@@ -25,9 +25,7 @@ mixin _$RequestConfig<T> {
       throw _privateConstructorUsedError;
   String? get body => throw _privateConstructorUsedError;
 
-  /// Create a copy of RequestConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $RequestConfigCopyWith<T, RequestConfig<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,8 +55,6 @@ class _$RequestConfigCopyWithImpl<T, $Res, $Val extends RequestConfig<T>>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of RequestConfig
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -123,8 +119,6 @@ class __$$RequestConfigImplCopyWithImpl<T, $Res>
       $Res Function(_$RequestConfigImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of RequestConfig
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -236,9 +230,7 @@ class _$RequestConfigImpl<T> implements _RequestConfig<T> {
       apiResponseParser,
       body);
 
-  /// Create a copy of RequestConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$RequestConfigImplCopyWith<T, _$RequestConfigImpl<T>> get copyWith =>
@@ -267,11 +259,8 @@ abstract class _RequestConfig<T> implements RequestConfig<T> {
   ApiResponseParser<T>? get apiResponseParser;
   @override
   String? get body;
-
-  /// Create a copy of RequestConfig
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$RequestConfigImplCopyWith<T, _$RequestConfigImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

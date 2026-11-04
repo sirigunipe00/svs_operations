@@ -20,13 +20,21 @@ _$NewGateExitFormImpl _$$NewGateExitFormImplFromJson(
     );
 
 Map<String, dynamic> _$$NewGateExitFormImplToJson(
-        _$NewGateExitFormImpl instance) =>
-    <String, dynamic>{
-      if (instance.name case final value?) 'name': value,
-      'si_number': instance.salesInvNumber,
-      'vehicle_no': instance.vehicleNo,
-      'photo': instance.vehiclePhoto,
-      'vehicle_back_photo': instance.vehicleBackPhoto,
-      'exit_date': instance.exitDate,
-      'remarks': instance.remarks,
-    };
+    _$NewGateExitFormImpl instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('name', instance.name);
+  val['si_number'] = instance.salesInvNumber;
+  val['vehicle_no'] = instance.vehicleNo;
+  val['photo'] = instance.vehiclePhoto;
+  val['vehicle_back_photo'] = instance.vehicleBackPhoto;
+  val['exit_date'] = instance.exitDate;
+  val['remarks'] = instance.remarks;
+  return val;
+}

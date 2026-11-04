@@ -32,6 +32,11 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
     File? vehiclePhoto,
     File? vehicleBackPhoto,
     int? isJobWork,
+    String? receiveMode,
+    String? driverName,
+    String? driverMobileNo,
+    String? deliveryChallan,
+    String? lrNo,
   }) async {
     final form = state.form;
     final vendorInvPhoto = invoicePhoto.isNull
@@ -56,7 +61,12 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
       invoiceAmt: invoiceAmt ?? form.invoiceAmt,
       remarks: remarks ?? form.remarks,
       vehicleBackPhoto: vehbackPhoto,
-      vendorName: vendorname ?? form.vendorName
+      vendorName: vendorname ?? form.vendorName,
+      receiveMode: receiveMode ?? form.receiveMode,
+      driverName: driverName ?? form.driverName,
+      driverMobileNo: driverMobileNo ?? form.driverMobileNo,
+      deliveryChallan: deliveryChallan ?? form.deliveryChallan,
+      lrNo: lrNo ?? form.lrNo
     );
     emitSafeState(state.copyWith(form: newForm));
   }
@@ -80,6 +90,11 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
       vehicleBackPhoto: entry.vehicleBackPhoto,
       remarks: entry.remarks,
       isJobWork: entry.isJobWork,
+      receiveMode: entry.receiveMode,
+      driverName: entry.driverName,
+      driverMobileNo: entry.driverMobileNo,
+      deliveryChallan: entry.deliveryChallan,
+      lrNo: entry.lrNo,
     );
 
     final isSubmitted =
@@ -178,9 +193,11 @@ class NewGateEntryCubit extends AppBaseCubit<NewGateEntryState> {
       return optionOf('Enter Vendor Invoice No.');
     } else if (form.invoiceDate.doesNotHaveValue) {
       return optionOf('Enter Vendor Invoice Date');
+    } else if (form.receiveMode.doesNotHaveValue) {
+      return optionOf('Select Receive Mode');
     } else if (form.vehiclePhoto.doesNotHaveValue) {
       return optionOf('Capture Vehicle Photo');
-    }  else if (form.vehicleBackPhoto.doesNotHaveValue) {
+    } else if (form.vehicleBackPhoto.doesNotHaveValue) {
       return optionOf('Capture Vehicle Back Photo');
     } else if (form.vendorInvPhoto.doesNotHaveValue) {
       return optionOf('Capture Vendor Invoice');

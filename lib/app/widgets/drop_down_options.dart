@@ -84,4 +84,8 @@ abstract class Dropdownoptions {
     "Aparna Vehicle",
     "Rented Vehicle"
   ];
+  static const List<String> receiveModes = [
+    "By Vehicle",
+    "BY Hand"
+  ];
 }

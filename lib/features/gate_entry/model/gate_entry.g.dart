@@ -23,6 +23,11 @@ _$GateEntryImpl _$$GateEntryImplFromJson(Map<String, dynamic> json) =>
       invoicePhoto: json['vendor_invoice_photo'] as String?,
       remarks: json['remarks'] as String?,
       isJobWork: (json['is_job_work'] as num?)?.toInt(),
+      receiveMode: json['receive_mode'] as String?,
+      driverName: json['driver_name_person_name'] as String?,
+      driverMobileNo: json['driver_mobile_no_person_mobile_no'] as String?,
+      deliveryChallan: json['delivery_challan'] as String?,
+      lrNo: json['lr_no'] as String?,
     );
 
 Map<String, dynamic> _$$GateEntryImplToJson(_$GateEntryImpl instance) =>
@@ -42,4 +47,9 @@ Map<String, dynamic> _$$GateEntryImplToJson(_$GateEntryImpl instance) =>
       'vendor_invoice_photo': instance.invoicePhoto,
       'remarks': instance.remarks,
       'is_job_work': instance.isJobWork,
+      'receive_mode': instance.receiveMode,
+      'driver_name_person_name': instance.driverName,
+      'driver_mobile_no_person_mobile_no': instance.driverMobileNo,
+      'delivery_challan': instance.deliveryChallan,
+      'lr_no': instance.lrNo,
     };

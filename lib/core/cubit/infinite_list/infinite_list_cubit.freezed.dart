@@ -22,9 +22,7 @@ mixin _$InfiniteListState<T> {
   String? get query => throw _privateConstructorUsedError;
   Failure? get failure => throw _privateConstructorUsedError;
 
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $InfiniteListStateCopyWith<T, InfiniteListState<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,8 +54,6 @@ class _$InfiniteListStateCopyWithImpl<T, $Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,8 +87,6 @@ class _$InfiniteListStateCopyWithImpl<T, $Res,
     ) as $Val);
   }
 
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FailureCopyWith<$Res>? get failure {
@@ -133,8 +127,6 @@ class __$$InfiniteListStateImplCopyWithImpl<T, $Res>
       $Res Function(_$InfiniteListStateImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -226,9 +218,7 @@ class _$InfiniteListStateImpl<T> extends _InfiniteListState<T> {
       query,
       failure);
 
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$InfiniteListStateImplCopyWith<T, _$InfiniteListStateImpl<T>>
@@ -256,11 +246,8 @@ abstract class _InfiniteListState<T> extends InfiniteListState<T> {
   String? get query;
   @override
   Failure? get failure;
-
-  /// Create a copy of InfiniteListState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$InfiniteListStateImplCopyWith<T, _$InfiniteListStateImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }

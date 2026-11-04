@@ -35,12 +35,8 @@ mixin _$OperationScanModel {
   @JsonKey(name: 'custom_rework_required', defaultValue: 0)
   int? get isRework => throw _privateConstructorUsedError;
 
-  /// Serializes this OperationScanModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OperationScanModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OperationScanModelCopyWith<OperationScanModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -76,8 +72,6 @@ class _$OperationScanModelCopyWithImpl<$Res, $Val extends OperationScanModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OperationScanModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -153,8 +147,6 @@ class __$$OperationScanModelImplCopyWithImpl<$Res>
       $Res Function(_$OperationScanModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of OperationScanModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -267,14 +259,12 @@ class _$OperationScanModelImpl extends _OperationScanModel {
                 other.isRework == isRework));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, name, correctiveOperation,
       ismachineScan, isCounterScan, isQntyEntry, isRejection, isRework);
 
-  /// Create a copy of OperationScanModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OperationScanModelImplCopyWith<_$OperationScanModelImpl> get copyWith =>
@@ -330,11 +320,8 @@ abstract class _OperationScanModel extends OperationScanModel {
   @override
   @JsonKey(name: 'custom_rework_required', defaultValue: 0)
   int? get isRework;
-
-  /// Create a copy of OperationScanModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OperationScanModelImplCopyWith<_$OperationScanModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

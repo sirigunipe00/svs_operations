@@ -85,9 +85,6 @@ class _$NetworkRequestStateCopyWithImpl<T, $Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -107,9 +104,6 @@ class __$$NetworkRequestInitialImplCopyWithImpl<T, $Res>
       _$NetworkRequestInitialImpl<T> _value,
       $Res Function(_$NetworkRequestInitialImpl<T>) _then)
       : super(_value, _then);
-
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -229,9 +223,6 @@ class __$$NetworkRequestLoadingImplCopyWithImpl<T, $Res>
       _$NetworkRequestLoadingImpl<T> _value,
       $Res Function(_$NetworkRequestLoadingImpl<T>) _then)
       : super(_value, _then);
-
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -354,8 +345,6 @@ class __$$NetworkRequestSuccessImplCopyWithImpl<T, $Res>
       $Res Function(_$NetworkRequestSuccessImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -395,9 +384,7 @@ class _$NetworkRequestSuccessImpl<T> extends _NetworkRequestSuccess<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
 
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$NetworkRequestSuccessImplCopyWith<T, _$NetworkRequestSuccessImpl<T>>
@@ -485,10 +472,7 @@ abstract class _NetworkRequestSuccess<T> extends NetworkRequestState<T> {
   const _NetworkRequestSuccess._() : super._();
 
   T get data;
-
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$NetworkRequestSuccessImplCopyWith<T, _$NetworkRequestSuccessImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -515,8 +499,6 @@ class __$$NetworkRequestFailureImplCopyWithImpl<T, $Res>
       $Res Function(_$NetworkRequestFailureImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -530,8 +512,6 @@ class __$$NetworkRequestFailureImplCopyWithImpl<T, $Res>
     ));
   }
 
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FailureCopyWith<$Res> get failure {
@@ -565,9 +545,7 @@ class _$NetworkRequestFailureImpl<T> extends _NetworkRequestFailure<T> {
   @override
   int get hashCode => Object.hash(runtimeType, failure);
 
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$NetworkRequestFailureImplCopyWith<T, _$NetworkRequestFailureImpl<T>>
@@ -655,10 +633,7 @@ abstract class _NetworkRequestFailure<T> extends NetworkRequestState<T> {
   const _NetworkRequestFailure._() : super._();
 
   Failure get failure;
-
-  /// Create a copy of NetworkRequestState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$NetworkRequestFailureImplCopyWith<T, _$NetworkRequestFailureImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }

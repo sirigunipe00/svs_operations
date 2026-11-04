@@ -50,13 +50,19 @@ mixin _$NewGateEntryForm {
   String? get remarks => throw _privateConstructorUsedError;
   @JsonKey(name: 'custom_is_job_work')
   int? get isJobWork => throw _privateConstructorUsedError;
+  @JsonKey(name: 'receive_mode')
+  String? get receiveMode => throw _privateConstructorUsedError;
+  @JsonKey(name: 'driver_name_person_name')
+  String? get driverName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  String? get driverMobileNo => throw _privateConstructorUsedError;
+  @JsonKey(name: 'delivery_challan')
+  String? get deliveryChallan => throw _privateConstructorUsedError;
+  @JsonKey(name: 'lr_no')
+  String? get lrNo => throw _privateConstructorUsedError;
 
-  /// Serializes this NewGateEntryForm to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of NewGateEntryForm
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $NewGateEntryFormCopyWith<NewGateEntryForm> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -82,7 +88,13 @@ abstract class $NewGateEntryFormCopyWith<$Res> {
       @JsonKey(name: 'vehicle_back_photo') String? vehicleBackPhoto,
       @JsonKey(name: 'invoice_photo') String? vendorInvPhoto,
       @JsonKey(name: 'remarks') String? remarks,
-      @JsonKey(name: 'custom_is_job_work') int? isJobWork});
+      @JsonKey(name: 'custom_is_job_work') int? isJobWork,
+      @JsonKey(name: 'receive_mode') String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') String? deliveryChallan,
+      @JsonKey(name: 'lr_no') String? lrNo});
 }
 
 /// @nodoc
@@ -95,8 +107,6 @@ class _$NewGateEntryFormCopyWithImpl<$Res, $Val extends NewGateEntryForm>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of NewGateEntryForm
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -115,6 +125,11 @@ class _$NewGateEntryFormCopyWithImpl<$Res, $Val extends NewGateEntryForm>
     Object? vendorInvPhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
+    Object? receiveMode = freezed,
+    Object? driverName = freezed,
+    Object? driverMobileNo = freezed,
+    Object? deliveryChallan = freezed,
+    Object? lrNo = freezed,
   }) {
     return _then(_value.copyWith(
       status: freezed == status
@@ -177,6 +192,26 @@ class _$NewGateEntryFormCopyWithImpl<$Res, $Val extends NewGateEntryForm>
           ? _value.isJobWork
           : isJobWork // ignore: cast_nullable_to_non_nullable
               as int?,
+      receiveMode: freezed == receiveMode
+          ? _value.receiveMode
+          : receiveMode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverName: freezed == driverName
+          ? _value.driverName
+          : driverName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverMobileNo: freezed == driverMobileNo
+          ? _value.driverMobileNo
+          : driverMobileNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deliveryChallan: freezed == deliveryChallan
+          ? _value.deliveryChallan
+          : deliveryChallan // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lrNo: freezed == lrNo
+          ? _value.lrNo
+          : lrNo // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -204,7 +239,13 @@ abstract class _$$NewGateEntryFormImplCopyWith<$Res>
       @JsonKey(name: 'vehicle_back_photo') String? vehicleBackPhoto,
       @JsonKey(name: 'invoice_photo') String? vendorInvPhoto,
       @JsonKey(name: 'remarks') String? remarks,
-      @JsonKey(name: 'custom_is_job_work') int? isJobWork});
+      @JsonKey(name: 'custom_is_job_work') int? isJobWork,
+      @JsonKey(name: 'receive_mode') String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') String? deliveryChallan,
+      @JsonKey(name: 'lr_no') String? lrNo});
 }
 
 /// @nodoc
@@ -215,8 +256,6 @@ class __$$NewGateEntryFormImplCopyWithImpl<$Res>
       $Res Function(_$NewGateEntryFormImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of NewGateEntryForm
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -235,6 +274,11 @@ class __$$NewGateEntryFormImplCopyWithImpl<$Res>
     Object? vendorInvPhoto = freezed,
     Object? remarks = freezed,
     Object? isJobWork = freezed,
+    Object? receiveMode = freezed,
+    Object? driverName = freezed,
+    Object? driverMobileNo = freezed,
+    Object? deliveryChallan = freezed,
+    Object? lrNo = freezed,
   }) {
     return _then(_$NewGateEntryFormImpl(
       status: freezed == status
@@ -297,6 +341,26 @@ class __$$NewGateEntryFormImplCopyWithImpl<$Res>
           ? _value.isJobWork
           : isJobWork // ignore: cast_nullable_to_non_nullable
               as int?,
+      receiveMode: freezed == receiveMode
+          ? _value.receiveMode
+          : receiveMode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverName: freezed == driverName
+          ? _value.driverName
+          : driverName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driverMobileNo: freezed == driverMobileNo
+          ? _value.driverMobileNo
+          : driverMobileNo // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deliveryChallan: freezed == deliveryChallan
+          ? _value.deliveryChallan
+          : deliveryChallan // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lrNo: freezed == lrNo
+          ? _value.lrNo
+          : lrNo // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -319,7 +383,12 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
       @JsonKey(name: 'vehicle_back_photo') this.vehicleBackPhoto,
       @JsonKey(name: 'invoice_photo') this.vendorInvPhoto,
       @JsonKey(name: 'remarks') this.remarks,
-      @JsonKey(name: 'custom_is_job_work') this.isJobWork});
+      @JsonKey(name: 'custom_is_job_work') this.isJobWork,
+      @JsonKey(name: 'receive_mode') this.receiveMode,
+      @JsonKey(name: 'driver_name_person_name') this.driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no') this.driverMobileNo,
+      @JsonKey(name: 'delivery_challan') this.deliveryChallan,
+      @JsonKey(name: 'lr_no') this.lrNo});
 
   factory _$NewGateEntryFormImpl.fromJson(Map<String, dynamic> json) =>
       _$$NewGateEntryFormImplFromJson(json);
@@ -369,10 +438,25 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
   @override
   @JsonKey(name: 'custom_is_job_work')
   final int? isJobWork;
+  @override
+  @JsonKey(name: 'receive_mode')
+  final String? receiveMode;
+  @override
+  @JsonKey(name: 'driver_name_person_name')
+  final String? driverName;
+  @override
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  final String? driverMobileNo;
+  @override
+  @JsonKey(name: 'delivery_challan')
+  final String? deliveryChallan;
+  @override
+  @JsonKey(name: 'lr_no')
+  final String? lrNo;
 
   @override
   String toString() {
-    return 'NewGateEntryForm(status: $status, name: $name, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorName: $vendorName, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorInvPhoto: $vendorInvPhoto, remarks: $remarks, isJobWork: $isJobWork)';
+    return 'NewGateEntryForm(status: $status, name: $name, poNumber: $poNumber, vehicleNo: $vehicleNo, vendorName: $vendorName, vendorInvNo: $vendorInvNo, invoiceDate: $invoiceDate, invoiceQty: $invoiceQty, invoiceAmt: $invoiceAmt, entryDate: $entryDate, vehiclePhoto: $vehiclePhoto, vehicleBackPhoto: $vehicleBackPhoto, vendorInvPhoto: $vendorInvPhoto, remarks: $remarks, isJobWork: $isJobWork, receiveMode: $receiveMode, driverName: $driverName, driverMobileNo: $driverMobileNo, deliveryChallan: $deliveryChallan, lrNo: $lrNo)';
   }
 
   @override
@@ -406,32 +490,45 @@ class _$NewGateEntryFormImpl implements _NewGateEntryForm {
                 other.vendorInvPhoto == vendorInvPhoto) &&
             (identical(other.remarks, remarks) || other.remarks == remarks) &&
             (identical(other.isJobWork, isJobWork) ||
-                other.isJobWork == isJobWork));
+                other.isJobWork == isJobWork) &&
+            (identical(other.receiveMode, receiveMode) ||
+                other.receiveMode == receiveMode) &&
+            (identical(other.driverName, driverName) ||
+                other.driverName == driverName) &&
+            (identical(other.driverMobileNo, driverMobileNo) ||
+                other.driverMobileNo == driverMobileNo) &&
+            (identical(other.deliveryChallan, deliveryChallan) ||
+                other.deliveryChallan == deliveryChallan) &&
+            (identical(other.lrNo, lrNo) || other.lrNo == lrNo));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      status,
-      name,
-      poNumber,
-      vehicleNo,
-      vendorName,
-      vendorInvNo,
-      invoiceDate,
-      invoiceQty,
-      invoiceAmt,
-      entryDate,
-      vehiclePhoto,
-      vehicleBackPhoto,
-      vendorInvPhoto,
-      remarks,
-      isJobWork);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        status,
+        name,
+        poNumber,
+        vehicleNo,
+        vendorName,
+        vendorInvNo,
+        invoiceDate,
+        invoiceQty,
+        invoiceAmt,
+        entryDate,
+        vehiclePhoto,
+        vehicleBackPhoto,
+        vendorInvPhoto,
+        remarks,
+        isJobWork,
+        receiveMode,
+        driverName,
+        driverMobileNo,
+        deliveryChallan,
+        lrNo
+      ]);
 
-  /// Create a copy of NewGateEntryForm
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$NewGateEntryFormImplCopyWith<_$NewGateEntryFormImpl> get copyWith =>
@@ -462,8 +559,13 @@ abstract class _NewGateEntryForm implements NewGateEntryForm {
       @JsonKey(name: 'vehicle_back_photo') final String? vehicleBackPhoto,
       @JsonKey(name: 'invoice_photo') final String? vendorInvPhoto,
       @JsonKey(name: 'remarks') final String? remarks,
-      @JsonKey(name: 'custom_is_job_work')
-      final int? isJobWork}) = _$NewGateEntryFormImpl;
+      @JsonKey(name: 'custom_is_job_work') final int? isJobWork,
+      @JsonKey(name: 'receive_mode') final String? receiveMode,
+      @JsonKey(name: 'driver_name_person_name') final String? driverName,
+      @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+      final String? driverMobileNo,
+      @JsonKey(name: 'delivery_challan') final String? deliveryChallan,
+      @JsonKey(name: 'lr_no') final String? lrNo}) = _$NewGateEntryFormImpl;
 
   factory _NewGateEntryForm.fromJson(Map<String, dynamic> json) =
       _$NewGateEntryFormImpl.fromJson;
@@ -513,11 +615,23 @@ abstract class _NewGateEntryForm implements NewGateEntryForm {
   @override
   @JsonKey(name: 'custom_is_job_work')
   int? get isJobWork;
-
-  /// Create a copy of NewGateEntryForm
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(name: 'receive_mode')
+  String? get receiveMode;
+  @override
+  @JsonKey(name: 'driver_name_person_name')
+  String? get driverName;
+  @override
+  @JsonKey(name: 'driver_mobile_no_person_mobile_no')
+  String? get driverMobileNo;
+  @override
+  @JsonKey(name: 'delivery_challan')
+  String? get deliveryChallan;
+  @override
+  @JsonKey(name: 'lr_no')
+  String? get lrNo;
+  @override
+  @JsonKey(ignore: true)
   _$$NewGateEntryFormImplCopyWith<_$NewGateEntryFormImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

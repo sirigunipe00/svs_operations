@@ -37,12 +37,8 @@ mixin _$NewGateExitForm {
   @JsonKey(name: 'remarks')
   String? get remarks => throw _privateConstructorUsedError;
 
-  /// Serializes this NewGateExitForm to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of NewGateExitForm
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $NewGateExitFormCopyWith<NewGateExitForm> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -74,8 +70,6 @@ class _$NewGateExitFormCopyWithImpl<$Res, $Val extends NewGateExitForm>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of NewGateExitForm
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -152,8 +146,6 @@ class __$$NewGateExitFormImplCopyWithImpl<$Res>
       _$NewGateExitFormImpl _value, $Res Function(_$NewGateExitFormImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of NewGateExitForm
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -269,14 +261,12 @@ class _$NewGateExitFormImpl implements _NewGateExitForm {
             (identical(other.remarks, remarks) || other.remarks == remarks));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, status, name, salesInvNumber,
       vehicleNo, vehiclePhoto, vehicleBackPhoto, exitDate, remarks);
 
-  /// Create a copy of NewGateExitForm
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$NewGateExitFormImplCopyWith<_$NewGateExitFormImpl> get copyWith =>
@@ -329,11 +319,8 @@ abstract class _NewGateExitForm implements NewGateExitForm {
   @override
   @JsonKey(name: 'remarks')
   String? get remarks;
-
-  /// Create a copy of NewGateExitForm
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$NewGateExitFormImplCopyWith<_$NewGateExitFormImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -23,12 +23,8 @@ mixin _$OperationsModel {
   @JsonKey(name: 'data', defaultValue: {})
   Map<String, List<String>> get data => throw _privateConstructorUsedError;
 
-  /// Serializes this OperationsModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OperationsModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OperationsModelCopyWith<OperationsModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -54,8 +50,6 @@ class _$OperationsModelCopyWithImpl<$Res, $Val extends OperationsModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OperationsModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,8 +85,6 @@ class __$$OperationsModelImplCopyWithImpl<$Res>
       _$OperationsModelImpl _value, $Res Function(_$OperationsModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of OperationsModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -140,14 +132,12 @@ class _$OperationsModelImpl implements _OperationsModel {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of OperationsModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OperationsModelImplCopyWith<_$OperationsModelImpl> get copyWith =>
@@ -173,11 +163,8 @@ abstract class _OperationsModel implements OperationsModel {
   @override
   @JsonKey(name: 'data', defaultValue: {})
   Map<String, List<String>> get data;
-
-  /// Create a copy of OperationsModel
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OperationsModelImplCopyWith<_$OperationsModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

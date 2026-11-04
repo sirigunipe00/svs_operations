@@ -23,9 +23,7 @@ mixin _$CreateItemState {
   Failure? get error => throw _privateConstructorUsedError;
   String? get successMsg => throw _privateConstructorUsedError;
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $CreateItemStateCopyWith<CreateItemState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -58,8 +56,6 @@ class _$CreateItemStateCopyWithImpl<$Res, $Val extends CreateItemState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,8 +94,6 @@ class _$CreateItemStateCopyWithImpl<$Res, $Val extends CreateItemState>
     ) as $Val);
   }
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddItemModelCopyWith<$Res> get form {
@@ -108,8 +102,6 @@ class _$CreateItemStateCopyWithImpl<$Res, $Val extends CreateItemState>
     });
   }
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FailureCopyWith<$Res>? get error {
@@ -153,8 +145,6 @@ class __$$CreateItemStateImplCopyWithImpl<$Res>
       _$CreateItemStateImpl _value, $Res Function(_$CreateItemStateImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -243,9 +233,7 @@ class _$CreateItemStateImpl implements _CreateItemState {
   int get hashCode => Object.hash(
       runtimeType, form, isLoading, isSuccess, view, error, successMsg);
 
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$CreateItemStateImplCopyWith<_$CreateItemStateImpl> get copyWith =>
@@ -274,11 +262,8 @@ abstract class _CreateItemState implements CreateItemState {
   Failure? get error;
   @override
   String? get successMsg;
-
-  /// Create a copy of CreateItemState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$CreateItemStateImplCopyWith<_$CreateItemStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

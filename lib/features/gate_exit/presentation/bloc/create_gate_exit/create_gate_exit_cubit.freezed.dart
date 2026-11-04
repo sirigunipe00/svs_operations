@@ -23,9 +23,7 @@ mixin _$CreateGateExitState {
   Failure? get error => throw _privateConstructorUsedError;
   String? get successMsg => throw _privateConstructorUsedError;
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $CreateGateExitStateCopyWith<CreateGateExitState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -58,8 +56,6 @@ class _$CreateGateExitStateCopyWithImpl<$Res, $Val extends CreateGateExitState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,8 +94,6 @@ class _$CreateGateExitStateCopyWithImpl<$Res, $Val extends CreateGateExitState>
     ) as $Val);
   }
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $NewGateExitFormCopyWith<$Res> get form {
@@ -108,8 +102,6 @@ class _$CreateGateExitStateCopyWithImpl<$Res, $Val extends CreateGateExitState>
     });
   }
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FailureCopyWith<$Res>? get error {
@@ -153,8 +145,6 @@ class __$$CreateGateExitStateImplCopyWithImpl<$Res>
       $Res Function(_$CreateGateExitStateImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -243,9 +233,7 @@ class _$CreateGateExitStateImpl implements _CreateGateExitState {
   int get hashCode => Object.hash(
       runtimeType, form, isLoading, isSuccess, view, error, successMsg);
 
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$CreateGateExitStateImplCopyWith<_$CreateGateExitStateImpl> get copyWith =>
@@ -274,11 +262,8 @@ abstract class _CreateGateExitState implements CreateGateExitState {
   Failure? get error;
   @override
   String? get successMsg;
-
-  /// Create a copy of CreateGateExitState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$CreateGateExitStateImplCopyWith<_$CreateGateExitStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
