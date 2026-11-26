@@ -434,6 +434,51 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
             ],
           ),
           GateSectionCard(number: '3', title: 'Driver Details', children: [
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    Text(
+                      'RECEIVE MODE',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: Color(0xFFDC2626),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                AppDropDownWidget<String>(
+                  hint: 'Select receive mode',
+                  items: Dropdownoptions.receiveModes,
+                  isMandatory: true,
+                  readOnly: isCompleted,
+                  defaultSelection: form.receiveMode,
+                  onSelected: (value) {
+                    if (value == null) return;
+
+                    context
+                        .cubit<NewGateEntryCubit>()
+                        .onValueChanged(receiveMode: value);
+                  },
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+            
             GateInputField(
               label: 'Driver Name/Person Name',
               hintText: 'Enter driver name',
@@ -493,49 +538,7 @@ class _GateEntryFormWidgetState extends State<GateEntryFormWidget> {
                 context.cubit<NewGateEntryCubit>().onValueChanged(lrNo: value);
               },
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    Text(
-                      'RECEIVE MODE',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
-                        color: Color(0xFF64748B),
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      '*',
-                      style: TextStyle(
-                        color: Color(0xFFDC2626),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                AppDropDownWidget<String>(
-                  hint: 'Select receive mode',
-                  items: Dropdownoptions.receiveModes,
-                  isMandatory: true,
-                  readOnly: isCompleted,
-                  defaultSelection: form.receiveMode,
-                  onSelected: (value) {
-                    if (value == null) return;
-
-                    context
-                        .cubit<NewGateEntryCubit>()
-                        .onValueChanged(receiveMode: value);
-                  },
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
+            
           ]),
 
           // CARD 3: PHOTOS & REMARKS

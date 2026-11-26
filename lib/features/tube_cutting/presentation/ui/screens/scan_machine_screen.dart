@@ -420,7 +420,7 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
     if (!mounted) return;
 
     // Show popup dialog with start reading, end reading, final qnty (end - start), and scrap count
-    final confirmed = await _showCompleteConfirmationDialog();
+    final confirmed = await _showCompleteConfirmationDialog(operationStatus);
 
     if (confirmed == true && mounted) {
       final endReadingVal = int.tryParse(endReadingController.text.trim());
@@ -435,12 +435,45 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
       if (scrapKgVal != null) {
         context.read<CreateItemCubit>().onValueChanged(scrapKgs: scrapKgVal);
       }
+      if (operationStatus.isCounterScan == 1) {
+        final calculatedFinalQty = _calculateCounterFinalQty(operationStatus);
+        if (calculatedFinalQty != null) {
+          context
+              .read<CreateItemCubit>()
+              .onValueChanged(finalQnty: calculatedFinalQty.toInt());
+        }
+      }
       context.read<CreateItemCubit>().save(true);
     }
   }
 
-  // Confirmation dialog showing Start Reading, End Reading, Final Qnty (End - Start), and Scrap Count
-  Future<bool?> _showCompleteConfirmationDialog() {
+  // Final qty for counter-scan operations:
+  // end reading - start reading - scrap count (scrap only if rejection required)
+  num? _calculateCounterFinalQty(OperationScanModel operationStatus) {
+    final form = context.read<CreateItemCubit>().state.form;
+
+    final num? startReading = _currentActiveChildItem?.startReading ??
+        num.tryParse(startReadingController.text.trim()) ??
+        form.startReadings;
+    final num? endReading = num.tryParse(endReadingController.text.trim());
+    if (startReading == null || endReading == null) return null;
+
+    final int scrapCount = operationStatus.isRejection == 1
+        ? (int.tryParse(rejectionCountController.text.trim()) ??
+            form.rejectionCounter ??
+            0)
+        : 0;
+
+    return endReading - startReading - scrapCount;
+  }
+
+  // Confirmation dialog showing Start/End Reading (if counter scan required),
+  // the entered Final Qnty, and Scrap Count (if rejection required)
+  Future<bool?> _showCompleteConfirmationDialog(
+      OperationScanModel operationStatus) {
+    final bool showReadings = operationStatus.isCounterScan == 1;
+    final bool showScrap = operationStatus.isRejection == 1;
+
     final inProgressChild = _currentActiveChildItem;
 
     final num? startReadingNum = inProgressChild?.startReading ??
@@ -451,14 +484,17 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
         num.tryParse(endReadingController.text.trim());
         // context.read<CreateItemCubit>().state.form.endReadings;
 
-    final num? finalQty = (endReadingNum != null && startReadingNum != null)
-        ? (endReadingNum - startReadingNum)
-        : null;
-
     final int scrapCount =
         int.tryParse(rejectionCountController.text.trim()) ??
         context.read<CreateItemCubit>().state.form.rejectionCounter ??
         0;
+
+    // Counter scan: final qty = end reading - start reading - scrap count.
+    // Otherwise: the value entered by the user.
+    final num? finalQty = showReadings
+        ? _calculateCounterFinalQty(operationStatus)
+        : (num.tryParse(finalQtyController.text.trim()) ??
+            context.read<CreateItemCubit>().state.form.finalQnty);
 
     final double? scrapKgVal =
         double.tryParse(scrapKgsController.text.trim()) ??
@@ -563,46 +599,48 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                   ),
                   child: Column(
                     children: [
-                      // Row 1: Start Reading & End Reading
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildDialogMetricTile(
-                              title: 'START READING',
-                              value: startReadingStr,
-                              icon: Icons.tag_rounded,
-                              iconColor: const Color(0xFF0284C7),
-                              iconBg: const Color(0xFFE0F2FE),
+                      // Row 1: Start Reading & End Reading (counter scan only)
+                      if (showReadings) ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDialogMetricTile(
+                                title: 'START READING',
+                                value: startReadingStr,
+                                icon: Icons.tag_rounded,
+                                iconColor: const Color(0xFF0284C7),
+                                iconBg: const Color(0xFFE0F2FE),
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: 48,
-                            width: 1.2,
-                            color: const Color(0xFFE2E8F0),
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          Expanded(
-                            child: _buildDialogMetricTile(
-                              title: 'END READING',
-                              value: endReadingStr,
-                              icon: Icons.tag_rounded,
-                              iconColor: const Color(0xFF0C6ECB),
-                              iconBg: const Color(0xFFE0F2FE),
+                            Container(
+                              height: 48,
+                              width: 1.2,
+                              color: const Color(0xFFE2E8F0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      const Divider(color: Color(0xFFE2E8F0), height: 1),
-                      const SizedBox(height: 12),
+                            Expanded(
+                              child: _buildDialogMetricTile(
+                                title: 'END READING',
+                                value: endReadingStr,
+                                icon: Icons.tag_rounded,
+                                iconColor: const Color(0xFF0C6ECB),
+                                iconBg: const Color(0xFFE0F2FE),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        const Divider(color: Color(0xFFE2E8F0), height: 1),
+                        const SizedBox(height: 12),
+                      ],
 
-                      // Row 2: Final Quantity (End - Start) & Scrap Count
+                      // Row 2: Final Quantity & Scrap Count (rejection only)
                       Row(
                         children: [
                           Expanded(
                             child: _buildDialogMetricTile(
                               title: 'FINAL QNTY',
-                              subtitle: '(End - Start)',
                               value: finalQtyStr,
                               icon: Icons.check_circle_rounded,
                               iconColor: const Color(0xFF16A34A),
@@ -610,23 +648,26 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
                               valueColor: const Color(0xFF15803D),
                             ),
                           ),
-                          Container(
-                            height: 48,
-                            width: 1.2,
-                            color: const Color(0xFFE2E8F0),
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                          ),
-                          Expanded(
-                            child: _buildDialogMetricTile(
-                              title: 'SCRAP COUNT',
-                              subtitle: scrapKgSubtitle,
-                              value: scrapCountStr,
-                              icon: Icons.delete_outline_rounded,
-                              iconColor: const Color(0xFFDC2626),
-                              iconBg: const Color(0xFFFEE2E2),
-                              valueColor: const Color(0xFFB91C1C),
+                          if (showScrap) ...[
+                            Container(
+                              height: 48,
+                              width: 1.2,
+                              color: const Color(0xFFE2E8F0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                             ),
-                          ),
+                            Expanded(
+                              child: _buildDialogMetricTile(
+                                title: 'SCRAP COUNT',
+                                subtitle: scrapKgSubtitle,
+                                value: scrapCountStr,
+                                icon: Icons.delete_outline_rounded,
+                                iconColor: const Color(0xFFDC2626),
+                                iconBg: const Color(0xFFFEE2E2),
+                                valueColor: const Color(0xFFB91C1C),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],
@@ -1927,26 +1968,29 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
           ),
           const SizedBox(height: 18),
 
+          if(data.isQntyEntry == 1) ...[
+
           _buildFieldLabel('FINAL QUANTITY'),
 
           const SizedBox(height: 6),
           _buildInputField(
-              isReadOnly: true,
-              controller: endReadingController,
+              isReadOnly: false,
+              controller: finalQtyController,
               hint: 'Enter Final Quantity',
-              isLoading: isReadingEndCounter,
-              errorText: endReadingError,
+              // isLoading: isReadingEndCounter,
+              // errorText: endReadingError,
               onChanged: (val) {
-                if (endReadingError != null) {
-                  setState(() {
-                    endReadingError = null;
-                  });
-                }
+                // if (endReadingError != null) {
+                //   setState(() {
+                //     endReadingError = null;
+                //   });
+                // }
                 context.read<CreateItemCubit>().onValueChanged(
-                      endReading: int.tryParse(val),
+                      finalQnty: int.tryParse(val),
                     );
               },
             ),
+          ],
 
           const SizedBox(height: 6),
 

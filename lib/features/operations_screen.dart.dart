@@ -24,6 +24,10 @@ class _OperationsScreenState extends State<OperationsScreen> {
     super.dispose();
   }
 
+  Future<void> _refresh() {
+    return context.read<GetUserOperations>().request();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,17 +66,36 @@ class _OperationsScreenState extends State<OperationsScreen> {
                         ),
                         // Operations list
                         Expanded(
-                          child: filteredOperations.isEmpty
-                              ? _buildEmptyState()
-                              : ListView.builder(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  itemCount: filteredOperations.length,
-                                  itemBuilder: (context, index) {
-                                    final operation =
-                                        filteredOperations[index];
-                                    return _buildOperationCard(operation);
-                                  },
-                                ),
+                          child: RefreshIndicator(
+                            color: const Color(0xFF0C6ECB),
+                            onRefresh: _refresh,
+                            child: filteredOperations.isEmpty
+                                ? LayoutBuilder(
+                                    builder: (context, constraints) =>
+                                        SingleChildScrollView(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minHeight: constraints.maxHeight,
+                                        ),
+                                        child: _buildEmptyState(),
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    itemCount: filteredOperations.length,
+                                    itemBuilder: (context, index) {
+                                      final operation =
+                                          filteredOperations[index];
+                                      return _buildOperationCard(operation);
+                                    },
+                                  ),
+                          ),
                         ),
                       ],
                     );
@@ -165,13 +188,39 @@ class _OperationsScreenState extends State<OperationsScreen> {
                         ),
                       ),
                       const SizedBox(width: 14),
-                      const Text(
-                        'Operations',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: -0.4,
+                      const Expanded(
+                        child: Text(
+                          'Operations',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(14),
+                          onTap: _refresh,
+                          child: Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.18),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.35),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.refresh_rounded,
+                              color: Colors.white,
+                              size: 22,
+                            ),
+                          ),
                         ),
                       ),
                     ],
