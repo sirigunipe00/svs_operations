@@ -628,13 +628,13 @@ class _JobCardItemListScreenState extends State<JobCardItemListScreen> {
         ? item.machineId!
         : (item.name?.isNotEmpty == true ? item.name! : '');
 
-    final outputTray = item.outputTray?.isNotEmpty == true
-        ? item.outputTray!
-        : (item.trayId?.isNotEmpty == true ? item.trayId! : '');
+    final inputTray = item.trayId?.trim() ?? '';
+    final outputTray = item.outputTray?.trim() ?? '';
 
     final parts = <String>[];
     if (machine.isNotEmpty) parts.add(machine);
-    if (outputTray.isNotEmpty) parts.add('Input tray $outputTray');
+    if (inputTray.isNotEmpty) parts.add('Input tray $inputTray');
+    if (outputTray.isNotEmpty) parts.add('Output tray $outputTray');
 
     if (item.completedQty != null && item.completedQty! > 0) {
       final qtyStr = item.completedQty! % 1 == 0
