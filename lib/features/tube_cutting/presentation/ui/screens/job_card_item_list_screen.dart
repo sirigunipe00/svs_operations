@@ -562,6 +562,7 @@ class _JobCardItemListScreenState extends State<JobCardItemListScreen> {
   }
 
   Widget _buildCompletedSection(List<ChildStatusModel> completedItems) {
+    print('completedItems..:$completedItems');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -622,6 +623,7 @@ class _JobCardItemListScreenState extends State<JobCardItemListScreen> {
   }
 
   Widget _buildCompletedCard(ChildStatusModel item) {
+    print('item..:$item');
     final machine = item.machineId?.isNotEmpty == true
         ? item.machineId!
         : (item.name?.isNotEmpty == true ? item.name! : '');
@@ -632,7 +634,7 @@ class _JobCardItemListScreenState extends State<JobCardItemListScreen> {
 
     final parts = <String>[];
     if (machine.isNotEmpty) parts.add(machine);
-    if (outputTray.isNotEmpty) parts.add('Output tray $outputTray');
+    if (outputTray.isNotEmpty) parts.add('Input tray $outputTray');
 
     if (item.completedQty != null && item.completedQty! > 0) {
       final qtyStr = item.completedQty! % 1 == 0
@@ -651,6 +653,8 @@ class _JobCardItemListScreenState extends State<JobCardItemListScreen> {
     }
 
     final line = parts.isNotEmpty ? parts.join(' · ') : 'Completed';
+
+    print('line ..:$line');
 
     return Container(
       width: double.infinity,

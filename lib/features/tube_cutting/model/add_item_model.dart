@@ -28,6 +28,10 @@ class AddItemModel with _$AddItemModel {
     int? rejectionCounter,
     @JsonKey(name: 'custom_scrap_kgs')
     double? scrapKgs,
+
+
+    @JsonKey(name: 'final_quantity')
+    int? finalQnty,
   }) = _AddItemModel;
 
   factory AddItemModel.fromJson(Map<String, dynamic> json) =>

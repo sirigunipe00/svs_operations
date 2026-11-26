@@ -1926,6 +1926,30 @@ class _TubeCuttingScreenState extends State<TubeCuttingScreen> {
             ],
           ),
           const SizedBox(height: 18),
+
+          _buildFieldLabel('FINAL QUANTITY'),
+
+          const SizedBox(height: 6),
+          _buildInputField(
+              isReadOnly: true,
+              controller: endReadingController,
+              hint: 'Enter Final Quantity',
+              isLoading: isReadingEndCounter,
+              errorText: endReadingError,
+              onChanged: (val) {
+                if (endReadingError != null) {
+                  setState(() {
+                    endReadingError = null;
+                  });
+                }
+                context.read<CreateItemCubit>().onValueChanged(
+                      endReading: int.tryParse(val),
+                    );
+              },
+            ),
+
+          const SizedBox(height: 6),
+
           // OUTPUT TRAY
           _buildFieldLabel('OUTPUT TRAY'),
           const SizedBox(height: 6),

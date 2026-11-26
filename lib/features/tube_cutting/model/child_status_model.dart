@@ -18,7 +18,7 @@ class ChildStatusModel with _$ChildStatusModel {
     @JsonKey(name: 'from_time', defaultValue: '') String? fromTime,
     @JsonKey(name: 'to_time', defaultValue: '') String? toTime,
     @JsonKey(name: 'completed_qty', defaultValue: 0.0) double? completedQty,
-    @JsonKey(name: 'custom_output_tray', defaultValue: '') String? outputTray,
+    @JsonKey(name: 'custom_output_tray_id', defaultValue: '') String? outputTray,
   }) = _ChildStatusModel;
 
   String? get customMachineId => machineId;

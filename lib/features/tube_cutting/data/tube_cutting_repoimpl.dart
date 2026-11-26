@@ -86,6 +86,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           ],
         },
         parser: (p0) {
+          log('operationScanStatus...:$p0');
           final message = p0['message'] as List<dynamic>;
 
           return OperationScanModel.fromJson(
@@ -167,6 +168,7 @@ class TubeCuttingRepoimpl extends BaseApiRepository implements TubeCuttingRepo {
           "custom_scrap_kgs": model.scrapKgs,
           "rejection_tray_image": model.rejectionTrayImage,
           "counter_end_image": model.endImage,
+          "final_quantity" : model.finalQnty
         }),
         parser: (p0) {
           return p0['message']['message'] as String;

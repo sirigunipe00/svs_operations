@@ -42,7 +42,7 @@ mixin _$ChildStatusModel {
   String? get toTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'completed_qty', defaultValue: 0.0)
   double? get completedQty => throw _privateConstructorUsedError;
-  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
   String? get outputTray => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -73,7 +73,7 @@ abstract class $ChildStatusModelCopyWith<$Res> {
       @JsonKey(name: 'from_time', defaultValue: '') String? fromTime,
       @JsonKey(name: 'to_time', defaultValue: '') String? toTime,
       @JsonKey(name: 'completed_qty', defaultValue: 0.0) double? completedQty,
-      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
       String? outputTray});
 }
 
@@ -180,7 +180,7 @@ abstract class _$$ChildStatusModelImplCopyWith<$Res>
       @JsonKey(name: 'from_time', defaultValue: '') String? fromTime,
       @JsonKey(name: 'to_time', defaultValue: '') String? toTime,
       @JsonKey(name: 'completed_qty', defaultValue: 0.0) double? completedQty,
-      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
       String? outputTray});
 }
 
@@ -279,7 +279,8 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
       @JsonKey(name: 'from_time', defaultValue: '') this.fromTime,
       @JsonKey(name: 'to_time', defaultValue: '') this.toTime,
       @JsonKey(name: 'completed_qty', defaultValue: 0.0) this.completedQty,
-      @JsonKey(name: 'custom_output_tray', defaultValue: '') this.outputTray})
+      @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
+      this.outputTray})
       : super._();
 
   factory _$ChildStatusModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -319,7 +320,7 @@ class _$ChildStatusModelImpl extends _ChildStatusModel {
   @JsonKey(name: 'completed_qty', defaultValue: 0.0)
   final double? completedQty;
   @override
-  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
   final String? outputTray;
 
   @override
@@ -405,7 +406,7 @@ abstract class _ChildStatusModel extends ChildStatusModel {
       @JsonKey(name: 'to_time', defaultValue: '') final String? toTime,
       @JsonKey(name: 'completed_qty', defaultValue: 0.0)
       final double? completedQty,
-      @JsonKey(name: 'custom_output_tray', defaultValue: '')
+      @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
       final String? outputTray}) = _$ChildStatusModelImpl;
   const _ChildStatusModel._() : super._();
 
@@ -446,7 +447,7 @@ abstract class _ChildStatusModel extends ChildStatusModel {
   @JsonKey(name: 'completed_qty', defaultValue: 0.0)
   double? get completedQty;
   @override
-  @JsonKey(name: 'custom_output_tray', defaultValue: '')
+  @JsonKey(name: 'custom_output_tray_id', defaultValue: '')
   String? get outputTray;
   @override
   @JsonKey(ignore: true)

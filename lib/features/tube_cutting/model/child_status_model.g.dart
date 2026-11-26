@@ -21,7 +21,7 @@ _$ChildStatusModelImpl _$$ChildStatusModelImplFromJson(
       fromTime: json['from_time'] as String? ?? '',
       toTime: json['to_time'] as String? ?? '',
       completedQty: (json['completed_qty'] as num?)?.toDouble() ?? 0.0,
-      outputTray: json['custom_output_tray'] as String? ?? '',
+      outputTray: json['custom_output_tray_id'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$ChildStatusModelImplToJson(
@@ -38,5 +38,5 @@ Map<String, dynamic> _$$ChildStatusModelImplToJson(
       'from_time': instance.fromTime,
       'to_time': instance.toTime,
       'completed_qty': instance.completedQty,
-      'custom_output_tray': instance.outputTray,
+      'custom_output_tray_id': instance.outputTray,
     };
